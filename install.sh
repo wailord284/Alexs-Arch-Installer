@@ -980,41 +980,41 @@ fi
 pacman -Syy
 pacman -S unzip p7zip --noconfirm
 #Grub file manager https://github.com/a1ive/grub2-filemanager/releases
-wget -nc -nv https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
+wget https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
 7z x grubfm-en_US.7z
 mkdir -p /mnt/boot/EFI/tools
 mv grubfmx64.efi grubfm.iso loadfm /mnt/boot/EFI/tools/
 rm -r grubfm-en_US.7z grubfmia32.efi
 #uefi shell V1/V2 https://github.com/tianocore/edk2/blob/UDK2018/EdkShellBinPkg/
-wget -nc -nv https://github.com/tianocore/edk2/releases/latest/download/ShellBinPkg.zip
-wget -nc -nv https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
+wget https://github.com/tianocore/edk2/releases/latest/download/ShellBinPkg.zip
+wget https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
 unzip ShellBinPkg.zip
 mv ShellBinPkg/UefiShell/X64/Shell.efi /mnt/boot/EFI/tools/shellx64_v2.efi
 mv Shell.efi /mnt/boot/EFI/tools/shellx64_v1.efi
 rm -r ShellBinPkg.zip ShellBinPkg
 #gdisk - https://sourceforge.net/projects/gptfdisk/files/gptfdisk/
 gdiskVersion="1.0.4"
-wget -nc -nv https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/"$gdiskVersion"/gdisk-binaries/gdisk-efi-"$gdiskVersion".zip
+wget https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/"$gdiskVersion"/gdisk-binaries/gdisk-efi-"$gdiskVersion".zip
 unzip gdisk-efi-"$gdiskVersion".zip
 mv gdisk-efi/gdisk_x64.efi /mnt/boot/EFI/tools/
 rm -r gdisk-efi-"$gdiskVersion".zip gdisk-efi
 #RU - Universal Chipset Reading # password 2002118028047
 #https://ruexe.blogspot.com/
-wget -nc -nv https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
+wget https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
 unzip -P 2002118028047 5.25.0379.zip
 mv RU.efi /mnt/boot/EFI/tools/ru.efi
 rm -r RU.EXE RU32.efi
 #FlappyBird
 mkdir -p /mnt/boot/EFI/games
-wget -nc -nv https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
+wget https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
 mv FlappyBird.efi /mnt/boot/EFI/games/
 #Tetris
-wget -nc -nv https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
-wget -nc -nv https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi
+wget https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
+wget https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi
 mv TETRIS.EFI /mnt/boot/EFI/games/tetris.efi
 mv tetris.efi /mnt/boot/EFI/games/tetrisClassic.efi
 #UEFIBoy https://github.com/RossMeikleham/UEFIBoy/
-wget -nc -nv https://github.com/RossMeikleham/UEFIBoy/releases/download/0.1.0/Plutoboy.efi
+wget https://github.com/RossMeikleham/UEFIBoy/releases/download/0.1.0/Plutoboy.efi
 wget -nc -nv -U "eye01" https://the-eye.eu/public/rom/Nintendo%20Gameboy/Galaga%20%26%20Galaxian%20%28U%29%20%5BS%5D%5B%21%5D.zip -O galaga.zip
 unzip galaga.zip
 mv "Galaga & Galaxian (U) [S][!].gb" /mnt/boot/EFI/games/autoload.rom
