@@ -515,7 +515,7 @@ arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring archlinuxcn-mir
 #install desktop and software
 ##add back pinta?
 if [ "$desktop" = xfce ]; then
-	arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay brave-bin grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc android-file-transfer lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo --noconfirm
+	arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay brave-bin grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc android-file-transfer lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm
 	arch-chroot /mnt pacman -S arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm
 fi
 
@@ -979,6 +979,7 @@ fi
 #add gdisk menu - https://wiki.archlinux.org/index.php/GPT_fdisk#gdisk_EFI_application
 pacman -Syy
 pacman -S unzip p7zip --noconfirm
+###TOOLS###
 #Grub file manager https://github.com/a1ive/grub2-filemanager/releases
 wget https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
 7z x grubfm-en_US.7z
@@ -1004,6 +1005,16 @@ wget https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
 unzip -P 2002118028047 5.25.0379.zip
 mv RU.efi /mnt/boot/EFI/tools/ru.efi
 rm -r RU.EXE RU32.efi
+#Memtest86 - UEFI. Legacy BIOS handled by memtest86+ package
+wget https://www.memtest86.com/downloads/memtest86-usb.zip -P memtest
+unzip memtest/memtest86-usb.zip -d memtest/
+mkdir -p memtest/memimg
+#offset = 512*2048
+mount -o loop,offset=1048576 memtest/memtest86-usb.img memtest/memimg
+mv memtest/memimg/EFI/BOOT/BOOTX64.efi /mnt/boot/EFI/tools/memtestx64.efi
+umount memtest/memimg
+rm -r memtest
+###GAMES###
 #FlappyBird
 mkdir -p /mnt/boot/EFI/games
 wget https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
@@ -1033,6 +1044,11 @@ if [ ${grub_platform} == "efi" ]; then
 		echo "Running in UEFI mode"
 		search --no-floppy --set=root --file /EFI/tools/grubfmx64.efi
 		chainloader /EFI/tools/grubfmx64.efi
+	}
+	menuentry "Memtest86" {
+		echo "Running in UEFI mode"
+		search --no-floppy --set=root --file /EFI/tools/memtestx64.efi
+		chainloader /EFI/tools/memtestx64.efi
 	}
 else
 	menuentry "File Manager" {
