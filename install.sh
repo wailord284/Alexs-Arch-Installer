@@ -1006,14 +1006,14 @@ unzip -P 2002118028047 5.25.0379.zip
 mv RU.efi /mnt/boot/EFI/tools/ru.efi
 rm -r RU.EXE RU32.efi
 #Memtest86 - UEFI. Legacy BIOS handled by memtest86+ package
-wget https://www.memtest86.com/downloads/memtest86-usb.zip -P memtest
-unzip memtest/memtest86-usb.zip -d memtest/
-mkdir -p memtest/memimg
+wget https://www.memtest86.com/downloads/memtest86-usb.zip -P /mnt/memtest
+unzip /mnt/memtest/memtest86-usb.zip -d /mnt/memtest/
+mkdir -p /mnt/memtest/memimg
 #offset = 512*2048
-mount -o loop,offset=1048576 memtest/memtest86-usb.img memtest/memimg
-mv memtest/memimg/EFI/BOOT/BOOTX64.efi /mnt/boot/EFI/tools/memtestx64.efi
-umount memtest/memimg
-rm -r memtest
+mount -o loop,offset=1048576 /mnt/memtest/memtest86-usb.img /mnt/memtest/memimg
+mv /mnt/memtest/memimg/EFI/BOOT/BOOTX64.efi /mnt/boot/EFI/tools/memtestx64.efi
+umount /mnt/memtest/memimg
+rm -r /mnt/memtest
 ###GAMES###
 #FlappyBird
 mkdir -p /mnt/boot/EFI/games
