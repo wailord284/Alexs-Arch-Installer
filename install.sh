@@ -1014,6 +1014,9 @@ mount -o loop,offset=1048576 /mnt/memtest/memtest86-usb.img /mnt/memtest/memimg
 mv /mnt/memtest/memimg/EFI/BOOT/BOOTX64.efi /mnt/boot/EFI/tools/memtestx64.efi
 umount /mnt/memtest/memimg
 rm -r /mnt/memtest
+#UEFIDiskBenchmark https://github.com/manusov/UEFIdiskBenchmark
+wget https://github.com/manusov/UEFIdiskBenchmark/blob/master/executable/UefiDiskBenchmark.efi
+mv UefiDiskBenchmark.efi /mnt/boot/EFI/tools/diskbenchmark.efi
 ###GAMES###
 #FlappyBird
 mkdir -p /mnt/boot/EFI/games
@@ -1079,6 +1082,12 @@ submenu "UEFI Tools" {
 		insmod chain
 		search --no-floppy --set=root --file /EFI/tools/gdisk_x64.efi
 		chainloader /EFI/tools/gdisk_x64.efi
+	}
+	menuentry "Disk Benchmark" {
+		insmod fat
+		insmod chain
+		search --no-floppy --set=root --file /EFI/tools/diskbenchmark.efi
+		chainloader /EFI/tools/diskbenchmark.efi
 	}
 	menuentry "RU Universal Chipset Reader" {
 		insmod fat
