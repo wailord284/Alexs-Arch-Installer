@@ -52,7 +52,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - LXDM display manager with Archlinux theme
 - Large amount of sysctl.d/ configs gathered from the Arch wiki to increase performance and stability
 - Adds the Archlinuxcn repository for additional software
-- Install rng-tools if system entropy is under 1500 during time of install
+- Install rng-tools if system entropy is under 1750 during time of install
 - Grub changes:
     * Disabled spectre/meltdown patches (Increase performance. Edit /etc/defult/grub to remove)
     * Custom menus
