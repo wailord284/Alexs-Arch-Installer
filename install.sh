@@ -845,19 +845,23 @@ sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wir
 
 
 #Setup sysctl tweaks
-echo 'kernel.unprivileged_userns_clone = 1' > /mnt/etc/sysctl.d/00-local-userns.conf
+echo '#Required for some browsers. Set to 0 to turn off.
+kernel.unprivileged_userns_clone = 1' > /mnt/etc/sysctl.d/00-unprivileged-userns.conf
+
 #disables watchdog
-echo "kernel.nmi_watchdog = 0" > /mnt/etc/sysctl.d/00-disable-watchdog.conf
+##No longer enabled by default. May be useful to leave for servers
+#echo "kernel.nmi_watchdog = 0" > /mnt/etc/sysctl.d/00-disable-watchdog.conf
 #fix usb speeds
-echo -e '#Reduce IO writeback
+echo '#Reduce IO writeback
 vm.dirty_writeback_centisecs = 6000
 #Fix USB crash
 vm.dirty_background_ratio = 5
 vm.dirty_ratio = 10
 #Kernel memery reclaim - may improve responsiveness
-vm.vfs_cache_pressure = 50' >> /mnt/etc/sysctl.d/10-usb-fix.conf
+vm.vfs_cache_pressure = 50' >> /mnt/etc/sysctl.d/00-usb-speed-fix.conf
 
-#maybe fix high cpu usage when copying files - disabled - caused pacman lockup on my server and worse overall performance
+#maybe fix high cpu usage when copying files 
+#disabled - caused pacman lockup on my server and worse overall performance
 #echo -e '#fix high cpu usage when copying files
 #vm.dirty_background_bytes = 33554432
 #vm.dirty_bytes = 134217728
@@ -868,7 +872,7 @@ echo -e '#0 - dont use privacy extensions.
 #1 - generate privacy addresses
 #2 - prefer privacy addresses and use them over the normal addresses.
 net.ipv6.conf.all.use_tempaddr = 2
-net.ipv6.conf.default.use_tempaddr = 2' >> /mnt/etc/sysctl.d/10-ipv6-privacy.conf
+net.ipv6.conf.default.use_tempaddr = 2' >> /mnt/etc/sysctl.d/00-ipv6-privacy.conf
 
 #kernel hardening
 echo -e '#Restrict acces to /proc/kallsyms, /proc/modules, etc... to only root
@@ -876,14 +880,14 @@ kernel.kptr_restrict = 1
 #Prevent replacing the running kernel
 kernel.kexec_load_disabled = 1
 #Dmesg access - set to 1 to restrict access
-kernel.dmesg_restrict = 0' >> /mnt/etc/sysctl.d/10-kernel-hardening.conf
+kernel.dmesg_restrict = 0' >> /mnt/etc/sysctl.d/00-kernel-hardening.conf
 
 #link restrictions
 echo -e 'fs.protected_hardlinks = 1
-fs.protected_symlinks = 1' >> /mnt/etc/sysctl.d/10-link-restrictions.conf
+fs.protected_symlinks = 1' >> /mnt/etc/sysctl.d/00-link-restrictions.conf
 
 #system tweaks
-echo -e '##https://github.com/klaver/sysctl/blob/master/sysctl.conf
+echo -e '###https://github.com/klaver/sysctl/blob/master/sysctl.conf###
 #Magic sysreq key
 kernel.sysrq = 1
 # Sets the time before the kernel considers migrating a proccess to another core
@@ -891,11 +895,11 @@ kernel.sched_migration_cost_ns = 5000000
 # Group tasks by TTY
 kernel.sched_autogroup_enabled = 0
 #Increase size of file handles
-fs.file-max = 2097152
+fs.file-max = 209708
 #Stop stuck watchdog cpu
 kernel.watchdog_thresh = 30
 #How often to use swap higher = more likely
-vm.swappiness = 45
+vm.swappiness = 40
 # Controls whether core dumps will append the PID to the core filename.
 # Useful for debugging multi-threaded applications.
 kernel.core_uses_pid = 1
@@ -927,13 +931,16 @@ kernel.shmall = 268435456
 vm.min_free_kbytes = 65535' >> /mnt/etc/sysctl.d/30-system-tweak.conf
 
 #network tweaks
-echo -e '###This is a direct copy from https://wiki.archlinux.org/index.php/Sysctl#Improving_performance
+echo -e '###This is almost a  direct copy from https://wiki.archlinux.org/index.php/Sysctl#Improving_performance
+####Intended use for dedicated server systems at high-speed networks with loads of RAM and bandwidth available###
+###Optimised and tuned for high-performance web/ftp/mail/dns servers with high connection-rates###
+###DO NOT USE at busy networks or xDSL/Cable connections where packetloss can be expected###
 #Increasing the size of the receive queue.
-net.core.netdev_max_backlog = 100000
+net.core.netdev_max_backlog = 16384
 net.core.netdev_budget = 50000
 net.core.netdev_budget_usecs = 5000
-#Increase max connections
-net.core.somaxconn = 1024
+#Increase max connections - Kernel 5.4 sets default to 4096
+net.core.somaxconn = 8192
 #Increase the memory dedicated to the network interfaces
 net.core.rmem_default = 1048576
 net.core.rmem_max = 16777216
@@ -948,11 +955,11 @@ net.ipv4.udp_wmem_min = 8192
 net.ipv4.tcp_fastopen = 3
 net.ipv6.tcp_fastopen = 3
 #Tweak the pending connection handling
-net.ipv4.tcp_max_syn_backlog = 30000
 net.ipv4.tcp_max_tw_buckets = 2000000
-net.ipv4.tcp_tw_reuse = 1
 net.ipv4.tcp_fin_timeout = 10
 net.ipv4.tcp_slow_start_after_idle = 0
+#try to reuse time-wait connections
+net.ipv4.tcp_tw_reuse = 1
 #Change TCP keepalive parameters
 net.ipv4.tcp_keepalive_time = 60
 net.ipv4.tcp_keepalive_intvl = 10
@@ -961,6 +968,9 @@ net.ipv4.tcp_keepalive_probes = 6
 net.ipv4.tcp_mtu_probing = 1
 #Protect from syn flood attacks
 net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_syn_retries = 2
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_max_syn_backlog = 8196
 #Protect against tcp time-wait assassination hazards
 net.ipv4.tcp_rfc1337 = 1
 #Reverse path filtering
@@ -969,8 +979,40 @@ net.ipv4.conf.all.rp_filter = 2
 #Log martian packets 1 = yes
 net.ipv4.conf.default.log_martians = 0
 net.ipv4.conf.all.log_martians = 0
+#How many times to retry killing an alive TCP connection
+net.ipv4.tcp_retries2 = 15
+net.ipv4.tcp_retries1 = 3
+#Dont allow the arp table to become bigger than this
+net.ipv4.neigh.default.gc_thresh3 = 2048
+#Tell the gc when to become aggressive with arp table cleaning.
+#Adjust this based on size of the LAN. 1024 is suitable for most /24 networks
+net.ipv4.neigh.default.gc_thresh2 = 1024
+#dont cache ssthresh from previous connection
+net.ipv4.tcp_no_metrics_save = 1
+net.ipv4.tcp_moderate_rcvbuf = 1
+#Limit number of orphans, each orphan can eat up to 16M (max wmem) of unswappable memory
+net.ipv4.tcp_max_orphans = 16384
+net.ipv4.tcp_orphan_retries = 0
+#Limit the maximum memory used to reassemble IP fragments (CVE-2018-5391)
+net.ipv4.ipfrag_low_thresh = 196608
+net.ipv6.ip6frag_low_thresh = 196608
+net.ipv4.ipfrag_high_thresh = 262144
+net.ipv6.ip6frag_high_thresh = 262144
+#Increase size of RPC datagram queue length
+net.unix.max_dgram_qlen = 50
+#Adjust where the gc will leave arp table alone - set to 32.
+net.ipv4.neigh.default.gc_thresh1 = 32
+#Adjust to arp table gc to clean-up more often
+net.ipv4.neigh.default.gc_interval = 30
+#This will enusre that immediatly subsequent connections use the new values
+net.ipv4.route.flush = 1
+net.ipv6.route.flush = 1
+#Turn on the tcp_timestamps, accurate timestamp make TCP congestion control algorithms work better
+net.ipv4.tcp_timestamps = 1
+#Increase the Ephemeral port range
+net.ipv4.ip_local_port_range = "30000 65535"
 #BBR - may help with higher bandwidth and lower latencies. Load the tcp_bbr module
-net.core.default_qdisc = fq
+net.core.default_qdisc = cake
 net.ipv4.tcp_congestion_control = bbr' >> /mnt/etc/sysctl.d/30-network.conf
 clear && echo "$green""Set configs - configuring Grub""$reset" && sleep 2s
 
@@ -979,9 +1021,7 @@ clear && echo "$green""Set configs - configuring Grub""$reset" && sleep 2s
 if [ "$boot" = efi ]; then
 	arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck
 fi
-#if [[ -z "$boot" && "$encrypt" = y ]]; then
-#	arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck #broken, grub not installing properly - boot encrypted
-#fi
+
 if [[ -z "$boot" ]]; then
 	arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck
 fi
