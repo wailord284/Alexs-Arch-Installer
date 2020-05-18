@@ -489,7 +489,9 @@ Include = /etc/pacman.d/mirrorlist
 Server = https://mirror.xtom.com/archlinuxcn/$arch
 Server = http://repo.archlinuxcn.org/$arch
 Server = https://cdn.repo.archlinuxcn.org/$arch
-Include = /etc/pacman.d/archlinuxcn-mirrorlist
+#Optional mirrorlists - requires archlinuxcn-mirrorlist-git
+#Include = /etc/pacman.d/archlinuxcn-mirrorlist
+SigLevel = PackageOptional
 
 #My custom repo with many aur packages
 [aurmageddon]
@@ -511,7 +513,7 @@ SigLevel = Never
 
 #reinstall keyring in case of gpg errors
 arch-chroot /mnt pacman -Syy
-arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring archlinuxcn-mirrorlist-git --noconfirm
+arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm
 #install desktop and software
 ##add back pinta?
 if [ "$desktop" = xfce ]; then
@@ -698,7 +700,7 @@ fi
 #rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
 entropy=$(cat /proc/sys/kernel/random/entropy_avail)
 if [ "$entropy" -lt 1750 ]; then
-	echo "Entropy under 1500, installing rng-tools"
+	echo "Entropy under 1750, installing rng-tools"
 	sleep 1s
 	arch-chroot /mnt pacman -S rng-tools --noconfirm
 	arch-chroot /mnt systemctl enable rngd 
