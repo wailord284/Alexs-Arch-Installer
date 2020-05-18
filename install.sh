@@ -694,6 +694,18 @@ if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -
 fi
 
 
+#If Entropy is low, install rng-tools
+entropy=$(cat /proc/sys/kernel/random/entropy_avail)
+if [ "$entropy" -lt 1500 ]; then
+	echo "Entropy under 1500, installing rng-tools"
+	sleep 1s
+	arch-chroot /mnt pacman -S rng-tools --noconfirm
+	arch-chroot /mnt systemctl enable rngd
+else
+	echo "High entropy: $entropy"
+fi
+
+
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 if  [ "$desktop" = xfce ]; then
 	arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
