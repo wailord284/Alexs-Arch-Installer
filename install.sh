@@ -1009,8 +1009,6 @@ net.ipv4.route.flush = 1
 net.ipv6.route.flush = 1
 #Turn on the tcp_timestamps, accurate timestamp make TCP congestion control algorithms work better
 net.ipv4.tcp_timestamps = 1
-#Increase the Ephemeral port range
-net.ipv4.ip_local_port_range = "30000 65535"
 #BBR - may help with higher bandwidth and lower latencies. Load the tcp_bbr module
 net.core.default_qdisc = cake
 net.ipv4.tcp_congestion_control = bbr' >> /mnt/etc/sysctl.d/30-network.conf
