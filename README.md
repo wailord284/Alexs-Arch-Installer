@@ -40,6 +40,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Pacman cleanup hook to clean the pacman cache when updating
 - FSTrim if a SSD is detected
 - Modified IO Schedulers for hard drives, SSDs and NVME drives
+- Change mkinitcpio compression to lz4 (Faster but bigger size)
 - Custom nanorc file to include syntax highlighting
 - SystemD service timeout changes from 90 seconds to 45 seconds
 - Support for Touchscreen devices (such as the Thinkpad X201T/X220T)
