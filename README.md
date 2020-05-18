@@ -39,6 +39,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Kernel Modules hook to restore functionality when the running kernel updates
 - Pacman cleanup hook to clean the pacman cache when updating
 - FSTrim if a SSD is detected
+- Enable zram instead of swap
 - Modified IO Schedulers for hard drives, SSDs and NVME drives
 - Change mkinitcpio compression to lz4 (Faster but bigger size)
 - Custom nanorc file to include syntax highlighting
