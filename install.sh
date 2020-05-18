@@ -486,10 +486,10 @@ Include = /etc/pacman.d/mirrorlist
 
 #Chia archlinux repo with many aur packages
 [archlinuxcn]
+Server = https://mirror.xtom.com/archlinuxcn/$arch
 Server = http://repo.archlinuxcn.org/$arch
-#Server = https://cdn.repo.archlinuxcn.org/$arch
-#Include = /etc/pacman.d/archlinuxcn-mirrorlist
-SigLevel = Never
+Server = https://cdn.repo.archlinuxcn.org/$arch
+Include = /etc/pacman.d/archlinuxcn-mirrorlist
 
 #My custom repo with many aur packages
 [aurmageddon]
