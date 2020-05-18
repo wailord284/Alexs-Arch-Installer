@@ -697,7 +697,7 @@ fi
 #If Entropy is low, install rng-tools
 #rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
 entropy=$(cat /proc/sys/kernel/random/entropy_avail)
-if [ "$entropy" -lt 1500 ]; then
+if [ "$entropy" -lt 1750 ]; then
 	echo "Entropy under 1500, installing rng-tools"
 	sleep 1s
 	arch-chroot /mnt pacman -S rng-tools --noconfirm
@@ -1464,7 +1464,7 @@ DNSOverTLS=yes' >> /etc/systemd/resolved.conf
 
 		20)
 		#https://wiki.archlinux.org/index.php/Haveged
-		if [ "$entropy" -lt 1500 ]; then
+		if [ "$entropy" -lt 1750 ]; then
 			echo "$yellow""rng-tools was already installed after low entropy was detected""$reset"
 			echo "$yellow""Would you like to remove rng-tools and install haveged? - y/n"
 			read -r -p "Install Haveged: " haveged
