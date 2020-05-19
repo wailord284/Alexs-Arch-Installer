@@ -645,6 +645,7 @@ mv Arch-Linux-Installer-master/configs/local/helpers/ /mnt/home/"$user"/.local/s
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
 #Take ownership
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.config
+arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.local/share
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.gtkrc-2.0
 
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
