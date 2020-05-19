@@ -101,7 +101,7 @@ done
 
 
 #configure internet
-clear && "$green""Welcome to Alex's automatic install script!""$reset"
+clear && echo "$green""Welcome to Alex's automatic install script!""$reset"
 echo "$green"'Checking internet connection...'"$reset"
 if wget -q --spider http://google.com ; then
 	echo "$green""Online""$reset"
