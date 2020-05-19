@@ -107,7 +107,5 @@ The user will now be prompted to supply basic information such as hostname, user
 
 ### Todos
 
- - Create pregenerated XFCE config file on github (Will replace jank systemd xfcethemeapply script requiring a reboot)
- - Move echo commands to dedicated config files
  - Cleanup comments/echo commands
  - Add better support for NVidia detection
