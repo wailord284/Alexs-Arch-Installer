@@ -101,6 +101,7 @@ done
 
 
 #configure internet
+clear && "$green""Welcome to Alex's automatic install script!""$reset"
 echo "$green"'Checking internet connection...'"$reset"
 if wget -q --spider http://google.com ; then
 	echo "$green""Online""$reset"
@@ -150,7 +151,7 @@ else
 	echo "$yellow""City manually specified with value $optionCity""$reset"
 	city="$optionCity" #Skip city setup if optionCity is set
 fi
-clear && echo "$green""Timezone set as $country $city""$reset" && sleep 3s && clear
+clear && echo "$green""Timezone set as $country $city""$reset" && clear
 
 #desktop
 desktop=${desktop:-xfce}
@@ -392,15 +393,14 @@ fi
 
 
 #Install system, grub, mirrors
-echo 'Server = https://mirrors.xtom.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-echo 'Server = https://mirror.arizona.edu/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = https://mirrors.ocf.berkeley.edu/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = http://ca.us.mirror.archlinux-br.org/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = https://mirror.kaminski.io/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = http://mirrors.sonic.net/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = https://mirror.dc02.hackingand.coffee/arch/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+clear && echo "$green""Please wait while the fastest mirrors are selected...""$reset"
+reflector --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
+#Remove the following mirrors. For some reason they behave randomly 
+sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
+sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 
 
+clear && echo "$green""Installing the base system""$reset" && sleep 1s
 pacstrap /mnt base base-devel --noconfirm
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
@@ -408,6 +408,7 @@ sed "s,\#\TotalDownload,TotalDownload,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 
 
+clear && echo "$green""Installing additional base software...""$reset" && sleep 1s
 #install kernel here as new base pkg removes linux
 arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools os-prober crda --noconfirm
 #Install amd or intel ucode based on cpu
@@ -511,16 +512,17 @@ SigLevel = Never
 #Server = http://repo-ck.com/$arch
 #Server = http://repo-ck.com/$arch' >> /mnt/etc/pacman.conf
 
+
 #reinstall keyring in case of gpg errors
 arch-chroot /mnt pacman -Syy
 arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm
 #install desktop and software
 ##add back pinta?
+clear && echo "$green""Installing additional software""$reset" && sleep 1s
 if [ "$desktop" = xfce ]; then
-	arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc android-file-transfer lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm
+	arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm
 	arch-chroot /mnt pacman -S librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm
 fi
-
 clear && echo "$green""Installed programs - Enabling system services, generating configs""$reset"
 
 
@@ -699,9 +701,9 @@ fi
 #If Entropy is low, install rng-tools
 #rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
 entropy=$(cat /proc/sys/kernel/random/entropy_avail)
-if [ "$entropy" -lt 1750 ]; then
-	echo "Entropy under 1750, installing rng-tools"
-	sleep 1s
+if [ "$entropy" -lt 1800 ]; then
+	echo "Entropy under 1800, installing rng-tools"
+	sleep 2s
 	arch-chroot /mnt pacman -S rng-tools --noconfirm
 	arch-chroot /mnt systemctl enable rngd 
 else
@@ -1010,6 +1012,7 @@ net.ipv6.route.flush = 1
 #Turn on the tcp_timestamps, accurate timestamp make TCP congestion control algorithms work better
 net.ipv4.tcp_timestamps = 1
 #BBR - may help with higher bandwidth and lower latencies. Load the tcp_bbr module
+#This module is loaded by default in /etc/modules-load.d/tcp_bbr.conf
 net.core.default_qdisc = cake
 net.ipv4.tcp_congestion_control = bbr' >> /mnt/etc/sysctl.d/30-network.conf
 clear && echo "$green""Set configs - configuring Grub""$reset" && sleep 2s
@@ -1229,7 +1232,7 @@ echo "$green""19$reset - Enable IRQBalance - helps balance the cpu load generate
 echo "$green""20$reset - Enable Haveged - increase system entropy and randomness"
 
 echo "$reset""Default options are:$green 5 7 9 15 18$red q""$reset"
-echo "Enter$green 1-20$reset (seperated by spaces for multiple options including quit) or$red q$reset to$red quit$reset"
+echo "Enter$green 1-20$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
 selection=${selection:- 5 7 9 15 18 q}
 	for entry in $selection ;do
@@ -1504,7 +1507,7 @@ DNSOverTLS=yes' >> /etc/systemd/resolved.conf
 
 		20)
 		#https://wiki.archlinux.org/index.php/Haveged
-		if [ "$entropy" -lt 1750 ]; then
+		if [ "$entropy" -lt 1800 ]; then
 			echo "$yellow""rng-tools was already installed after low entropy was detected""$reset"
 			echo "$yellow""Would you like to remove rng-tools and install haveged? - y/n"
 			read -r -p "Install Haveged: " haveged
