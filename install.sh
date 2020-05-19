@@ -634,7 +634,8 @@ rm -r master.zip #we rm all dl stuff to make sure the live usb doesnt run out of
 #Create gtk-2.0 disable recents
 mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/home/"$user"/
 #Create gtk-3.0 disable recents
-mv Arch-Linux-Installer-master/configs/gtk-3.0/ /mnt/home/"$user"/.config/
+mkdir -p /mnt/home/"$user"/.config/gtk-3.0/
+mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/home/"$user"/.config/gtk-3.0/
 #Create the xfce configs for a wayyy better desktop setup than the xfconfs
 mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/home/"$user"/.config/
 #Default wallpaper
