@@ -31,7 +31,7 @@ List of all availible options:
 The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Use y or n for yes and no during prompts if required. Please note that the first boot will automatically reboot in ~45 seconds to apply the XFCE theme.
 # Features!
 - Automatic detection for Intel, AMD and NVidia graphics
-- Automatic detection for Intel and AMD CPUs
+- Automatic detection for Intel and AMD CPUs (installs correct microcode)
 - Works with both UEFI and BIOS
 - Disk encryption for the main root partition
 - Increased password security (Increased hashing rounds, user lockout and minimum input password time)
@@ -43,7 +43,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Modified IO Schedulers for hard drives, SSDs and NVME drives
 - Change mkinitcpio compression to lz4 (Faster but bigger size)
 - Custom nanorc file to include syntax highlighting
-- SystemD service timeout changes from 90 seconds to 45 seconds
+- SystemD service timeout changed from 90 seconds to 45 seconds
 - Support for Touchscreen devices (such as the Thinkpad X201T/X220T)
 - Modified trackpad behavior to be more comfortable (if system detected as laptop)
 - Implement USB and hard drive power saving features (if system detected as laptop)
@@ -53,7 +53,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Disabled "Recents" found in most file managers
 - LXDM display manager with Archlinux theme
 - Large amount of sysctl.d/ configs gathered from the Arch wiki to increase performance and stability
-- Adds the Archlinuxcn repository for additional software
+- Add the Archlinuxcn repository for additional software
 - Install rng-tools if system entropy is under 1800 during time of install
 - Grub changes:
     * Disabled spectre/meltdown patches (Increase performance. Edit /etc/defult/grub to remove)
