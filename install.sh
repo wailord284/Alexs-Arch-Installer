@@ -554,55 +554,15 @@ sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
 #arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
 
 
-#NetworkManager/Network startup scripts
-#interface=$(ip a | grep "state UP" | cut -c4- | sed 's/:.*//')
-#create automatic timezone every time connect to network with networkmanager
-#echo -e '#!/bin/sh\ncase "$2" in\n    up)\n        timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"\n    ;;\nesac' > /mnt/etc/NetworkManager/dispatcher.d/09-timezone.sh
-#arch-chroot /mnt chown root:root /etc/NetworkManager/dispatcher.d/09-timezone.sh
-#arch-chroot /mnt chmod +x /etc/NetworkManager/dispatcher.d/09-timezone.sh
-#arch-chroot /mnt chmod 755 /etc/NetworkManager/dispatcher.d/09-timezone.sh
-#configure mac address spoofing on startup via networkmanager
-echo -e "[connection-mac-randomization]\nethernet.cloned-mac-address=stable\nwifi.cloned-mac-address=random" > /mnt/etc/NetworkManager/conf.d/rand_mac.conf
-#IPv6 privacy and managed connection
-echo -e "[connection]\nipv6.ip6-privacy=2\n[ifupdown]\nmanaged=true" >> /mnt/etc/NetworkManager/NetworkManager.conf
-#Use dnsmasq for dns
-echo -e "[main]\ndns=dnsmasq" > /mnt/etc/NetworkManager/conf.d/dns.conf
-echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
-echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
-echo -e "conf-file=/usr/share/dnsmasq/trust-anchors.conf\ndnssec" > /mnt/etc/NetworkManager/dnsmasq.d/dnssec.conf
-#Set default DNS to cloudflare and google
-echo -e "[global-dns-domain-*]\nservers=1.1.1.1,1.0.0.1,9.9.9.9" > /mnt/etc/NetworkManager/conf.d/dns-servers.conf
-#Create one time ntpdupdate + hwclock to set date
-mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
-echo -e '[Service]\nExecStart=/usr/bin/hwclock -w' > /mnt/etc/systemd/system/ntpdate.service.d/hwclock.conf
-#Allow user in the network group to add/modify/delete networks without a password
-echo -e "polkit.addRule(function(action, subject) {\n  if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0 && subject.isInGroup("network")) {\n    return polkit.Result.YES;\n  }\n});" > /mnt/etc/polkit-1/rules.d/50-org.freedesktop.NetworkManager.rules
-
-
-#IOschedulers for storage that supposedly increase perfomance
-echo -e '# set no scheduler for NVMe
-ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"
-# set scheduler for SSD and eMMC
-ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
-# set scheduler for rotating disks
-ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
-# fix high cpu usage when copying files
-#ACTION=="add|change", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="bfq", ATTR{queue/nr_requests}="1024", ATTR{queue/iosched/low_latency}="1"' > /mnt/etc/udev/rules.d/60-ioschedulers.rules
-
-
 #Determine if Vega 56 gpu and add gpuclock.service
 #/sys/class/drm/card0/device also symbolic link to $amdid
 #vega=$(lspci | grep 'Radeon RX Vega 56/64')
 if lspci | grep 'Radeon RX Vega 56/64' || dmesg | grep amdgpu ; then
-	echo "$green""AMD gpu found - setting up gpuclock.service""$reset"
-	echo -e '[Unit]\nDescription=GPUClock\n[Service]\nType=oneshot\nExecStart=/bin/bash /opt/gpu.sh\n[Install]\nWantedBy=multi-user.target' > /mnt/etc/systemd/system/gpuclock.service
-	echo 'amdid=$(find /sys/devices/pci[0-9][0-9][0-9][0-9]*/[0-9][0-9][0-9][0-9]*/[0-9][0-9][0-9][0-9]*/[0-9][0-9][0-9][0-9]*/[0-9][0-9][0-9][0-9]*/ | grep rom | cut -c -76)' > /mnt/opt/gpu.sh
-	echo -e 'sudo sh -c "echo 'manual' > "$amdid"power_dpm_force_performance_level"\nsudo sh -c "echo '185000000' > /sys/class/hwmon/hwmon2/power1_cap"\nsudo sh -c "echo 's 0 852 800' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 's 1 991 900' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 's 2 1138 950' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 's 3 1269 1000' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 's 4 1312 1050' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 's 5 1474 1055' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 's 6 1538 1150' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 's 7 1600 1200' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 'm 0 167 800' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 'm 1 500 800' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 'm 2 700 800' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 'm 3 950 950' > "$amdid"pp_od_clk_voltage"\nsudo sh -c "echo 'c' > "$amdid"pp_od_clk_voltage"' >> /mnt/opt/gpu.sh
-	chmod +x /mnt/opt/gpu.sh
+	echo "$green""AMD gpu found""$reset"
 	arch-chroot /mnt pacman -S xf86-video-amdgpu --noconfirm
 	arch-chroot /mnt pacman -S opencl-amd --noconfirm #Aurmageddon
 else
-   	echo "$green""No Vega gpu installed - Installing intel driver""$reset"
+	echo "$green""No AMD gpu installed - Installing intel driver""$reset"
 	arch-chroot /mnt pacman -S xf86-video-intel libva-intel-driver --noconfirm
 fi
 
@@ -648,58 +608,6 @@ sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=
 sed "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar.zst',g" -i /mnt/etc/makepkg.conf
 
 
-#check and setup touchscreen - like x201T/x220T
-if grep -i wacom /proc/bus/input/devices ; then
-	echo "$green""Wacom found""$reset"
-	arch-chroot /mnt pacman -S xf86-input-wacom --noconfirm
-	echo -e 'Section "InputClass"
-Identifier "WACOM OPTIONS pen"
-MatchDriver "wacom"
-MatchProduct "Pen"
-NoMatchProduct "eraser"
-NoMatchProduct "cursor"
-EndSection
-Section "InputClass"
-Identifier "WACOM OPTIONS pad"
-MatchDriver "wacom"
-MatchProduct "Pad"
-EndSection
-Section "InputClass"
-Identifier "WACOM OPTIONS eraser"
-MatchDriver "wacom"
-MatchProduct "eraser"
-EndSection
-Section "InputClass"
-Identifier "WACOM OPTIONS cursor"
-MatchDriver "wacom"
-MatchProduct "cursor"
-EndSection
-Section "InputClass"
-Identifier "WACOM OPTIONS finger"
-MatchDriver "wacom"
-MatchProduct "finger"
-EndSection' > /mnt/etc/X11/xorg.conf.d/72-wacom-options.conf
-else
-	echo "$green""No wacom tablet found - continuing""$reset"
-fi
-
-
-#Check and setup touchpad
-if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" ; then
-	echo "$green""Touchpad or battery found - setting up synaptics driver and power saving""$reset"
-	arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics ethtool tlp tlp-rdw --noconfirm
-	echo -e 'Section "InputClass"\n    Identifier "touchpad"\n    Driver "synaptics"\n    MatchIsTouchpad "on"\n        Option "TapButton1" "1"\n        Option "TapButton2" "3"\n        Option "TapButton3" "2"\n        Option "VertEdgeScroll" "on"\n        Option "VertTwoFingerScroll" "on"\n        Option "HorizEdgeScroll" "on"\n        Option "HorizTwoFingerScroll" "on"\n        Option "CircularScrolling" "on"\n        Option "CircScrollTrigger" "2"\n        Option "EmulateTwoFingerMinZ" "40"\n        Option "EmulateTwoFingerMinW" "8"\n        Option "CoastingSpeed" "0"\n        Option "FingerLow" "30"\n        Option "FingerHigh" "50"\n        Option "MaxTapTime" "125"\nEndSection' >> /mnt/etc/X11/xorg.conf.d/70-synaptics.conf
-	#USB autosuspend
-	echo 'ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"' > /mnt/etc/udev/rules.d/50-usb_power_save.rules
-	echo "options usbcore autosuspend=5" > /mnt/etc/modprobe.d/usb-autosuspend.conf
-	#HDD power save
-	echo 'ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/hd_power_save.rules
-	#Laptop mode to save power with spinning drives
-	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
-	arch-chroot /mnt systemctl enable tlp.service
-fi
-
-
 #If Entropy is low, install rng-tools
 #rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
 entropy=$(cat /proc/sys/kernel/random/entropy_avail)
@@ -741,34 +649,60 @@ sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export 
 mv -f Arch-Linux-Installer-master/configs/fonts/local.conf /mnt/etc/fonts/local.conf
 
 
-#enable autologin and session
-if [ "$desktop" = xfce ]; then
-	sed "s,\#\ session=/usr/bin/startlxde,\ session=/usr/bin/startxfce4,g" -i /mnt/etc/lxdm/lxdm.conf
-	sed "s,theme=Industrial,theme=Archlinux,g" -i /mnt/etc/lxdm/lxdm.conf
-	sed "s,gtk_theme=Adwaita,gtk_theme=Nordic,g" -i /mnt/etc/lxdm/lxdm.conf
-	#Set theme, fonts, remove desktop icons, vsync in /opt/xfcetheme.sh using xfcetheme.service
+#NetworkManager/Network startup scripts
+#interface=$(ip a | grep "state UP" | cut -c4- | sed 's/:.*//')
+#configure mac address spoofing on startup via networkmanager
+mkdir -p /mnt/etc/NetworkManager/conf.d/
+mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
+mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
+#IPv6 privacy and managed connection
+echo -e "[connection]\nipv6.ip6-privacy=2\n[ifupdown]\nmanaged=true" >> /mnt/etc/NetworkManager/NetworkManager.conf
+#Use dnsmasq for dns
+mv Arch-Linux-Installer-master/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
+echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
+echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
+mv Arch-Linux-Installer-master/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
+#Set default DNS to cloudflare and google
+mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
+#Create one time ntpdupdate + hwclock to set date
+mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
+mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
+#Allow user in the network group to add/modify/delete networks without a password
+mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
+
+#IOschedulers for storage that supposedly increase perfomance
+mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
+
+#check and setup touchscreen - like x201T/x220T
+if grep -i wacom /proc/bus/input/devices ; then
+	echo "$green""Wacom found""$reset" && sleep 1s
+	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
+fi
+#Check and setup touchpad
+if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" ; then
+	echo "$green""Touchpad or battery found - setting up synaptics driver and power saving""$reset" && sleep 1s
+	arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics ethtool tlp tlp-rdw --noconfirm
+	mv Arch-Linux-Installer-master/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
+	#USB autosuspend
+	echo 'ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"' > /mnt/etc/udev/rules.d/50-usb_power_save.rules
+	echo "options usbcore autosuspend=5" > /mnt/etc/modprobe.d/usb-autosuspend.conf
+	#HDD power save
+	echo 'ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/hd_power_save.rules
+	#Laptop mode to save power with spinning drives
+	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
+	arch-chroot /mnt systemctl enable tlp.service
 fi
 
+#Blacklist uncommon modules/protocols
+mv Arch-Linux-Installer-master/configs/modprobe/blacklist-uncommon-network-protocols.conf /mnt/etc/modprobe.d/
 #load the tcp_bbr module for better network stuffs
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
-#blacklist modules
-echo -e 'install sctp /bin/true
-install rds /bin/true
-install tipc /bin/true
-install n-hdlc /bin/true
-install ax25 /bin/true
-install netrom /bin/true
-install x25 /bin/true
-install rose /bin/true
-install decnet /bin/true
-install econet /bin/true
-install af_802154 /bin/true
-install ipx /bin/true
-install appletalk /bin/true
-install psnap /bin/true
-install p8023 /bin/true
-install llc /bin/true
-install p8022 /bin/true' > /mnt/etc/modprobe.d/blacklist-uncommon-network-protocols.conf
+
+#enable autologin and session
+sed "s,\#\ session=/usr/bin/startlxde,\ session=/usr/bin/startxfce4,g" -i /mnt/etc/lxdm/lxdm.conf
+sed "s,theme=Industrial,theme=Archlinux,g" -i /mnt/etc/lxdm/lxdm.conf
+sed "s,gtk_theme=Adwaita,gtk_theme=Nordic,g" -i /mnt/etc/lxdm/lxdm.conf
+
 #Netfilter connection tracker
 echo "options nf_conntrack nf_conntrack_helper=0" > /mnt/etc/modprobe.d/no-conntrack-helper.conf
 #Set wifi region
@@ -776,174 +710,30 @@ sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wir
 
 
 #Setup sysctl tweaks
-echo '#Required for some browsers. Set to 0 to turn off.
-kernel.unprivileged_userns_clone = 1' > /mnt/etc/sysctl.d/00-unprivileged-userns.conf
-
 #disables watchdog
 ##No longer enabled by default. May be useful to leave for servers
-#echo "kernel.nmi_watchdog = 0" > /mnt/etc/sysctl.d/00-disable-watchdog.conf
-#fix usb speeds
-echo '#Reduce IO writeback
-vm.dirty_writeback_centisecs = 6000
-#Fix USB crash
-vm.dirty_background_ratio = 5
-vm.dirty_ratio = 10
-#Kernel memery reclaim - may improve responsiveness
-vm.vfs_cache_pressure = 50' >> /mnt/etc/sysctl.d/00-usb-speed-fix.conf
+#mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
 
-#maybe fix high cpu usage when copying files 
-#disabled - caused pacman lockup on my server and worse overall performance
-#echo -e '#fix high cpu usage when copying files
-#vm.dirty_background_bytes = 33554432
-#vm.dirty_bytes = 134217728
-#vm.dirty_expire_centisecs = 100' >> /mnt/etc/sysctl.d/10-disk-cpu-fix.conf
+#unprivileged_userns_clone
+mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
+
+#fix usb speeds
+mv Arch-Linux-Installer-master/configs/sysctl/00-usb-speed-fix.conf /mnt/etc/sysctl.d/
 
 #ipv6 privacy
-echo -e '#0 - dont use privacy extensions.
-#1 - generate privacy addresses
-#2 - prefer privacy addresses and use them over the normal addresses.
-net.ipv6.conf.all.use_tempaddr = 2
-net.ipv6.conf.default.use_tempaddr = 2' >> /mnt/etc/sysctl.d/00-ipv6-privacy.conf
+mv Arch-Linux-Installer-master/configs/sysctl/00-ipv6-privacy.conf /mnt/etc/sysctl.d/
 
 #kernel hardening
-echo -e '#Restrict acces to /proc/kallsyms, /proc/modules, etc... to only root
-kernel.kptr_restrict = 1
-#Prevent replacing the running kernel
-kernel.kexec_load_disabled = 1
-#Dmesg access - set to 1 to restrict access
-kernel.dmesg_restrict = 0' >> /mnt/etc/sysctl.d/00-kernel-hardening.conf
+mv Arch-Linux-Installer-master/configs/sysctl/00-kernel-hardening.conf /mnt/etc/sysctl.d/
 
 #link restrictions
-echo -e 'fs.protected_hardlinks = 1
-fs.protected_symlinks = 1' >> /mnt/etc/sysctl.d/00-link-restrictions.conf
+mv Arch-Linux-Installer-master/configs/sysctl/00-link-restrictions.conf /mnt/etc/sysctl.d/
 
 #system tweaks
-echo -e '###https://github.com/klaver/sysctl/blob/master/sysctl.conf###
-#Magic sysreq key
-kernel.sysrq = 1
-# Sets the time before the kernel considers migrating a proccess to another core
-kernel.sched_migration_cost_ns = 5000000
-# Group tasks by TTY
-kernel.sched_autogroup_enabled = 0
-#Increase size of file handles
-fs.file-max = 209708
-#Stop stuck watchdog cpu
-kernel.watchdog_thresh = 30
-#How often to use swap higher = more likely
-vm.swappiness = 40
-# Controls whether core dumps will append the PID to the core filename.
-# Useful for debugging multi-threaded applications.
-kernel.core_uses_pid = 1
-#Allow for more PIDs
-kernel.pid_max = 65535
-# The contents of /proc/<pid>/maps and smaps files are only visible to
-# readers that are allowed to ptrace the process
-kernel.maps_protect = 1
-#Enable ExecShield protection
-kernel.exec-shield = 1
-kernel.randomize_va_space = 2
-# Controls the maximum size of a message, in bytes
-kernel.msgmnb = 65535
-# Controls the default maxmimum size of a mesage queue
-kernel.msgmax = 65535
-# Restrict core dumps
-fs.suid_dumpable = 0
-# Hide exposed kernel pointers
-kernel.kptr_restrict = 1
-# specifies the minimum virtual address that a process is allowed to mmap
-vm.mmap_min_addr = 4096
-# 50% overcommitment of available memory
-vm.overcommit_ratio = 50
-vm.overcommit_memory = 0
-# Set maximum amount of memory allocated to shm to 256MB
-kernel.shmmax = 268435456
-kernel.shmall = 268435456
-# Keep at least 64MB of free RAM space available
-vm.min_free_kbytes = 65535' >> /mnt/etc/sysctl.d/30-system-tweak.conf
+mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
 
 #network tweaks
-echo -e '###This is almost a  direct copy from https://wiki.archlinux.org/index.php/Sysctl#Improving_performance
-####Intended use for dedicated server systems at high-speed networks with loads of RAM and bandwidth available###
-###Optimised and tuned for high-performance web/ftp/mail/dns servers with high connection-rates###
-###DO NOT USE at busy networks or xDSL/Cable connections where packetloss can be expected###
-#Increasing the size of the receive queue.
-net.core.netdev_max_backlog = 16384
-net.core.netdev_budget = 50000
-net.core.netdev_budget_usecs = 5000
-#Increase max connections - Kernel 5.4 sets default to 4096
-net.core.somaxconn = 8192
-#Increase the memory dedicated to the network interfaces
-net.core.rmem_default = 1048576
-net.core.rmem_max = 16777216
-net.core.wmem_default = 1048576
-net.core.wmem_max = 16777216
-net.core.optmem_max = 65536
-net.ipv4.tcp_rmem = 4096 1048576 2097152
-net.ipv4.tcp_wmem = 4096 65536 16777216
-net.ipv4.udp_rmem_min = 8192
-net.ipv4.udp_wmem_min = 8192
-#TCP fast open
-net.ipv4.tcp_fastopen = 3
-net.ipv6.tcp_fastopen = 3
-#Tweak the pending connection handling
-net.ipv4.tcp_max_tw_buckets = 2000000
-net.ipv4.tcp_fin_timeout = 10
-net.ipv4.tcp_slow_start_after_idle = 0
-#try to reuse time-wait connections
-net.ipv4.tcp_tw_reuse = 1
-#Change TCP keepalive parameters
-net.ipv4.tcp_keepalive_time = 60
-net.ipv4.tcp_keepalive_intvl = 10
-net.ipv4.tcp_keepalive_probes = 6
-#Enable MTU probing
-net.ipv4.tcp_mtu_probing = 1
-#Protect from syn flood attacks
-net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_syn_retries = 2
-net.ipv4.tcp_synack_retries = 2
-net.ipv4.tcp_max_syn_backlog = 8196
-#Protect against tcp time-wait assassination hazards
-net.ipv4.tcp_rfc1337 = 1
-#Reverse path filtering
-net.ipv4.conf.default.rp_filter = 2
-net.ipv4.conf.all.rp_filter = 2
-#Log martian packets 1 = yes
-net.ipv4.conf.default.log_martians = 0
-net.ipv4.conf.all.log_martians = 0
-#How many times to retry killing an alive TCP connection
-net.ipv4.tcp_retries2 = 15
-net.ipv4.tcp_retries1 = 3
-#Dont allow the arp table to become bigger than this
-net.ipv4.neigh.default.gc_thresh3 = 2048
-#Tell the gc when to become aggressive with arp table cleaning.
-#Adjust this based on size of the LAN. 1024 is suitable for most /24 networks
-net.ipv4.neigh.default.gc_thresh2 = 1024
-#dont cache ssthresh from previous connection
-net.ipv4.tcp_no_metrics_save = 1
-net.ipv4.tcp_moderate_rcvbuf = 1
-#Limit number of orphans, each orphan can eat up to 16M (max wmem) of unswappable memory
-net.ipv4.tcp_max_orphans = 16384
-net.ipv4.tcp_orphan_retries = 0
-#Limit the maximum memory used to reassemble IP fragments (CVE-2018-5391)
-net.ipv4.ipfrag_low_thresh = 196608
-net.ipv6.ip6frag_low_thresh = 196608
-net.ipv4.ipfrag_high_thresh = 262144
-net.ipv6.ip6frag_high_thresh = 262144
-#Increase size of RPC datagram queue length
-net.unix.max_dgram_qlen = 50
-#Adjust where the gc will leave arp table alone - set to 32.
-net.ipv4.neigh.default.gc_thresh1 = 32
-#Adjust to arp table gc to clean-up more often
-net.ipv4.neigh.default.gc_interval = 30
-#This will enusre that immediatly subsequent connections use the new values
-net.ipv4.route.flush = 1
-net.ipv6.route.flush = 1
-#Turn on the tcp_timestamps, accurate timestamp make TCP congestion control algorithms work better
-net.ipv4.tcp_timestamps = 1
-#BBR - may help with higher bandwidth and lower latencies. Load the tcp_bbr module
-#This module is loaded by default in /etc/modules-load.d/tcp_bbr.conf
-net.core.default_qdisc = cake
-net.ipv4.tcp_congestion_control = bbr' >> /mnt/etc/sysctl.d/30-network.conf
+mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 clear && echo "$green""Set configs - configuring Grub""$reset" && sleep 2s
 
 
@@ -1018,97 +808,7 @@ unzip galaga.zip
 mv "Galaga & Galaxian (U) [S][!].gb" /mnt/boot/EFI/games/autoload.rom
 mv Plutoboy.efi /mnt/boot/EFI/games/
 #Create /boot/grub/bustom.cfg
-echo 'menuentry "System shutdown" {
-	echo "System shutting down..."
-	halt
-}
-menuentry "System restart" {
-	echo "System rebooting..."
-	reboot
-}
-if [ ${grub_platform} == "efi" ]; then
-	menuentry "File Manager" {
-		echo "Running in UEFI mode"
-		search --no-floppy --set=root --file /EFI/tools/grubfmx64.efi
-		chainloader /EFI/tools/grubfmx64.efi
-	}
-	menuentry "Memtest86" {
-		echo "Running in UEFI mode"
-		search --no-floppy --set=root --file /EFI/tools/memtestx64.efi
-		chainloader /EFI/tools/memtestx64.efi
-	}
-else
-	menuentry "File Manager" {
-		echo "Running in legacy BIOS mode"
-		linux /EFI/tools/loadfm
-		initrd /EFI/tools/grubfm.iso
-	}
-fi
-if [ ${grub_platform} == "efi" ]; then
-submenu "UEFI Tools" {
-	menuentry "BIOS setup" {
-		fwsetup
-	}
-	menuentry "UEFI Shell V1" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/tools/shellx64_v1.efi
-		chainloader /EFI/tools/shellx64_v1.efi
-	}
-	menuentry "UEFI Shell V2" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/tools/shellx64_v2.efi
-		chainloader /EFI/tools/shellx64_v2.efi
-	}
-	menuentry "Gdisk Partition Editor" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/tools/gdisk_x64.efi
-		chainloader /EFI/tools/gdisk_x64.efi
-	}
-	menuentry "Disk Benchmark" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/tools/diskbenchmark.efi
-		chainloader /EFI/tools/diskbenchmark.efi
-	}
-	menuentry "RU Universal Chipset Reader" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/tools/ru.efi
-		chainloader /EFI/tools/ru.efi
-	}
-}
-fi
-if [ ${grub_platform} == "efi" ]; then
-submenu "Games" {
-	menuentry "FlappyBird" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/games/FlappyBird.efi
-		chainloader /EFI/games/FlappyBird.efi
-	}
-	menuentry "Tetris Classic" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/games/tetrisClassic.efi
-		chainloader /EFI/games/tetrisClassic.efi
-	}
-	menuentry "Tetris" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/games/tetris.efi
-		chainloader /EFI/games/tetris.efi
-	}
-	menuentry "UEFIBoy - GB/GBC Emulator" {
-		insmod fat
-		insmod chain
-		search --no-floppy --set=root --file /EFI/games/Plutoboy.efi
-		chainloader /EFI/games/Plutoboy.efi
-	}
-}
-fi' >> /mnt/boot/grub/custom.cfg
+mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
 #grub config and unmount - https://make-linux-fast-again.com/ - nowatchdog pci=nommconf intel_pstate=disable acpi-cpufreq
@@ -1197,49 +897,15 @@ selection=${selection:- 5 7 9 15 18 q}
 		4)
 		echo "$green""Routing all traffic over Tor""$reset"
 		arch-chroot /mnt pacman -S tor torsocks --noconfirm
-		echo -e '*nat
-:PREROUTING ACCEPT [6:2126]
-:INPUT ACCEPT [0:0]
-:OUTPUT ACCEPT [17:6239]
-:POSTROUTING ACCEPT [6:408]
--A PREROUTING ! -i lo -p udp -m udp --dport 53 -j REDIRECT --to-ports 5353
--A PREROUTING ! -i lo -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
--A OUTPUT -o lo -j RETURN
---ipv4 -A OUTPUT -d 192.168.0.0/16 -j RETURN
--A OUTPUT -m owner --uid-owner "tor" -j RETURN
--A OUTPUT -p udp -m udp --dport 53 -j REDIRECT --to-ports 5353
--A OUTPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
-COMMIT
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
--A INPUT -i lo -j ACCEPT
--A INPUT -p icmp -j ACCEPT
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
---ipv4 -A INPUT -p tcp -j REJECT --reject-with tcp-reset
---ipv4 -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
---ipv4 -A INPUT -j REJECT --reject-with icmp-proto-unreachable
---ipv6 -A INPUT -j REJECT
---ipv4 -A OUTPUT -d 127.0.0.0/8 -j ACCEPT
---ipv4 -A OUTPUT -d 192.168.0.0/16 -j ACCEPT
---ipv6 -A OUTPUT -d ::1/8 -j ACCEPT
--A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -m owner --uid-owner "tor" -j ACCEPT
---ipv4 -A OUTPUT -j REJECT --reject-with icmp-port-unreachable
---ipv6 -A OUTPUT -j REJECT
-COMMIT' > /mnt/etc/iptables/iptables.rules
+		#Copy iptables rules
+		mv Arch-Linux-Installer-master/configs/tor/iptables.rules /mnt/etc/iptables/
 
 		ln -s /mnt/etc/iptables/iptables.rules /mnt/etc/iptables/ip6tables.rules
 		echo -e "nameserver ::1\nnameserver 127.0.0.1" > /mnt/etc/resolv.conf
 		chattr +i /mnt/etc/resolv.conf #lock resolv to prevent overwrites
 		echo -e "DNSPort 9053\nTransPort 9040\nSocksPort 9050" >> /mnt/etc/tor/torrc
 		mkdir -p /mnt/etc/systemd/system/tor.service.d/
-		echo -e '[Service]
-CapabilityBoundingSet=
-CapabilityBoundingSet=CAP_NET_BIND_SERVICE
-AmbientCapabilities=
-AmbientCapabilities=CAP_NET_BIND_SERVICE' > /mnt/etc/systemd/system/tor.service.d/netcap.conf
+		mv Arch-Linux-Installer-master/configs/tor/netcap.conf /mnt/etc/systemd/system/tor.service.d/
 
 		arch-chroot /mnt systemctl enable tor
 		arch-chroot /mnt systemctl enable dnsmasq
@@ -1293,10 +959,9 @@ cache-size=1000' >> /mnt/etc/dnsmasq.conf
 		echo "$green""Blacklisting bluetooth and webcam""$reset"
 		#bluetooth
 		arch-chroot /mnt systemctl enable rfkill-block@bluetooth
-		echo -e "install btusb /bin/true\ninstall bluetooth /bin/true" > /mnt/etc/modprobe.d/blacklist-bluetooth.conf
-		echo 'SUBSYSTEM=="rfkill", ATTR{type}=="bluetooth", ATTR{state}="0"' > /mnt/etc/udev/rules.d/50-bluetooth.rules
+		mv Arch-Linux-Installer-master/configs/modprobe/blacklist-bluetooth.conf /mnt/etc/modprobe.d/
 		#webcam
-		echo "install uvcvideo /bin/true" > /mnt/etc/modprobe.d/blacklist-webcam.conf
+		mv Arch-Linux-Installer-master/configs/modprobe/blacklist-webcam.conf /mnt/etc/modprobe.d/
 		sleep 3s
 		;;
 
@@ -1306,21 +971,7 @@ cache-size=1000' >> /mnt/etc/dnsmasq.conf
 		arch-chroot /mnt pacman -S firejail firetools --noconfirm
 		arch-chroot /mnt firecfg
 		mkdir -p /mnt/etc/pacman.d/hooks
-		echo -e "[Trigger]
-Type = File
-Operation = Install
-Operation = Upgrade
-Operation = Remove
-Target = usr/bin/*
-Target = usr/local/bin/*
-Target = usr/share/applications/*.desktop
-
-[Action]
-Description = Configure symlinks in /usr/local/bin based on firecfg.config...
-When = PostTransaction
-Depends = firejail
-Exec = /bin/sh -c 'firecfg &>/dev/null'
-Exec = /bin/sh -c 'unlink /usr/local/bin/brave'" >> /mnt/etc/pacman.d/hooks/firejail.hook
+		mv Arch-Linux-Installer-master/configs/firejail/firejail.hook /mnt/etc/pacman.d/hooks/
 
 		echo -e "noblacklist ${HOME}/Desktop\nwhitelist ${HOME}/Desktop" >> /mnt/etc/firejail/brave.profile
 		arch-chroot /mnt unlink /usr/local/bin/brave
@@ -1349,16 +1000,7 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		12)
 		echo "$green""Enabling searx search engine - will be viewable at 127.0.0.1:8888""$reset"
 		arch-chroot /mnt pacman -S searx --noconfirm #installed from Aurmageddon
-		echo -e '[Unit]
-Description = Local searx search engine 127.0.0.1:8888
-After = network.target
-
-[Service]
-ExecStart = searx-run
-
-[Install]
-WantedBy = multi-user.target' > /mnt/etc/systemd/system/searx.service
-
+		mv Arch-Linux-Installer-master/configs/searx/searx.service /mnt/etc/systemd/system/
 		arch-chroot /mnt systemctl enable searx.service
 		sleep 3s
 		;;
@@ -1381,13 +1023,7 @@ WantedBy = multi-user.target' > /mnt/etc/systemd/system/searx.service
 		14)
 		#https://www.phoronix.com/scan.php?page=news_item&px=AMD-FreeSync-Linux-5.0-Enable
 		echo "$green""Configuring AMD Freesync. If Xorg fails to start delete /etc/X11/xorg.conf.d/freesync.conf""$reset"
-		echo -e 'Section Device
-        Identifier AMD
-        Driver amdgpu
-        Option DRI 3
-        Option VariableRefresh true
-        Option TearFree true
-EndSection' > /mnt/etc/X11/xorg.conf.d/freesync.conf
+		mv Arch-Linux-Installer-master/configs/xorg/50-freesync.conf /mnt/etc/X11/xorg.conf.d/
 
 		sleep 10s
 		;;
