@@ -394,6 +394,8 @@ fi
 
 #Install system, grub, mirrors
 clear && echo "$green""Please wait while the fastest mirrors are selected...""$reset"
+pacman -Syy
+pacman -S reflector
 reflector --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
