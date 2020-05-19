@@ -730,9 +730,7 @@ mv Arch-Linux-Installer-master/configs/gtk-3.0/ /mnt/home/"$user"/.config/
 mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/home/"$user"/.config/
 #Default wallpaper
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
-##Take ownership of the new files
-chown -R "$user":"$user" /mnt/home/"$user"/.config/xfce4
-chown -R "$user":"$user" /mnt/home/"$user"/.config/gtk-3.0
+
 
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
@@ -741,7 +739,7 @@ arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/con
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
 sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
 mv -f Arch-Linux-Installer-master/configs/fonts/local.conf /mnt/etc/fonts/local.conf
-echo "XFCE/FONTS SET" && sleep 20s
+
 
 #enable autologin and session
 if [ "$desktop" = xfce ]; then
@@ -1469,7 +1467,7 @@ DNSOverTLS=yes' >> /etc/systemd/resolved.conf
 			umount -R /mnt/boot
 		fi
 		clear
-		echo "$green""Thanks for installing! Reboot to complete installation. The first boot will reboot to apply theme""$reset"
+		echo "$green""Thanks for installing! Reboot to complete installation.""$reset"
 		sleep 3s
 		exit 0
 		;;
