@@ -713,106 +713,35 @@ else
 fi
 
 
-#set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
-if  [ "$desktop" = xfce ]; then
-	arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
-	arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
-	arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
-	arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
-	sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
-	echo -e '<?xml version="1.0"?>\n<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n<fontconfig>\n      <match>\n          <edit mode="prepend" name="family"><string>Noto Sans</string></edit>\n      </match>\n      <match target="pattern">\n          <test qual="any" name="family"><string>serif</string></test>\n          <edit name="family" mode="assign" binding="same"><string>Noto Serif</string></edit>\n      </match>\n      <match target="pattern">\n          <test qual="any" name="family"><string>sans-serif</string></test>\n          <edit name="family" mode="assign" binding="same"><string>Noto Sans</string></edit>\n      </match>\n      <match target="pattern">\n          <test qual="any" name="family"><string>monospace</string></test>\n          <edit name="family" mode="assign" binding="same"><string>Noto Mono</string></edit>\n      </match>\n</fontconfig>' > /mnt/etc/fonts/local.conf
-fi
-
-
 #create themes, disable recents, disable thunar in session - one time script to be started after creating inital xfce config
 #Screensaver does not apply correctly - gets reset to 0 which is blank screen
 #disable recents - https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way
-if  [ "$desktop" = xfce ]; then
-	echo -e '[Unit]
-Description=InitXfceTheme
-[Service]
-Type=oneshot
-ExecStart=/bin/bash /opt/xfcethemestart.sh
-[Install]
-WantedBy=multi-user.target' > /mnt/etc/systemd/system/xfcetheme.service
+#BEGIN NEW XFCE CONFIG!! yay
+#Default wallpaper from manjaro forum
+pacman -Syy
+pacman -S unzip
+wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip
+unzip master.zip
+#Create gtk-2.0 disable recents
+mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/home/"$user"/
+#Create gtk-3.0 disable recents
+mv Arch-Linux-Installer-master/configs/gtk-3.0/ /mnt/home/"$user"/.config/
+#Create the xfce configs for a wayyy better desktop setup than the xfconfs
+mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/home/"$user"/.config/
+#Default wallpaper
+mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
+##Take ownership of the new files
+chown -R "$user":"$user" /mnt/home/"$user"/.config/xfce4
+chown -R "$user":"$user" /mnt/home/"$user"/.config/gtk-3.0
 
-	echo -e '#!/bin/bash
-sleep 15s
-xfconf-query -c xsettings -p /Net/ThemeName -s "Nordic"
-xfconf-query -c xfwm4 -p /general/theme -s "Matcha-dark-azul"
-xfconf-query -c xfwm4 -p /general/title_font -s "Ubuntu 12"
-xfconf-query -c xsettings -p /Net/IconThemeName -s "Papirus-Dark"
-xfconf-query -c xsettings -p /Gtk/FontName -s "Ubuntu 12"
-xfconf-query -c xsettings -p /Gtk/MonospaceFontName -s "IBM Plex Mono Medium 12"
-xfconf-query -c xfce4-desktop -v --create -p /desktop-icons/style -t int -s 0
-xfconf-query -c xfwm4 -v --create -p /general/sync_to_vblank -t int -s 1
-xfconf-query -c xfce4-panel -p /plugins/plugin-1 -s whiskermenu
-xfconf-query -c xsettings -p /Gtk/CursorThemeName -s Bibata_Ghost
-xfconf-query -c xsettings -p /Xft/Hinting -s 1
-xfconf-query -c xfce4-panel -p /panels -t int -s 1 -a
-xfconf-query -c xfce4-panel -v --create -p /panels/panel-1/enter-opacity -t int -s "85"
-xfconf-query -c xfce4-panel -v --create -p /panels/panel-1/leave-opacity -t int -s "85"
-xfconf-query -c xfce4-session -v --create -p /general/SaveOnExit -t int -s 0
-#xfconf-query -c pointers -v --create -p /SynPS2_Synaptics_TouchPad/Acceleration -t int -s 5.000000
-#xfconf-query -c pointers -v --create -p /SynPS2_Synaptics_TouchPad/Threshold -t int -s 6
-xfconf-query -c pointers -v --create -p /SynPS2_Synaptics_TouchPad/Properties/libinput_Tapping_Enabled -t int -s 1
-xfconf-query -c xfwm4 -p /general/placement_mode -s "mouse" 
-xfconf-query -c xfwm4 -p /general/click_to_focus -s "false"
-xfconf-query -c xfwm4 -p /general/focus_delay -s "450"
-xfconf-query -c xfwm4 -p /general/raise_delay -s "350"
-xfconf-query -c xfwm4 -p /general/urgent_blink -s "true"
-xfconf-query -c xfwm4 -v --create -p /general/use_compositing -t string -s "true"
-xfconf-query -c xfwm4 -p /general/inactive_opacity -s "95"
-xfconf-query -c xfwm4 -p /general/move_opacity -s "85"
-xfconf-query -c xfwm4 -v --create -p /general/rezise_opacity -t int -s "85"
-xfconf-query -c xfwm4 -v --create -p /Net/EnableInputFeedbackSounds -t string -s "true"
-xfconf-query -c xfwm4 -v --create -p /Net/EnableEventSounds -t string -s "true"
-xfconf-query -c xfce4-screensaver -v --create -p /saver/mode -t int -s 2
-xfconf-query -c xfce4-screensaver -v --create -p /saver/idle-activation/delay -t int -s 8
-xfconf-query -c xfce4-screensaver -v --create -p /lock/saver-activation/delay -t int -s 2
-#xfconf-query -c xfce4-screensaver -v --create -p /screensaver/xfce-floaters/do-rotation -t string -s true
-#xfconf-query -c xfce4-screensaver -v --create -p /screensaver/xfce-floaters/number-of-images -t int -s 12
-#xfconf-query -c xfce4-screensaver -v --create -p /screensaver/xfce-floaters/print-stats -t string -s true
-#xfconf-query -c xfce4-screensaver -v --create -p /screensaver/xfce-floaters/show-paths -t string -s true
-#xfconf-query -c xfce4-screensaver -v --create -p /screensavers/xfce-floaters/argument -t string -s "-n 12 -p -r -r"
-xfce4-panel -r' > /mnt/opt/xfcetheme.sh
-
-	echo -e "mkdir -p /home/$user/.config/gtk-3.0
-echo [Settings] > /home/$user/.config/gtk-3.0/settings.ini
-echo gtk-recent-files-max-age=0 >> /home/$user/.config/gtk-3.0/settings.ini
-echo gtk-recent-files-limit=0 >> /home/$user/.config/gtk-3.0/settings.ini
-echo gtk-recent-files-max-age=0 >> /home/$user/.gtkrc-2.0
-sed s,Hidden=false,Hidden=true,g -i /home/$user/.config/autostart/xfcetheme.desktop" >> /mnt/opt/xfcetheme.sh
-
-	echo -e "sleep 25s
-mkdir -p /home/$user/.config/autostart
-cp -r /opt/xfcetheme.desktop /home/$user/.config/autostart
-chown -R $user:$user /home/$user/.config/autostart/
-sed '/\<property name="Client2_PerScreen" type="bool" value="false"\/>/d' -i /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
-sed '/<property name=Client3_Command type=array>/d' -i /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
-sed '/Thunar/d' -i /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
-sed '/--daemon/d' -i /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
-systemctl disable xfcetheme.service
-reboot" > /mnt/opt/xfcethemestart.sh
-
-	echo -e '[Desktop Entry]
-Encoding=UTF=8
-Version=0.9.4
-Type=Application
-Name=applyxfcetheme
-Comment=ApplyInitialXFCETheme
-Exec=/opt/xfcetheme.sh
-OnlyShowIn=XFCE;
-StartupNotify=fasle
-Terminal=false
-Hidden=false' > /mnt/opt/xfcetheme.desktop
-
-	arch-chroot /mnt chmod +x /opt/xfcetheme.sh
-	arch-chroot /mnt chmod +x /opt/xfcethemestart.sh
-	arch-chroot /mnt chmod +x /opt/xfcetheme.desktop
-	arch-chroot /mnt systemctl enable xfcetheme.service
-fi
-
+#set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
+arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
+arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
+arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
+arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
+sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
+mv -f Arch-Linux-Installer-master/configs/fonts/local.conf /mnt/etc/fonts/local.conf
+echo "XFCE/FONTS SET" && sleep 20s
 
 #enable autologin and session
 if [ "$desktop" = xfce ]; then
