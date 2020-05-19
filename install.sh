@@ -638,6 +638,9 @@ mkdir -p /mnt/home/"$user"/.config/gtk-3.0/
 mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/home/"$user"/.config/gtk-3.0/
 #Create the xfce configs for a wayyy better desktop setup than the xfconfs
 mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/home/"$user"/.config/
+#Include xfce helpers
+mkdir -p /mnt/home/"$user"/.local/share/xfce4
+mv Arch-Linux-Installer-master/configs/local/helpers/ /mnt/home/"$user"/.local/share/xfce4/
 #Default wallpaper
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
 #Take ownership
