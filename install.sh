@@ -639,7 +639,9 @@ mv Arch-Linux-Installer-master/configs/gtk-3.0/ /mnt/home/"$user"/.config/
 mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/home/"$user"/.config/
 #Default wallpaper
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
-
+#Take ownership
+arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.config
+arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.gtkrc-2.0
 
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
