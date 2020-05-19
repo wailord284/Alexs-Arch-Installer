@@ -630,6 +630,7 @@ pacman -Syy
 pacman -S unzip --noconfirm
 wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip
 unzip master.zip
+rm -r master.zip #we rm all dl stuff to make sure the live usb doesnt run out of space
 #Create gtk-2.0 disable recents
 mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/home/"$user"/
 #Create gtk-3.0 disable recents
@@ -778,8 +779,10 @@ rm -r gdisk-efi-"$gdiskVersion".zip gdisk-efi
 wget https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
 unzip -P 2002118028047 5.25.0379.zip
 mv RU.efi /mnt/boot/EFI/tools/ru.efi
-rm -r RU.EXE RU32.efi
+rm -r RU.EXE RU32.efi 5.25.0379.zip
 #Memtest86 - UEFI. Legacy BIOS handled by memtest86+ package
+#mount the img file on the target install to not run out of disk space
+#once mounted, we extract the UEFI bootable files
 wget https://www.memtest86.com/downloads/memtest86-usb.zip -P /mnt/memtest
 unzip /mnt/memtest/memtest86-usb.zip -d /mnt/memtest/
 mkdir -p /mnt/memtest/memimg
@@ -943,7 +946,7 @@ cache-size=1000' >> /mnt/etc/dnsmasq.conf
 
 		7)
 		echo "$green""Configuring iwd as the default wifi backend in NetworkManager""$reset"
-		echo -e "[device]\nwifi.backend=iwd" > /mnt/etc/NetworkManager/conf.d/wifi_backend.conf
+		mv Arch-Linux-Installer-master/configs/networkmanager/wifi_backend.conf /mnt/etc/NetworkManager/conf.d/
 		arch-chroot /mnt pacman -S iwd --noconfirm
 		arch-chroot /mnt systemctl enable iwd
 		sleep 3s
