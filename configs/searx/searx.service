@@ -1,0 +1,9 @@
+[Unit]
+Description = Local searx search engine 127.0.0.1:8888
+After = network.target
+
+[Service]
+ExecStart = searx-run
+
+[Install]
+WantedBy = multi-user.target
