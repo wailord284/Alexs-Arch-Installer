@@ -719,7 +719,7 @@ fi
 #BEGIN NEW XFCE CONFIG!! yay
 #Default wallpaper from manjaro forum
 pacman -Syy
-pacman -S unzip
+pacman -S unzip --noconfirm
 wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip
 unzip master.zip
 #Create gtk-2.0 disable recents
@@ -964,8 +964,7 @@ fi
 ####ADD - BIOS FLASH/AMDVbflash
 #Custom grub binaries - gdisk, uefi shell, flappybird and tetris
 #add gdisk menu - https://wiki.archlinux.org/index.php/GPT_fdisk#gdisk_EFI_application
-pacman -Syy
-pacman -S unzip p7zip --noconfirm
+pacman -S p7zip --noconfirm
 ###TOOLS###
 #Grub file manager https://github.com/a1ive/grub2-filemanager/releases
 wget https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
