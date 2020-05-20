@@ -199,15 +199,10 @@ if [ -z "$optionEncrypt" ]; then
 	clear
 elif [ "$optionEncrypt" = y ]; then
 	echo "$yellow""Encryption manually set to yes""$reset"
-	encrypt=${encrypt:-y}
-	boot=$(ls /sys/firmware | grep efi)
-	if [ "$boot" != efi ]; then
-		#Broken - doesnt set encrypt to n correctly for some reason?
-		encrypt="n"
-		echo "$red""You're running on a non UEFI device. Disabling encryption.""$reset"
-	fi
+	encrypt="y"
 elif [ "$optionEncrypt" = n ]; then
 	echo "$yellow""Encryption manually set to no""$reset"
+	encrypt="n"
 fi
 
 #If encrypt is yes, ask for encryption password
@@ -318,7 +313,11 @@ fi
 #detect efi/uefi bios
 #https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 #https://forums.gentoo.org/viewtopic-p-5254317.html
-boot=$(ls /sys/firmware | grep efi) #switch to grep efi /sys/firmware/
+if [ -d /sys/firmware/efi/ ]; then #Check if efi or bios
+	boot="efi" #Set boot to efi
+else
+	unset boot #Set boot to nothing
+fi
 if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	echo "$green""UEFI boot with encryption""$reset"
 	#wipe drive - "${storagePartitions[1]}" is boot partition
