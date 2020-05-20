@@ -271,22 +271,17 @@ done
 
 #Optionally erase the drive using shred
 if [ "$optionWipe" = n ]; then
-	echo "$yellow""Drive wipe manually set to no""$reset"
+	echo "$yellow""Secure Drive wipe manually set to no""$reset"
+	wipe="n"
 elif [ "$optionWipe" = y ]; then
 	#Wipe drive if the user said yes
-	echo "$yellow""Drive wipe manually set to yes""$reset"
-	echo "$red""Overwriting all data. This may take a while...""$reset" && sleep 10s
-	shred --verbose --random-source=/dev/urandom -n1 "$storage"
+	echo "$yellow""Secure Drive wipe manually set to yes""$reset"
+	wipe="y"
 elif [ -z "$optionWipe" ]; then
 	echo -e "$green""\nDo you want to securely erase the drive by overwriting it with random data? y/n - default (n)o""$reset"
+	echo "$yellow""Please note that depending on the size and speed of the drive, this can take a LONG time""$reset"
 	read -r -p "Wipe: " wipe
 	wipe=${wipe:-n}
-	if [ "$wipe" = y ]; then
-		echo "$red""Overwriting all data. This may take a while...""$reset" && sleep 10s
-		shred --verbose --random-source=/dev/urandom -n1 "$storage"
-	else
-		echo "$green""Not erasing the drive""$reset"
-	fi
 fi
 
 
@@ -298,7 +293,7 @@ echo "$green""Timezone: $reset$country,$city"
 echo "$green""Username: $reset$user""$reset"
 echo "$green""Disk Encryption: $reset$encrypt"
 echo "$green""Install Drive: $reset$storage"
-echo "$green""Drive Wipe: $reset$wipe"
+echo "$green""Secure Drive Wipe: $reset$wipe"
 echo -e "$red""\n!!!WARNING!!! This will delete ALL DATA on the drive.\nAre you sure you want to continue? y/n""$reset"
 read -r -p "Continue Installation?: " finalInstall
 finalInstall=${finalInstall:-n}
@@ -309,6 +304,13 @@ if [ "$finalInstall" = n ]; then
 else
 	echo "$green""Starting installation on $storage with partitions ${storagePartitions[*]}""$reset"
 	echo "$red""Installing to $storage in 10 seconds...""$reset" && sleep 10s
+fi
+
+
+#Before starting, wipe the drive if user said y to wipe
+if [ "$wipe" = y ]; then
+	echo "$red""Overwriting all data. This may take a while...""$reset"
+	shred --verbose --random-source=/dev/urandom -n1 "$storage"
 fi
 
 
@@ -550,10 +552,6 @@ sed "s,zswap_enabled=1,zswap_enabled=0,g" -i /mnt/etc/systemd/swap.conf
 sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
 
 
-#Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
-#arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
-
-
 #Determine if Vega 56 gpu and add gpuclock.service
 #/sys/class/drm/card0/device also symbolic link to $amdid
 #vega=$(lspci | grep 'Radeon RX Vega 56/64')
@@ -612,8 +610,7 @@ sed "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar.zst',g" -i /mnt/etc/makepkg.conf
 #rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
 entropy=$(cat /proc/sys/kernel/random/entropy_avail)
 if [ "$entropy" -lt 1800 ]; then
-	echo "Entropy under 1800, installing rng-tools"
-	sleep 2s
+	echo "Entropy under 1800, installing rng-tools" && sleep 2s
 	arch-chroot /mnt pacman -S rng-tools --noconfirm
 	arch-chroot /mnt systemctl enable rngd 
 else
@@ -670,7 +667,7 @@ mv Arch-Linux-Installer-master/configs/networkmanager/dns.conf /mnt/etc/NetworkM
 echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
 echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
 mv Arch-Linux-Installer-master/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
-#Set default DNS to cloudflare and google
+#Set default DNS to cloudflare and quad9
 mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 #Create one time ntpdupdate + hwclock to set date
 mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
@@ -680,6 +677,9 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkMan
 
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
+
+#Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
+#arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
 
 #check and setup touchscreen - like x201T/x220T
 if grep -i wacom /proc/bus/input/devices ; then
