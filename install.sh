@@ -316,7 +316,7 @@ fi
 if [ -d /sys/firmware/efi/ ]; then #Check if efi or bios
 	boot="efi" #Set boot to efi
 else
-	unset boot #Set boot to nothing
+	boot="bios" #Set boot to bios
 fi
 if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	echo "$green""UEFI boot with encryption""$reset"
@@ -359,7 +359,7 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
 #legacy
-if [[ -z "$boot" && "$encrypt" = y ]]; then
+if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	echo "$green""Legacy BIOS with encryption""$reset"
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	wipefs --all "$storage"
@@ -380,7 +380,7 @@ if [[ -z "$boot" && "$encrypt" = y ]]; then
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
-if [[ -z "$boot" && "$encrypt" = n ]]; then
+if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	echo "$green""Legacy BIOS without encryption""$reset"
 	#wipe drive - "${storagePartitions[1]}" is main partition
 	wipefs --all "$storage"
@@ -749,7 +749,7 @@ if [ "$boot" = efi ]; then
 	arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck
 fi
 
-if [[ -z "$boot" ]]; then
+if [[ "$boot" = bios ]]; then
 	arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck
 fi
 
@@ -829,7 +829,7 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	#sed "s,\#\GRUB_ENABLE_CRYPTODISK="'"y"'",GRUB_ENABLE_CRYPTODISK="'"y"'",g" -i /mnt/etc/default/grub
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
 fi
-if [[ -z "$boot" && "$encrypt" = y ]]; then
+if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
 	#sed "s,\#\GRUB_ENABLE_CRYPTODISK="'"y"'",GRUB_ENABLE_CRYPTODISK="'"y"'",g" -i /mnt/etc/default/grub
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
