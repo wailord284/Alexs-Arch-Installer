@@ -313,7 +313,7 @@ fi
 #detect efi/uefi bios
 #https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 #https://forums.gentoo.org/viewtopic-p-5254317.html
-if [ -d /sys/firmware/efi/ ]; then #Check if efi or bios
+if [ -d /sys/firmware/efi/ ]; then #if efi is present in /sys/firmware/ then system is UEFI
 	boot="efi" #Set boot to efi
 else
 	boot="bios" #Set boot to bios
@@ -821,12 +821,13 @@ mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
 #grub config and unmount - https://make-linux-fast-again.com/ - nowatchdog pci=nommconf intel_pstate=disable acpi-cpufreq
+#Generate grubcfg with root UUID if encrypt=y
 mitigations=$(curl https://make-linux-fast-again.com/)
 if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
 fi
-#generate grubcfg if no encryption as theyre the same
+#generate grubcfg if no encryption
 if [ "$encrypt" = n ]; then
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
 fi
