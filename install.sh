@@ -426,10 +426,10 @@ fi
 clear && echo "$green""Base installed - generating core configs""$reset"
 
 
-#Enable encryption mkinitcpio hooks if needed and set lz best compression
+#Enable encryption mkinitcpio hooks if needed and set lz4 compression (Faster but bigger size)
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
-	echo "$green""Added encypt hook to mkinitcpio""$reset"
+	echo "$green""Added encypt hook to mkinitcpio""$reset" && sleep 1s
 fi
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
@@ -481,7 +481,7 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 #unlock a user with: pam_tally2 --reset --user username
 echo "#unlock a user account with: pam_tally2 --reset --user username" >> /mnt/etc/pam.d/system-login
 echo "auth required pam_tally2.so deny=5 unlock_time=600 onerr=succeed file=/var/log/tallylog" >> /mnt/etc/pam.d/system-login
-echo "$green""$user and password created - installing packages""$reset" && sleep 3s && clear
+echo "$green""$user and password created - installing packages""$reset" && sleep 1s && clear
 
 
 #Install repos - multilib, aurmageddon, archlinuxcn, archstrike and repo-ck
@@ -541,7 +541,7 @@ arch-chroot /mnt systemctl enable linux-modules-cleanup
 
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
 if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
-	echo "$green""One or mode SSDs detected, enabling fstrim timer""$reset" && sleep 2s
+	echo "$green""One or mode SSDs detected, enabling fstrim timer""$reset" && sleep 1s
 	arch-chroot /mnt systemctl enable fstrim.timer
 fi
 
@@ -680,6 +680,7 @@ mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/
 #Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
 #arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
 
+#Change to and if -d /proc/bus/input/devices/wacom
 #check and setup touchscreen - like x201T/x220T
 if grep -i wacom /proc/bus/input/devices ; then
 	echo "$green""Wacom found""$reset" && sleep 1s
@@ -741,7 +742,7 @@ mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysc
 
 #network tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
-clear && echo "$green""Set configs - configuring Grub""$reset" && sleep 2s
+clear && echo "$green""Set configs - configuring Grub""$reset" && sleep 1s
 
 
 #grub install
