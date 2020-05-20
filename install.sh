@@ -822,22 +822,18 @@ mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
 #grub config and unmount - https://make-linux-fast-again.com/ - nowatchdog pci=nommconf intel_pstate=disable acpi-cpufreq
 mitigations=$(curl https://make-linux-fast-again.com/)
-#sed "s,\GRUB_TIMEOUT=5,\GRUB_TIMEOUT=3,g" -i /mnt/etc/default/grub
-echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
-if [[ "$boot" = efi && "$encrypt" = y ]]; then
+if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
-	#sed "s,\#\GRUB_ENABLE_CRYPTODISK="'"y"'",GRUB_ENABLE_CRYPTODISK="'"y"'",g" -i /mnt/etc/default/grub
-	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
-fi
-if [[ "$boot" = bios && "$encrypt" = y ]]; then
-	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
-	#sed "s,\#\GRUB_ENABLE_CRYPTODISK="'"y"'",GRUB_ENABLE_CRYPTODISK="'"y"'",g" -i /mnt/etc/default/grub
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
 fi
 #generate grubcfg if no encryption as theyre the same
 if [ "$encrypt" = n ]; then
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
 fi
+#Change timeout
+#sed "s,\GRUB_TIMEOUT=5,\GRUB_TIMEOUT=3,g" -i /mnt/etc/default/grub
+#Change theme
+echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
 #generate grubcfg
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 clear
