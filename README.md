@@ -109,6 +109,7 @@ The user will now be prompted to supply basic information such as hostname, user
 
 ### Todos
 
+ - Create second XFCE config (Once for laptops that shows the battery icon)
  - Change some if statements to use if -d (For touchpad/wacom)
  - Cleanup comments/echo commands
  - Add better support for NVidia detection
