@@ -617,6 +617,21 @@ else
 	echo "High entropy: $entropy"
 fi
 
+#Detect if running in virtual machine and install guest additions
+#https://www.ostechnix.com/check-linux-system-physical-virtual-machine/
+clear && echo "$green""Checking if system is running in a VM...""$reset" && sleep 1s
+pacman -S dmidecode --noconfirm
+manufacturer=$(dmidecode -s system-product-name)
+if [ "$manufacturer" = "VirtualBox" ]; then
+	echo "$purple""System detected as VirtualBox VM. Installing guest additions""$reset" && sleep 3s
+	arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm
+elif [ "$manufacturer" = "VMware Virtual Platform" ]; then
+	echo "$purple""System detected as VMware VM. Installing guest additions""$reset" && sleep 3s
+	arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm
+	arch-chroot /mnt systemctl enable vmtoolsd.service
+	arch-chroot /mnt systemctl enable vmware-vmblock-fuse.service
+fi
+
 
 #create themes, disable recents, disable thunar in session - one time script to be started after creating inital xfce config
 #Screensaver does not apply correctly - gets reset to 0 which is blank screen
@@ -679,20 +694,6 @@ mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/
 
 #Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
 #arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
-
-#Detect if running in virtual machine and install guest additions
-clear && echo "$green""Checking if system is running in a VM...""$reset" && sleep 1s
-pacman -S dmidecode --noconfirm
-manufacturer=$(dmidecode -s system-product-name)
-if [ "$manufacturer" = "VirtualBox" ]; then
-	echo "$purple""System detected as VirtualBox VM. Installing guest additions""$reset" && sleep 2s
-	arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm
-elif [ "$manufacturer" = "VMware Virtual Platform" ]; then
-	echo "$purple""System detected as VMware VM. Installing guest additions""$reset" && sleep 2s
-	arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm
-	arch-chroot /mnt systemctl enable vmtoolsd.service
-	arch-chroot /mnt systemctl enable vmware-vmblock-fuse.service
-fi
 
 #Change to and if -d /proc/bus/input/devices/wacom
 #check and setup touchscreen - like x201T/x220T
