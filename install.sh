@@ -269,7 +269,7 @@ done
 driveSize=$(fdisk -l "$storage" | grep -m1 Disk | cut -d ":" -f 2 | cut -d "," -f 2 | sed -e 's/[^0-9]/ /g' -e 's/ //g')
 if [ "$driveSize" -lt "8589934592" ]; then
 	echo "$red""Your hard drive is smaller than 8GB. Please use a larger drive""$reset"
-	exit 0
+	exit 1
 fi
 
 #Optionally erase the drive using shred
@@ -303,7 +303,7 @@ finalInstall=${finalInstall:-n}
 #Exit script is user enters n
 if [ "$finalInstall" = n ]; then
 	echo "$green""Installation canceled""$reset"
-	exit 0
+	exit 1
 else
 	echo "$green""Starting installation on $storage with partitions ${storagePartitions[*]}""$reset"
 	echo "$red""Installing to $storage in 10 seconds...""$reset" && sleep 10s
