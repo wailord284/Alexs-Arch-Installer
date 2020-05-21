@@ -610,16 +610,16 @@ sed "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar.zst',g" -i /mnt/etc/makepkg.conf
 #rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
 entropy=$(cat /proc/sys/kernel/random/entropy_avail)
 if [ "$entropy" -lt 1800 ]; then
-	echo "Entropy under 1800, installing rng-tools" && sleep 2s
+	echo "Entropy under 1800, installing rng-tools" && sleep 3s
 	arch-chroot /mnt pacman -S rng-tools --noconfirm
 	arch-chroot /mnt systemctl enable rngd 
 else
-	echo "High entropy: $entropy"
+	echo "$green""High entropy: $entropy""$reset" && sleep 1s
 fi
 
 #Detect if running in virtual machine and install guest additions
 #https://www.ostechnix.com/check-linux-system-physical-virtual-machine/
-clear && echo "$green""Checking if system is running in a VM...""$reset" && sleep 1s
+clear && echo "$green""Checking if system is running in VMware or VirtualBox...""$reset" && sleep 1s
 pacman -S dmidecode --noconfirm
 manufacturer=$(dmidecode -s system-product-name)
 if [ "$manufacturer" = "VirtualBox" ]; then
