@@ -684,10 +684,10 @@ mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/
 clear && echo "$green""Checking if system is running in a VM...""$reset" && sleep 1s
 pacman -S dmidecode --noconfirm
 manufacturer=$(dmidecode -s system-product-name)
-if [ "$manufacturer" = VirtualBox ]; then
+if [ "$manufacturer" = "VirtualBox" ]; then
 	echo "$purple""System detected as VirtualBox VM. Installing guest additions""$reset" && sleep 2s
 	arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm
-elif [ "$manufacturer" = VMware Virtual Platform ]; then
+elif [ "$manufacturer" = "VMware Virtual Platform" ]; then
 	echo "$purple""System detected as VMware VM. Installing guest additions""$reset" && sleep 2s
 	arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm
 	arch-chroot /mnt systemctl enable vmtoolsd.service
