@@ -617,15 +617,21 @@ else
 	echo "$green""High entropy: $entropy""$reset" && sleep 1s
 fi
 
+
 #Detect if running in virtual machine and install guest additions
+#product sets to company that produces the system
+#hypervisor sets to name of hypervisor software (extra check if dmidecode fails)
+#manufacturer - Systemd has built in tools to check for VM (extra extra check)
 #https://www.ostechnix.com/check-linux-system-physical-virtual-machine/
 clear && echo "$green""Checking if system is running in VMware or VirtualBox...""$reset" && sleep 1s
 pacman -S dmidecode --noconfirm
-manufacturer=$(dmidecode -s system-product-name)
-if [ "$manufacturer" = "VirtualBox" ]; then
+product=$(dmidecode -s system-product-name)
+hypervisor=$(dmesg | grep "Hypervisor detected" | cut -d ":" -f 2 | tr -d ' ')
+manufacturer=$(systemd-detect-virt)
+if [ "$product" = "VirtualBox" ] || [ "$hypervisor" = "VirtualBox" ] || [ "$manufacturer" = "oracle" ]; then
 	echo "$purple""System detected as VirtualBox VM. Installing guest additions""$reset" && sleep 3s
 	arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm
-elif [ "$manufacturer" = "VMware Virtual Platform" ]; then
+elif [ "$product" = "VMware Virtual Platform" ] || [ "$hypervisor" = "VMware" ] || [ "$manufacturer" = "vmware" ]; then
 	echo "$purple""System detected as VMware VM. Installing guest additions""$reset" && sleep 3s
 	arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm
 	arch-chroot /mnt systemctl enable vmtoolsd.service
@@ -638,6 +644,7 @@ fi
 #disable recents - https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way
 #BEGIN NEW XFCE CONFIG!! yay
 #Default wallpaper from manjaro forum
+clear && echo "$green""Copying over main config files from github""$reset" && sleep 1s
 pacman -S unzip --noconfirm
 wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip
 unzip master.zip
