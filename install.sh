@@ -36,6 +36,7 @@
 
 #colors
 #white=$(tput setaf 7)
+purple=$(tput setaf 5)
 blue=$(tput setaf 4)
 yellow=$(tput setaf 3)
 green=$(tput setaf 2)
@@ -622,7 +623,6 @@ fi
 #disable recents - https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way
 #BEGIN NEW XFCE CONFIG!! yay
 #Default wallpaper from manjaro forum
-pacman -Syy
 pacman -S unzip --noconfirm
 wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip
 unzip master.zip
@@ -679,6 +679,20 @@ mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/
 
 #Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
 #arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
+
+#Detect if running in virtual machine and install guest additions
+clear && echo "$green""Checking if system is running in a VM...""$reset" && sleep 1s
+pacman -S dmidecode --noconfirm
+manufacturer=$(dmidecode -s system-product-name)
+if [ "$manufacturer" = VirtualBox ]; then
+	echo "$purple""System detected as VirtualBox VM. Installing guest additions""$reset" && sleep 2s
+	arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm
+elif [ "$manufacturer" = VMware Virtual Platform ]; then
+	echo "$purple""System detected as VMware VM. Installing guest additions""$reset" && sleep 2s
+	arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm
+	arch-chroot /mnt systemctl enable vmtoolsd.service
+	arch-chroot /mnt systemctl enable vmware-vmblock-fuse.service
+fi
 
 #Change to and if -d /proc/bus/input/devices/wacom
 #check and setup touchscreen - like x201T/x220T
