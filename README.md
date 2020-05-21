@@ -33,6 +33,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatic detection for Intel and AMD CPUs (installs correct microcode)
 - Works with both UEFI and BIOS
+- Automatically detect if running in VirtualBox or VMware and install guest additions
 - Optionally overwrite the drive with random data (Secure erase)
 - Disk encryption for the main root partition
 - Increased password security (Increased hashing rounds, user lockout and minimum input password time)
@@ -108,5 +109,6 @@ The user will now be prompted to supply basic information such as hostname, user
 
 ### Todos
 
+ - Change some if statements to use if -d (For touchpad/wacom)
  - Cleanup comments/echo commands
  - Add better support for NVidia detection
