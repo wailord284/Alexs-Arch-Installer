@@ -511,10 +511,9 @@ Server = http://wailord284.club/repo/$repo/$arch
 SigLevel = Never
 
 #Packages related to pen testing
+#Auto install archstrike-setuptool-git
 #[archstrike]
 #Server = https://mirror.archstrike.org/$arch/$repo
-#Include = /etc/pacman.d/archstrike-mirrorlist
-#[archstrike-testing]
 #Include = /etc/pacman.d/archstrike-mirrorlist
 
 #Repo containing custom compiled kernels with linux-ck
