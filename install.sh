@@ -173,11 +173,11 @@ fi
 if [ -z "$optionPassword" ]; then
 	while : ;do
 		echo "$green""Enter password for default and root user - hidden - default pass""$reset"
-		read -r -s -p "Pass1 (y/n): " pass1
+		read -r -s -p "Pass1: " pass1
 		pass1=${pass1:-pass}
 		clear
 		echo "$green""Enter password again - hidden - default pass""$reset"
-		read -r -s -p "Pass2 (y/n): " pass2
+		read -r -s -p "Pass2: " pass2
 		pass2=${pass2:-pass}
 		clear
 		if [ "$pass1" = "$pass2" ]; then
@@ -290,8 +290,7 @@ fi
 
 
 #Show the user the final install settings and prompt to continue
-clear
-echo "$green""Installing with the following options:""$reset"
+clear && echo "$green""Installing with the following options:""$reset"
 echo "$green""Hostname: $reset$host"
 echo "$green""Timezone: $reset$country,$city"
 echo "$green""Username: $reset$user""$reset"
