@@ -493,7 +493,7 @@ echo "$green""$user and password created - installing packages""$reset" && sleep
 
 
 #Install repos - multilib, aurmageddon, archlinuxcn, archstrike and repo-ck
-echo -e '[multilib]
+echo '[multilib]
 Include = /etc/pacman.d/mirrorlist
 
 #Chia archlinux repo with many aur packages
