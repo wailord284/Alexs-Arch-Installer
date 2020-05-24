@@ -103,6 +103,7 @@ done
 
 #configure internet
 clear && echo "$green""Welcome to Alex's automatic install script!""$reset"
+echo "$green""To use the default values in the script, press enter""$reset"
 echo "$green"'Checking internet connection...'"$reset"
 if wget -q --spider http://google.com ; then
 	echo "$green""Online""$reset"
@@ -172,11 +173,11 @@ fi
 if [ -z "$optionPassword" ]; then
 	while : ;do
 		echo "$green""Enter password for default and root user - hidden - default pass""$reset"
-		read -r -s -p "Pass1: " pass1
+		read -r -s -p "Pass1 (y/n): " pass1
 		pass1=${pass1:-pass}
 		clear
 		echo "$green""Enter password again - hidden - default pass""$reset"
-		read -r -s -p "Pass2: " pass2
+		read -r -s -p "Pass2 (y/n): " pass2
 		pass2=${pass2:-pass}
 		clear
 		if [ "$pass1" = "$pass2" ]; then
@@ -195,7 +196,7 @@ fi
 #Encryption/security - only availible on UEFI cause idk how it works on old BIOS (wont boot grub - maybe its encrypted?)
 if [ -z "$optionEncrypt" ]; then
 	echo "$green""Do you want to enable LUKS encryption? y/n - default (n)o""$reset"
-	read -r -p "Encryption: " encrypt
+	read -r -p "Encryption (y/n): " encrypt
 	encrypt=${encrypt:-n}
 	clear
 elif [ "$optionEncrypt" = y ]; then
@@ -283,7 +284,7 @@ elif [ "$optionWipe" = y ]; then
 elif [ -z "$optionWipe" ]; then
 	echo -e "$green""\nDo you want to securely erase the drive by overwriting it with random data? y/n - default (n)o""$reset"
 	echo "$yellow""Please note that depending on the size and speed of the drive, this can take a LONG time""$reset"
-	read -r -p "Wipe: " wipe
+	read -r -p "Wipe (y/n): " wipe
 	wipe=${wipe:-n}
 fi
 
@@ -298,7 +299,7 @@ echo "$green""Disk Encryption: $reset$encrypt"
 echo "$green""Install Drive: $reset$storage"
 echo "$green""Secure Drive Wipe: $reset$wipe"
 echo -e "$red""\n!!!WARNING!!! This will delete ALL DATA on the drive.\nAre you sure you want to continue? y/n""$reset"
-read -r -p "Continue Installation?: " finalInstall
+read -r -p "Continue Installation? (y/n): " finalInstall
 finalInstall=${finalInstall:-n}
 #Exit script is user enters n
 if [ "$finalInstall" = n ]; then
