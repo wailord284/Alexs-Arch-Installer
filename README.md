@@ -98,7 +98,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Enable Firejail for all supported applications
     * Enable VNstat webui traffic monitor
     * Enable local Searx search engine
-    * Install the proprietar NVidia GPU drivers
+    * Install PlatformIO Udev rules for Arduino Communication
     * Enable AMD Freesync (May break Xorg)
     * Enable automatic desktop login with LXDM (Recommended)
     * Add LibreDNS in systemd-resolve (not enabled by default)
