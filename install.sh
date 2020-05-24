@@ -752,25 +752,23 @@ echo "options nf_conntrack nf_conntrack_helper=0" > /mnt/etc/modprobe.d/no-connt
 sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wireless-regdom
 
 
-#Setup sysctl tweaks
-#disables watchdog
-##No longer enabled by default. May be useful to leave for servers
+#Setup sysctl tweaks - Arch stores some defaults in /usr/lib/sysctl.d/
+##disable watchdog - No longer enabled by default. May be useful to leave for servers
 #mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
+#fix usb speeds - currently disabled due to system lockups when copying files
+#mv Arch-Linux-Installer-master/configs/sysctl/00-usb-speed-fix.conf /mnt/etc/sysctl.d/
+
+#Low-level console messages
+mv Arch-Linux-Installer-master/configs/sysctl/00-console-messages.conf /mnt/etc/sysctl.d/
 
 #unprivileged_userns_clone
 mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
-
-#fix usb speeds - currently disabled due to system lockups when copying files
-#mv Arch-Linux-Installer-master/configs/sysctl/00-usb-speed-fix.conf /mnt/etc/sysctl.d/
 
 #ipv6 privacy
 mv Arch-Linux-Installer-master/configs/sysctl/00-ipv6-privacy.conf /mnt/etc/sysctl.d/
 
 #kernel hardening
 mv Arch-Linux-Installer-master/configs/sysctl/00-kernel-hardening.conf /mnt/etc/sysctl.d/
-
-#link restrictions
-mv Arch-Linux-Installer-master/configs/sysctl/00-link-restrictions.conf /mnt/etc/sysctl.d/
 
 #system tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
