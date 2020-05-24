@@ -712,9 +712,6 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkMan
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
 
-#Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
-#arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
-
 #Change to and if -d /proc/bus/input/devices/wacom
 #check and setup touchscreen - like x201T/x220T
 if grep -i wacom /proc/bus/input/devices ; then
@@ -741,7 +738,7 @@ mv Arch-Linux-Installer-master/configs/modprobe/blacklist-uncommon-network-proto
 #load the tcp_bbr module for better network stuffs
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
-#enable autologin and session
+#set LXDM theme and session
 sed "s,\#\ session=/usr/bin/startlxde,\ session=/usr/bin/startxfce4,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,theme=Industrial,theme=Archlinux,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,gtk_theme=Adwaita,gtk_theme=Nordic,g" -i /mnt/etc/lxdm/lxdm.conf
@@ -890,7 +887,7 @@ echo "$green""9$reset - Disable/blacklist bluetooth and webcam $green(recommende
 echo "$green""10$reset - Enable Firejail for all supported applications"
 echo "$green""11$reset - Enable vnstat webui traffic monitor"
 echo "$green""12$reset - Enable local Searx search engine"
-echo "$green""13$reset - Install the proprietary NVidia GPU driver"
+echo "$green""13$reset - Install PlatformIO Udev rules for Arduino Communication"
 echo "$green""14$reset - Enable AMD Freesync - Might break Xorg"
 echo "$green""15$reset - Enable automatic desktop login in lxdm $green(recommended)"
 echo "$green""16$reset - Add LibreDNS in systemd-resolved - Not enabled by default"
@@ -1046,8 +1043,10 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		;;
 
 		13)
-		echo "$yellow""This option is no longer required and will be removed at a later date""$reset"
-		sleep 5s
+		#Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
+		echo "$green""Installing PlatformIO udev rules for Arduino communication""$reset"
+		arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
+		sleep 3s
 		;;
 
 		14)
