@@ -28,14 +28,14 @@ List of all availible options:
 -w	Securely erase the drive before install using random data and shred. Must be y or n for (y)es or (n)o. Default = n
 --help	Show this menu!
 ```
-The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Use y or n for yes and no during prompts if required. Please note that the first boot will automatically reboot in ~45 seconds to apply the XFCE theme.
+The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Use y or n for yes and no during prompts if required.
 # Features!
 - Works with both UEFI and BIOS!
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatic detection for Intel and AMD CPUs (installs correct microcode)
 - Automatically detect if running in VirtualBox or VMware and install appropriate guest additions
 - Optionally overwrite the drive with random data (Secure erase)
-- Disk encryption for the main root partition
+- Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
 - Increased password security (Increased hashing rounds, user lockout and minimum input password time)
 - Earlyoom daemon to trigger the Linux OOM killer sooner
 - Kernel Modules hook to restore functionality when the running kernel updates
@@ -50,7 +50,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Modified trackpad behavior to be more comfortable (if system detected as laptop)
 - Implement USB and hard drive power saving features (if system detected as laptop)
 - Enable TLP (if system detected as laptop)
-- Modified freetype2 and fonts/local.conf to improve font rendering
+- Modified freetype2 and fonts/local.conf to improve font rendering (default font: Ubuntu)
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Disabled "Recents" found in most file managers
 - LXDM display manager with Archlinux theme
