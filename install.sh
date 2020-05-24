@@ -558,16 +558,19 @@ sed "s,zswap_enabled=1,zswap_enabled=0,g" -i /mnt/etc/systemd/swap.conf
 sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
 
 
-#Determine if Vega 56 gpu and add gpuclock.service
-#/sys/class/drm/card0/device also symbolic link to $amdid
-#vega=$(lspci | grep 'Radeon RX Vega 56/64')
-if lspci | grep 'Radeon RX Vega 56/64' || dmesg | grep amdgpu ; then
-	echo "$green""AMD gpu found""$reset"
+#Determine installed GPU
+pacman -S lshw --noconfirm
+#vega=$(lspci | grep 'Radeon RX Vega 56/64') - old
+if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu ; then
+	echo "$green""AMD GPU found - Installing amdgpu driver""$reset"
 	arch-chroot /mnt pacman -S xf86-video-amdgpu --noconfirm
 	arch-chroot /mnt pacman -S opencl-amd --noconfirm #Aurmageddon
-else
-	echo "$green""No AMD gpu installed - Installing intel driver""$reset"
+elif lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" ; then
+	echo "$green""Intel Graphics found - Installing intel driver""$reset"
 	arch-chroot /mnt pacman -S xf86-video-intel libva-intel-driver --noconfirm
+elif lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" ; then
+	echo "$green""Nvidia GPU found - Installing nvidia driver""$reset"
+	arch-chroot /mnt pacman -S nvidia nvidia-settings libxnvctrl --noconfirm
 fi
 
 
@@ -1043,18 +1046,8 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		;;
 
 		13)
-		echo "Do you want the$green open (xf86-video-nouveau)$reset or$red closed (nvidia-dkms) driver""$reset"
-		echo "Enter$green open$reset or$red closed""$reset"
-		echo "If you play video games, you'll likely want the closed driver"
-		read -r -p "open or close?: " nvidia
-		if [ "$nvidia" = open ]; then
-			echo "$green""Installing free driver""$reset"
-			arch-chroot /mnt pacman -S xf86-video-nouveau --noconfirm
-		else
-			echo "$red""Installing proprietary garbage""$reset"
-			arch-chroot /mnt pacman -S nvidia-dkms nvidia-settings libxnvctrl --noconfirm
-		fi
-		sleep 3s
+		echo "$yellow""This option is no longer required and will be removed at a later date""$reset"
+		sleep 5s
 		;;
 
 		14)
