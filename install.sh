@@ -559,16 +559,18 @@ sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
 
 
 #Determine installed GPU
-pacman -S lshw --noconfirm
+echo "$green""Detecting system graphics card. Please wait...""$reset" && sleep 1s
+pacman -S lshw glxinfo --noconfirm
 #vega=$(lspci | grep 'Radeon RX Vega 56/64') - old
-if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu ; then
+#https://www.cyberciti.biz/faq/linux-tell-which-graphics-vga-card-installed/
+if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu || glxinfo -B | grep "Radeon" ; then
 	echo "$green""AMD GPU found - Installing amdgpu driver""$reset"
 	arch-chroot /mnt pacman -S xf86-video-amdgpu --noconfirm
 	arch-chroot /mnt pacman -S opencl-amd --noconfirm #Aurmageddon
-elif lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" ; then
+elif lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" || glxinfo -B | grep "Intel" ; then
 	echo "$green""Intel Graphics found - Installing intel driver""$reset"
 	arch-chroot /mnt pacman -S xf86-video-intel libva-intel-driver --noconfirm
-elif lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" ; then
+elif lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" || glxinfo -B | grep "nouveau" ; then
 	echo "$green""Nvidia GPU found - Installing nvidia driver""$reset"
 	arch-chroot /mnt pacman -S nvidia nvidia-settings libxnvctrl --noconfirm
 fi
