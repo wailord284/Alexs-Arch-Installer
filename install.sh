@@ -403,6 +403,12 @@ fi
 
 #Install system, grub, mirrors
 clear && echo "$green""Please wait while the fastest mirrors are selected...""$reset"
+#add my repo to pacman.conf to install glxinfo later
+echo '#My custom repo with many aur packages
+[aurmageddon]
+Server = http://wailord284.club/repo/$repo/$arch
+SigLevel = Never' >> /etc/pacman.conf
+
 pacman -Syy
 pacman -S reflector --noconfirm
 reflector --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
