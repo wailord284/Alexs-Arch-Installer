@@ -4,7 +4,7 @@ Description=rkhunter rootkit scan and malware detection
 Documentation=man:rkhunter
 
 [Service]
-ExecStartPre=/usr/bin/rkhunter –update
-ExecStartPre=/usr/bin/rkhunter –propupd
-ExecStart=/usr/bin/rkhunter –check -sk
+ExecStartPre=/usr/bin/rkhunter --update
+ExecStartPre=/usr/bin/rkhunter --propupd
+ExecStart=/usr/bin/rkhunter --check -sk
 SuccessExitStatus=1 2
