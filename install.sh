@@ -10,8 +10,6 @@
 ###Example command: ./install.sh -c America -ci Los_Angeles -h Arch -p password -s /dev/sda -u wailord284 -w n
 ###ABOUT###
 #This script will autodetect a large range of hardware and should automatically configure many systems out of the box.
-##UEFI and Legacy BIOS are supported. Currently NVidia is not 100% supported but at the end users can manually install the driver.
-##At this time, disk encryption only works on UEFI but will soon be implemented for all systems.
 #This script will install Arch with mainly vanilla settings plus some programs and features I personally use.
 #To install applications I like, I've created a custom software repository known as "Aurmageddon"
 ##Aurmageddon has 1500+ packages that recieve updates every 6 hours. Some software used in this install comes from this repo.
@@ -20,7 +18,6 @@
 #Please be aware that some of the changes this script will make are focused on settings I enjoy.
 #All the post install options are optional but may improve your experience. Some options are selected by default.
 #This is an ongoing project of mine and will recieve constant updates and improvements.
-#Eventually most if not all the echo commands will be moved to config files on Github. But it works fine for now.
 
 ###Things to maybe add###
 #add permrs https://github.com/gort818/permrs - make systemd timer https://www.putorius.net/using-systemd-timers.html
@@ -28,10 +25,7 @@
 #tzupdate to replace networkmanager curl timezone thing
 #https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/ - rkhunter script
 #https://wiki.archlinux.org/index.php/Readline#Faster_completion
-#XFCE4 panel, items, window buttons, item grouping -> never
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
-#add support for /dev/md0
-#irqbalance
 #https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode
 
 #colors
@@ -1138,10 +1132,18 @@ DNSOverTLS=yes' >> /etc/systemd/resolved.conf
 			umount -R /mnt/boot
 		fi
 		clear
-		echo "$green""Thanks for installing! Reboot to complete installation.""$reset"
-		sleep 3s
+		echo "$green""Installation Complete. Thanks for installing!""$reset"
+		sleep 1s
 		exit 0
 		;;
 	esac
 	done
 done
+
+echo "$green""Would you like to reboot the system? y/n - default y""$reset"
+read -r -p "Reboot System? (y/n): " reboot
+reboot=${reboot:-y}
+if [ "$reboot" = y ]; then
+	echo "$green""Rebooting!""$reset"
+	systemctl reboot
+fi
