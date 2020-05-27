@@ -3,9 +3,10 @@ Description=Run rkhunter daily
 
 [Timer]
 OnCalendar=*-*-* 06:00:00
+RandomizedDelaySec=900
 WakeSystem=true
 Persistent=true
-
+Unit=rkhunter.service 
 RemainAfterElapse=true
 
 [Install]
