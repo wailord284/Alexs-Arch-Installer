@@ -71,8 +71,9 @@ The user will now be prompted to supply basic information such as hostname, user
 - Makepkg changes:
     * Change makeflags to account for all cores in the system (-j)
     * Change -mtune=generic to native
+    * Use .tar as default package extension (No compression)
     * Add multithreaded capable compression programs for makepkg supported files
-    * Use .tar as default package extension and use max compression when compressing
+    * Enable max compression when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
 - Systemd changes:
     * SystemD service timeout changed from 90 seconds to 45 seconds
     * Enable systemd-zram instead of traditional swap (sets to 1/4 total RAM)
