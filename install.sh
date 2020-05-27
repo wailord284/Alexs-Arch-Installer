@@ -26,7 +26,6 @@
 #https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/ - rkhunter script
 #https://wiki.archlinux.org/index.php/Readline#Faster_completion
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
-#https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode
 
 #colors
 #white=$(tput setaf 7)
@@ -531,7 +530,7 @@ arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm
 clear && echo "$green""Installing additional software""$reset" && sleep 1s
 if [ "$desktop" = xfce ]; then
 	arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm
-	arch-chroot /mnt pacman -S librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm
+	arch-chroot /mnt pacman -S pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm
 fi
 clear && echo "$green""Installed programs - Enabling system services, generating configs""$reset"
 
@@ -678,6 +677,12 @@ mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgro
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.config
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.local
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.gtkrc-2.0
+
+#Bash stuffs
+#https://wiki.archlinux.org/index.php/Readline#Faster_completion
+mv Arch-Linux-Installer-master/configs/bash/.inputrc /mnt/home/"$user"/
+arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.inputrc
+
 
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
