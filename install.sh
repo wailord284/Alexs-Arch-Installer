@@ -1078,7 +1078,6 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		mv Arch-Linux-Installer-master/configs/systemd/rkhunter.service /mnt/etc/systemd/system/
 		mv Arch-Linux-Installer-master/configs/systemd/rkhunter.timer /mnt/etc/systemd/system/
 		arch-chroot /mnt systemctl enable rkhunter.timer
-		arch-chroot /mnt systemctl enable rkhunter.service
 		sleep 3s
 		;;
 
