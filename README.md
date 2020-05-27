@@ -41,11 +41,9 @@ The user will now be prompted to supply basic information such as hostname, user
 - Kernel Modules hook to restore functionality when the running kernel updates
 - Pacman cleanup hook to clean the pacman cache when updating
 - FSTrim if a SSD is detected
-- Enable zram instead of swap
 - Modified IO Schedulers for hard drives, SSDs and NVME drives
 - Change mkinitcpio compression to lz4 (Faster but bigger size)
 - Custom nanorc file to include syntax highlighting
-- SystemD service timeout changed from 90 seconds to 45 seconds
 - Support for Touchscreen devices (such as the Thinkpad X201T/X220T)
 - Modified trackpad behavior to be more comfortable (if system detected as laptop)
 - Implement USB and hard drive power saving features (if system detected as laptop)
@@ -57,6 +55,11 @@ The user will now be prompted to supply basic information such as hostname, user
 - Large amount of sysctl.d/ configs gathered from the Arch wiki to increase performance and stability
 - Add the Archlinuxcn repository for additional software
 - Install rng-tools if system entropy is under 1800 during time of install
+- Bash changes:
+    * Custom .inputrc to add color and improve tab completion
+    * Add colored output to ls (installed ls-colors-git)
+    * Custom aliases for yay/pacman and other system tasks
+    * ASCII Pokemon on terminal startup
 - Grub changes:
     * Disabled spectre/meltdown patches (Increase performance. Edit /etc/defult/grub to remove)
     * Custom menus
@@ -69,7 +72,11 @@ The user will now be prompted to supply basic information such as hostname, user
     * Change makeflags to account for all cores in the system (-j)
     * Change -mtune=generic to native
     * Add multithreaded capable compression programs for makepkg supported files
-    * Use ZST as default package extension and use max compression when compressing   
+    * Use .tar as default package extension and use max compression when compressing
+- Systemd changes:
+    * SystemD service timeout changed from 90 seconds to 45 seconds
+    * Enable systemd-zram instead of traditional swap (sets to 1/4 total RAM)
+    * Promiscuous mode systemd service to make packet sniffing easier (disabled by default)
 - Sudo changes:
     * Prevent password timeout when running long commands
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
@@ -83,7 +90,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Automatic hardware clock updates using NTP (Updates everytime device connects to internet)
 - Aurmageddon repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * Packages installed from Aurmageddon include: 
-    * ```arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git```
+    * ```arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git pokeshell```
     * View the public repository here: http://wailord284.club/repo/aurmageddon/x86_64/
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
