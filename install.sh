@@ -681,8 +681,9 @@ arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.gtkrc-2.0
 #Bash stuffs
 #https://wiki.archlinux.org/index.php/Readline#Faster_completion
 mv Arch-Linux-Installer-master/configs/bash/.inputrc /mnt/home/"$user"/
+mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/home/"$user"/
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.inputrc
-
+arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.bashrc
 
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
