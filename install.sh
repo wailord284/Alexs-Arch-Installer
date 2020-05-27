@@ -614,7 +614,7 @@ sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/make
 sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSXZ=(xz -c -z -),COMPRESSXZ=(xz -e -9 -c -z --threads=0 -),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=0 -),g" -i /mnt/etc/makepkg.conf
-sed "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar.zst',g" -i /mnt/etc/makepkg.conf
+sed "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 
 
 #If Entropy is low, install rng-tools
@@ -748,6 +748,9 @@ echo "options nf_conntrack nf_conntrack_helper=0" > /mnt/etc/modprobe.d/no-connt
 #Set wifi region
 sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wireless-regdom
 
+#Systemd services
+#https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode - packet sniffing/monitoring
+mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
 
 #Setup sysctl tweaks - Arch stores some defaults in /usr/lib/sysctl.d/
 ##disable watchdog - No longer enabled by default. May be useful to leave for servers
