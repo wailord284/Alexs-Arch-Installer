@@ -45,9 +45,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Change mkinitcpio compression to lz4 (Faster but bigger size)
 - Custom nanorc file to include syntax highlighting
 - Support for Touchscreen devices (such as the Thinkpad X201T/X220T)
-- Modified trackpad behavior to be more comfortable (if system detected as laptop)
-- Implement USB and hard drive power saving features (if system detected as laptop)
-- Enable TLP (if system detected as laptop)
 - Modified freetype2 and fonts/local.conf to improve font rendering (default font: Ubuntu)
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Disabled "Recents" found in most file managers
@@ -60,6 +57,10 @@ The user will now be prompted to supply basic information such as hostname, user
     * Add colored output to ls (installed ls-colors-git)
     * Custom aliases for yay/pacman and other system tasks
     * ASCII Pokemon on terminal startup
+- Laptop Changes (If detected):
+    * Modified trackpad behavior to be more comfortable
+    * Implement USB and hard drive power saving features
+    * Enable TLP and various power saving tweaks
 - Grub changes:
     * Disabled spectre/meltdown patches (Increase performance. Edit /etc/defult/grub to remove)
     * Custom menus
@@ -83,7 +84,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
     * visudo editor changed to nano
     * Commented line to run specific commands without requiring sudo password
-- Modified NetworkManager setup
+- Modified NetworkManager setup:
     * Random wireless MAC address
     * Increased IPv6 privacy
     * DNS cacheing and handeling by dnsmasq
