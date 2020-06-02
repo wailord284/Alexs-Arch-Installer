@@ -483,10 +483,10 @@ unset pass1 pass2 pass encpass encpass1 encpass2
 #https://wiki.archlinux.org/index.php/Security#User_setup
 #Increase delay between password attempts to 4 seconds
 echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
-#Lockout a user after 5 failed attempts for 10 mins
+#Lockout a user after 10 failed attempts for 10 mins
 #unlock a user with: pam_tally2 --reset --user username
 echo "#unlock a user account with: pam_tally2 --reset --user username" >> /mnt/etc/pam.d/system-login
-echo "auth required pam_tally2.so deny=5 unlock_time=600 onerr=succeed file=/var/log/tallylog" >> /mnt/etc/pam.d/system-login
+echo "auth required pam_tally2.so deny=10 unlock_time=600 onerr=succeed file=/var/log/tallylog" >> /mnt/etc/pam.d/system-login
 echo "$green""$user and password created - installing packages""$reset" && sleep 1s && clear
 
 
