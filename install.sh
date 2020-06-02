@@ -906,7 +906,7 @@ echo "$green""20$reset - Enable Haveged - increase system entropy and randomness
 echo "$green""21$reset - Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq $green(recommended)"
 
 echo "$reset""Default options are:$green 5 7 9 15 18 21$red q""$reset"
-echo "Enter$green 1-20$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
+echo "Enter$green 1-21$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
 selection=${selection:- 5 7 9 15 18 21 q}
 	for entry in $selection ;do
@@ -1130,6 +1130,9 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		;;
 
 		21)
+		#https://wiki.archlinux.org/index.php/Dnsmasq
+		#https://wiki.archlinux.org/index.php/NetworkManager#/etc/resolv.conf
+		#https://wiki.archlinux.org/index.php/Dnscrypt-proxy
 		echo "$green""Setting up DNSCrypt and DNSMasq""$reset"
 		arch-chroot /mnt pacman -S dnscrypt-proxy dnsmasq --noconfirm
 		#Remove stock network manager configs (Conflict with dnscrypt)
