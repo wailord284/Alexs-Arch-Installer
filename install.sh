@@ -887,7 +887,7 @@ echo "$green""1$reset - Install Bedrock Linux"
 echo "$green""2$reset - Enable X2Go remote management server"
 echo "$green""3$reset - Enable sshd"
 echo "$green""4$reset - Route all traffic over Tor"
-echo "$green""5$reset - Sort mirrors with Reflector $green(recommended)"
+echo "$green""5$reset - Sort mirrors with Reflector - Will also enable weekly reflector timer $green(recommended)"
 echo "$green""6$reset - Enable and install the UFW firewall"
 echo "$green""7$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager $green(recommended)"
 echo "$green""8$reset - Restore old network interface names (eth0, wlan0...)"
@@ -969,8 +969,9 @@ cache-size=1000' >> /mnt/etc/dnsmasq.conf
 
 		5)
 		echo "$green""Sorting mirrors""$reset"
-		arch-chroot /mnt pacman -S reflector --noconfirm
+		arch-chroot /mnt pacman -S reflector reflector-timer --noconfirm
 		arch-chroot /mnt reflector --verbose --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
+		arch-chroot /mnt systemctl enable reflector.timer
 		sed '/mirror.lty.me/d' -i /mnt/etc/pacman.d/mirrorlist
 		sed '/mirrors.kernel.org/d' -i /mnt/etc/pacman.d/mirrorlist
 		sleep 3s
