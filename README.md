@@ -104,7 +104,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * X2Go remote management server
     * Enable SSHD
     * Route all traffic over Tor (Not reversible)
-    * Sort mirrors with Reflector (Recommended)
+    * Sort mirrors with Reflector - Will also enable weekly reflector timer (Recommended)
     * Use the IWD wifi backend instead of wpa_supplicant for NetworkManager (Recommended)
     * Restore old network interface names (eth0, wlan0...)
     * Disable/Blacklist bluetooth and webcam (Recommended)
