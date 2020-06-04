@@ -807,7 +807,8 @@ mkdir -p /mnt/boot/EFI/tools
 mv grubfmx64.efi grubfm.iso loadfm /mnt/boot/EFI/tools/
 rm -r grubfm-en_US.7z grubfmia32.efi
 #uefi shell V1/V2 https://github.com/tianocore/edk2/blob/UDK2018/EdkShellBinPkg/
-wget https://github.com/tianocore/edk2/releases/latest/download/ShellBinPkg.zip
+#wget https://github.com/tianocore/edk2/releases/latest/download/ShellBinPkg.zip
+wget https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip #Current release
 wget https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
 unzip ShellBinPkg.zip
 mv ShellBinPkg/UefiShell/X64/Shell.efi /mnt/boot/EFI/tools/shellx64_v2.efi
@@ -850,11 +851,11 @@ wget https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi
 mv TETRIS.EFI /mnt/boot/EFI/games/tetris.efi
 mv tetris.efi /mnt/boot/EFI/games/tetrisClassic.efi
 #UEFIBoy https://github.com/RossMeikleham/UEFIBoy/
-wget https://github.com/RossMeikleham/UEFIBoy/releases/download/0.1.0/Plutoboy.efi
-wget -nc -nv -U "eye01" https://the-eye.eu/public/rom/Nintendo%20Gameboy/Galaga%20%26%20Galaxian%20%28U%29%20%5BS%5D%5B%21%5D.zip -O galaga.zip
-unzip galaga.zip
-mv "Galaga & Galaxian (U) [S][!].gb" /mnt/boot/EFI/games/autoload.rom
-mv Plutoboy.efi /mnt/boot/EFI/games/
+#wget https://github.com/RossMeikleham/UEFIBoy/releases/download/0.1.0/Plutoboy.efi
+#wget -nc -nv -U "eye01" https://the-eye.eu/public/rom/Nintendo%20Gameboy/Galaga%20%26%20Galaxian%20%28U%29%20%5BS%5D%5B%21%5D.zip -O galaga.zip
+#unzip galaga.zip
+#mv "Galaga & Galaxian (U) [S][!].gb" /mnt/boot/EFI/games/autoload.rom
+#mv Plutoboy.efi /mnt/boot/EFI/games/
 #Create /boot/grub/bustom.cfg
 mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
