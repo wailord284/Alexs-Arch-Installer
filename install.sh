@@ -34,64 +34,6 @@ yellow=$(tput setaf 3)
 green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
-#Create options for the install script
-#https://likegeeks.com/linux-bash-scripting-awesome-guide-part3/
-while [ -n "$1" ]; do
-
-	case "$1" in
-
-	-c)
-		optionCountry="$2"
-		shift ;;
-
-	-ci)
-		optionCity="$2"
-		shift ;;
-
-	-e) 
-		optionEncrypt="$2"
-		shift ;;
-
-	-h)
-		optionHostname="$2"
-		shift ;;
-
-	-p)
-		optionPassword="$2"
-		shift ;;
-
-	-s)
-		optionStorage="$2"
-		shift ;;
-
-	-u)
-		optionUser="$2"
-		shift ;;
-
-	-w)
-		optionWipe="$2"
-		shift ;;
-
-	--help)
-		echo "Defaults are used during the automated install. If a required option for installation is not specified, you will be prompted."
-		echo -e "List of all availible options:\n"
-		echo "-c	Set the country for the system timezone. A list can be found in /usr/share/zoneinfo. Default = America"
-		echo "-ci	Set the city for the system timezone. A list can be found in /usr/share/zoneinfo/country. Default = Phoenix"
-		echo "-e	Encrypt the main partition. Must be y or n for (y)es or (n)o. Default = n"
-		echo "-h	Set the hostname for the system. Default = archlinux"
-		echo "-p	Set the password for the root and default user account. Default = pass"
-		echo "-s	Specify the storage device to install to. Must be in the format of /dev/sda, /dev/nvme0n1 or /dev/mmcblk0"
-		echo "-u	Set the user for the default account. Do not use any caps. Default = alex"
-		echo "-w	Securely erase the drive before install using random data and shred. Must be y or n for (y)es or (n)o. Default = n"
-		echo "--help	Show this menu!"
-		exit 0
-		shift ;;
-
-	*) echo "Option $1 not recognized" && exit 1 ;;
-		esac
-		shift
-done
-
 
 #configure internet
 clear && echo "$green""Welcome to Alex's automatic install script!""$reset"
@@ -109,41 +51,28 @@ timedatectl set-ntp true
 
 #user inputs
 #Set the hostname
-if [ -z "$optionHostname" ]; then
-	echo "$green""Enter hostname - default archlinux""$reset"
-	read -r -p "Hostname: " host
-	#set host to archlinux if user just presses enter
-	host=${host:-archlinux}
-	clear
-else
-	echo "$yellow""Hostname manually specified with value $optionHostname""$reset"
-	host="$optionHostname"
-fi
+echo "$green""Enter hostname - default archlinux""$reset"
+read -r -p "Hostname: " host
+#set host to archlinux if user just presses enter
+host=${host:-archlinux}
+clear
 
 #Timezone - country
-if [ -z "$optionCountry" ]; then
-	echo "$green""Pick a country - default America""$reset"
-	ls /usr/share/zoneinfo
-	read -r -p "Country: " country
-	country=${country:-America} #Default to America
-else
-	echo "$yellow""Country manually specified with value $optionCountry""$reset"
-	country="$optionCountry" #Skip country setup if optionCountry is set
-fi
+echo "$green""Pick a country - default America""$reset"
+ls /usr/share/zoneinfo
+read -r -p "Country: " country
+country=${country:-America} #Default to America
+
+
 #Timezone - city
-if [ -z "$optionCity" ]; then
-	if [ -d /usr/share/zoneinfo/"$country" ]; then #Check to see if the country has additional timezones
-		echo "$green""Pick a city - default Los Angeles""$reset"
-		ls /usr/share/zoneinfo/"$country"/
-		read -r -p "City: " city
-		#city=${city:-Phoenix}
-		city=${city:-Los_Angeles} #Default to Los_Angeles
-	else
-		echo "$yellow""Country does not have any other timezones""$reset"
-	fi
+if [ -d /usr/share/zoneinfo/"$country" ]; then #Check to see if the country has additional timezones
+	echo "$green""Pick a city - default Los Angeles""$reset"
+	ls /usr/share/zoneinfo/"$country"/
+	read -r -p "City: " city
+	#city=${city:-Phoenix}
+	city=${city:-Los_Angeles} #Default to Los_Angeles
 else
-	echo "$yellow""City manually specified with value $optionCity""$reset"
-	city="$optionCity" #Skip city setup if optionCity is set
+	echo "$yellow""Country does not have any other timezones""$reset"
 fi
 clear && echo "$green""Timezone set as $country $city""$reset" && clear
 
@@ -151,53 +80,35 @@ clear && echo "$green""Timezone set as $country $city""$reset" && clear
 desktop=${desktop:-xfce}
 
 #username
-if [ -z "$optionUser" ]; then
-	echo "$green""Enter username - no caps - default alex""$reset"
-	read -r -p "Username: " user
-	user=${user:-alex}
-	clear
-else
-	echo "$yellow""User manually specified with value $optionUser""$reset"
-	user="$optionUser"
-fi
+echo "$green""Enter username - no caps - default alex""$reset"
+read -r -p "Username: " user
+user=${user:-alex}
+clear
 
 #verify password match
-if [ -z "$optionPassword" ]; then
-	while : ;do
-		echo "$green""Enter password for default and root user - hidden - default pass""$reset"
-		read -r -s -p "Pass1: " pass1
-		pass1=${pass1:-pass}
-		clear
-		echo "$green""Enter password again - hidden - default pass""$reset"
-		read -r -s -p "Pass2: " pass2
-		pass2=${pass2:-pass}
-		clear
-		if [ "$pass1" = "$pass2" ]; then
-			echo "$green""Passwords match - continuing""$reset"
-			pass="$pass1"
-			break #exit loop
-		else
-			echo "$red""Passwords do not match - please try again""$reset"
-		fi
-	done
-else
-	echo "$yellow""Password manually specified with value $optionPassword""$reset"
-	pass="$optionPassword"
-fi
+while : ;do
+	echo "$green""Enter password for default and root user - hidden - default pass""$reset"
+	read -r -s -p "Pass1: " pass1
+	pass1=${pass1:-pass}
+	clear
+	echo "$green""Enter password again - hidden - default pass""$reset"
+	read -r -s -p "Pass2: " pass2
+	pass2=${pass2:-pass}
+	clear
+	if [ "$pass1" = "$pass2" ]; then
+		echo "$green""Passwords match - continuing""$reset"
+		pass="$pass1"
+		break #exit loop
+	else
+		echo "$red""Passwords do not match - please try again""$reset"
+	fi
+done
 
 #Encryption/security - only availible on UEFI cause idk how it works on old BIOS (wont boot grub - maybe its encrypted?)
-if [ -z "$optionEncrypt" ]; then
-	echo "$green""Do you want to enable LUKS encryption? y/n - default (n)o""$reset"
-	read -r -p "Encryption (y/n): " encrypt
-	encrypt=${encrypt:-n}
-	clear
-elif [ "$optionEncrypt" = y ]; then
-	echo "$yellow""Encryption manually set to yes""$reset"
-	encrypt="y"
-elif [ "$optionEncrypt" = n ]; then
-	echo "$yellow""Encryption manually set to no""$reset"
-	encrypt="n"
-fi
+echo "$green""Do you want to enable LUKS encryption? y/n - default (n)o""$reset"
+read -r -p "Encryption (y/n): " encrypt
+encrypt=${encrypt:-n}
+clear
 
 #If encrypt is yes, ask for encryption password
 ##The goal of this was to input the users encryption password into cryptsetup 3 times so the user didnt have to
@@ -231,14 +142,9 @@ fi
 declare -a storagePartitions
 while : ; do
 	#Choose disk to install to - $storage. Only run if storage device was not set with -s ($optionStorage)
-	if [ -z "$optionStorage" ]; then
-		parted -l
-		echo -e "$green""Enter the disk you want to install Arch on.$reset$yellow\nThis will erase the entire drive and all its data.\nDual booting or manual partitioning is NOT available at this time.""$reset"
-		read -r -p "Drive: " storage
-	else
-		echo "$yellow""Storage device manually specified with value $optionStorage""$reset"
-		storage="$optionStorage"
-	fi
+	parted -l
+	echo -e "$green""Enter the disk you want to install Arch on.$reset$yellow\nThis will erase the entire drive and all its data.\nDual booting or manual partitioning is NOT available at this time.""$reset"
+	read -r -p "Drive: " storage
 	#determine storage type for partitions - nvme0n1p1, sda1 or mmcblk0p1 - $storagePartitions
 	if [[ "$storage" = /dev/nvme* ]]; then
 		echo "$green""NVME Storage Device""$reset"
@@ -266,19 +172,11 @@ if [ "$driveSize" -lt "8589934592" ]; then
 fi
 
 #Optionally erase the drive using shred
-if [ "$optionWipe" = n ]; then
-	echo "$yellow""Secure Drive wipe manually set to no""$reset"
-	wipe="n"
-elif [ "$optionWipe" = y ]; then
-	#Wipe drive if the user said yes
-	echo "$yellow""Secure Drive wipe manually set to yes""$reset"
-	wipe="y"
-elif [ -z "$optionWipe" ]; then
-	echo -e "$green""\nDo you want to securely erase the drive by overwriting it with random data? y/n - default (n)o""$reset"
-	echo "$yellow""Please note that depending on the size and speed of the drive, this can take a LONG time""$reset"
-	read -r -p "Wipe (y/n): " wipe
-	wipe=${wipe:-n}
-fi
+echo -e "$green""\nDo you want to securely erase the drive by overwriting it with random data? y/n - default (n)o""$reset"
+echo "$yellow""Please note that depending on the size and speed of the drive, this can take a LONG time""$reset"
+read -r -p "Wipe (y/n): " wipe
+wipe=${wipe:-n}
+
 
 
 #Show the user the final install settings and prompt to continue
