@@ -26,6 +26,9 @@
 #https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/ - rkhunter script
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
+
+##Make sure locale setting works
+
 #colors
 #white=$(tput setaf 7)
 purple=$(tput setaf 5)
@@ -259,7 +262,7 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot with encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
 	parted -s "$storage" mkpart primary fat32 1MiB 260MiB
@@ -267,12 +270,18 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	#create ext4 root partition
 	parted -s "$storage" mkpart primary ext4 260MiB 100%
 	#Format partitions
+	clear #Run cryptsetup just in terminal
 	cryptsetup -v -y --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
 	cryptsetup open "${storagePartitions[2]}" cryptroot
-	mkfs.ext4 /dev/mapper/cryptroot
+	#Format partitions
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "UEFI boot with encryption" \
+	--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	mount /dev/mapper/cryptroot /mnt
 	#Mount and partition boot drive
-	mkfs.vfat -F32 "${storagePartitions[1]}"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "UEFI boot with encryption" \
+	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
@@ -280,7 +289,7 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot no encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
 	parted -s "$storage" mkpart primary fat32 1MiB 260MiB #551MiB
@@ -288,8 +297,9 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	#create ext4 root partition
 	parted -s "$storage" mkpart primary ext4 260MiB 100% #551MiB
 	#Format partitions
-	mkfs.vfat -F32 "${storagePartitions[1]}"
-	mkfs.ext4 "${storagePartitions[2]}"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "UEFI boot no encryption" \
+	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]} && mkfs.ext4 ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 	#Mount drive
 	mount "${storagePartitions[2]}" /mnt
 	mkdir /mnt/boot
@@ -300,7 +310,7 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS with encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create ext4 boot partition
 	parted -s "$storage" mklabel msdos #BIOS needs msdos
 	parted -s "$storage" mkpart primary ext4 1MiB 260MiB #bios requires ext4
@@ -308,12 +318,17 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	#create ext4 root partition
 	parted -s "$storage" mkpart primary ext4 260MiB 100%
 	#Format partitions
+	clear #run in terminal
 	cryptsetup -v -y --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
 	cryptsetup open "${storagePartitions[2]}" cryptroot
-	mkfs.ext4 /dev/mapper/cryptroot
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Legacy BIOS with encryption" \
+	--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	mount /dev/mapper/cryptroot /mnt
 	#Mount and partition boot drive
-	mkfs.ext4 "${storagePartitions[1]}"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Legacy BIOS with encryption" \
+	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
@@ -321,7 +336,7 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	#wipe drive - "${storagePartitions[1]}" is main partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS without encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#Setup drive
 	parted -s "$storage" mklabel msdos
 	parted -s "$storage" mkpart primary ext4 1MiB 100%
@@ -332,51 +347,57 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}""$HEIGHT" "$WIDTH"
 	mount "${storagePartitions[1]}" /mnt
 fi
-
+clear
 
 #Install system, grub, mirrors
-clear && echo "$green""Please wait while the fastest mirrors are selected...""$reset"
 #add my repo to pacman.conf to install glxinfo later
 echo '#My custom repo with many aur packages
 [aurmageddon]
 Server = http://wailord284.club/repo/$repo/$arch
 SigLevel = Never' >> /etc/pacman.conf
 
-pacman -Syy
-pacman -S reflector --noconfirm
-reflector --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
+#Sort mirrors
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Sorting mirrors" \
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist""$HEIGHT" "$WIDTH"
+
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 
-
-clear && echo "$green""Installing the base system""$reset" && sleep 1s
-pacstrap /mnt base base-devel --noconfirm
+#Begin base system install
+clear
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing packages" \
+--prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel --noconfirm""$HEIGHT" "$WIDTH"
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\TotalDownload,TotalDownload,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
+clear
 
 
-clear && echo "$green""Installing additional base software...""$reset" && sleep 1s
-#install kernel here as new base pkg removes linux
-arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools os-prober crda --noconfirm
+#Install additional software
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing additional base software" \
+--prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools os-prober crda --noconfirm""$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
 vendor=$(cat /proc/cpuinfo | grep -m 1 "vendor" | grep -o "Intel")
 if [ "$vendor" = Intel ]; then
-	echo "$blue""Intel CPU found. Installing intel-ucode""$reset"
-	arch-chroot /mnt pacman -S intel-ucode --noconfirm
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Autodetected Intel CPU" \
+	--prgbox "Installing Intel Microcode" "arch-chroot /mnt pacman -S intel-ucode --noconfirm""$HEIGHT" "$WIDTH"
 else
-	echo "$red""AMD CPU found. Installing amd-ucode""$reset"
-	arch-chroot /mnt pacman -S amd-ucode --noconfirm
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Autodetected AMD CPU" \
+	--prgbox "Installing AMD Microcode" "arch-chroot /mnt pacman -S amd-ucode --noconfirm""$HEIGHT" "$WIDTH"
 fi
-clear && echo "$green""Base installed - generating core configs""$reset"
+clear
 
 
 #Enable encryption mkinitcpio hooks if needed and set lz4 compression (Faster but bigger size)
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
-	echo "$green""Added encypt hook to mkinitcpio""$reset" && sleep 1s
 fi
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
@@ -390,25 +411,24 @@ if [ -z "$city" ]; then
 else
 	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$country"/"$city" /etc/localtime
 fi
-arch-chroot /mnt hwclock --systohc
-#set locale
-sed "s,\#\en_US.UTF-8 UTF-8,en_US.UTF-8 UTF-8,g" -i /mnt/etc/locale.gen
-arch-chroot /mnt locale-gen
+#set locale and clock
+sed "s,\#\$locale,$locale,g" -i /mnt/etc/locale.gen
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Configuring system..." \
+--prgbox "Setting locale and system clock" "arch-chroot /mnt locale-gen && arch-chroot /mnt hwclock --systohc""$HEIGHT" "$WIDTH"
 #Set language
 echo 'LANG=en_US.UTF-8' >> /mnt/etc/locale.conf
 #set hostname
 echo "$host" >> /mnt/etc/hostname
-clear && echo "$green""Locale, timezone and fstab set - setting password""$reset"
+clear
 
 
 #create and add user/password
-arch-chroot /mnt groupadd -r network
 arch-chroot /mnt groupadd -r autologin
 arch-chroot /mnt useradd -m -G network,autologin,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
 #create a temp file to store the password in and delete it when the script finishes using a trap
 #https://www.pixelstech.net/article/1577768087-Create-temp-file-in-Bash-using-mktemp-and-trap
 TMPFILE=$(mktemp) || exit 1
-echo "$yellow""Storing password in temp file $TMPFILE to set the password - will be deleted on script completion""$reset"
 trap 'rm -f "$TMPFILE"' EXIT
 #root password and user password and setup stronger password encryption
 arch-chroot /mnt echo -e "$pass\n$pass" | passwd
@@ -428,7 +448,6 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 #unlock a user with: pam_tally2 --reset --user username
 echo "#unlock a user account with: pam_tally2 --reset --user username" >> /mnt/etc/pam.d/system-login
 echo "auth required pam_tally2.so deny=10 unlock_time=600 onerr=succeed file=/var/log/tallylog" >> /mnt/etc/pam.d/system-login
-echo "$green""$user and password created - installing packages""$reset" && sleep 1s && clear
 
 
 #Install repos - multilib, aurmageddon, archlinuxcn, archstrike and repo-ck
@@ -463,33 +482,35 @@ SigLevel = Never
 
 
 #reinstall keyring in case of gpg errors
-arch-chroot /mnt pacman -Syy
-arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing additional packages" \
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm""$HEIGHT" "$WIDTH"
 #install desktop and software
 ##add back pinta?
-clear && echo "$green""Installing additional software""$reset" && sleep 1s
-if [ "$desktop" = xfce ]; then
-	arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm
-	arch-chroot /mnt pacman -S pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm
-fi
-clear && echo "$green""Installed programs - Enabling system services, generating configs""$reset"
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing additional packages" \
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm""$HEIGHT" "$WIDTH"
+clear
+#additional aurmageddon packages
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing additional packages" \
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm""$HEIGHT" "$WIDTH"
+clear
 
 
-#enable services and config lxdm
-arch-chroot /mnt systemctl enable NetworkManager
-arch-chroot /mnt systemctl enable ntpdate
-arch-chroot /mnt systemctl enable ctrl-alt-del.target
-arch-chroot /mnt systemctl enable systemd-swap
-arch-chroot /mnt systemctl enable earlyoom
-arch-chroot /mnt systemctl enable lxdm
-arch-chroot /mnt systemctl enable linux-modules-cleanup
+#Enable services
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Enabling Services" \
+--prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target systemd-swap earlyoom lxdm linux-modules-cleanup""$HEIGHT" "$WIDTH"
 
 
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
 if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
-	echo "$green""One or mode SSDs detected, enabling fstrim timer""$reset" && sleep 1s
-	arch-chroot /mnt systemctl enable fstrim.timer
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Enabling Services" \
+	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer""$HEIGHT" "$WIDTH"
 fi
+clear
 
 
 #setup zram
@@ -498,21 +519,25 @@ sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
 
 
 #Determine installed GPU
-echo "$green""Detecting system graphics card. Please wait...""$reset" && sleep 1s
-pacman -S lshw --noconfirm
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Detecting hardware" \
+--prgbox "Finding system graphics card" "pacman -S lshw --noconfirm""$HEIGHT" "$WIDTH"
 #vega=$(lspci | grep 'Radeon RX Vega 56/64') - old
 #https://www.cyberciti.biz/faq/linux-tell-which-graphics-vga-card-installed/
-if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu ; then #|| glxinfo -B | grep "Radeon" ; then
-	echo "$green""AMD GPU found - Installing amdgpu driver""$reset"
-	arch-chroot /mnt pacman -S xf86-video-amdgpu --noconfirm
-	arch-chroot /mnt pacman -S opencl-amd --noconfirm #Aurmageddon
-elif lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" ; then #|| glxinfo -B | grep "Intel" ; then
-	echo "$green""Intel Graphics found - Installing intel driver""$reset"
-	arch-chroot /mnt pacman -S xf86-video-intel libva-intel-driver --noconfirm
-elif lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" ; then #|| glxinfo -B | grep "nouveau" ; then
-	echo "$green""Nvidia GPU found - Installing nvidia driver""$reset"
-	arch-chroot /mnt pacman -S nvidia nvidia-settings libxnvctrl --noconfirm
+if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then #|| glxinfo -B | grep "Radeon" ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting hardware" \
+	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S xf86-video-amdgpu opencl-amd --noconfirm""$HEIGHT" "$WIDTH"
+elif lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" > /dev/null 2>&1 ; then #|| glxinfo -B | grep "Intel" ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting hardware" \
+	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S xf86-video-intel libva-intel-driver --noconfirm""$HEIGHT" "$WIDTH"
+elif lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then #|| glxinfo -B | grep "nouveau" ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting hardware" \
+	--prgbox "Found NVidia Graphics card" "arch-chroot /mnt pacman -S nvidia nvidia-settings libxnvctrl --noconfirm""$HEIGHT" "$WIDTH"
 fi
+clear
 
 
 #setup nano config
@@ -560,11 +585,9 @@ sed "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 #rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
 entropy=$(cat /proc/sys/kernel/random/entropy_avail)
 if [ "$entropy" -lt 1800 ]; then
-	echo "Entropy under 1800, installing rng-tools" && sleep 3s
-	arch-chroot /mnt pacman -S rng-tools --noconfirm
-	arch-chroot /mnt systemctl enable rngd 
-else
-	echo "$green""High entropy: $entropy""$reset" && sleep 1s
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting Entropy" \
+	--prgbox "Low system entropy" "arch-chroot /mnt pacman -S rng-tools --noconfirm && arch-chroot /mnt systemctl enable rngd""$HEIGHT" "$WIDTH"
 fi
 
 
@@ -573,20 +596,23 @@ fi
 #hypervisor sets to name of hypervisor software (extra check if dmidecode fails)
 #manufacturer - Systemd has built in tools to check for VM (extra extra check)
 #https://www.ostechnix.com/check-linux-system-physical-virtual-machine/
-clear && echo "$green""Checking if system is running in VMware or VirtualBox...""$reset" && sleep 1s
-pacman -S dmidecode --noconfirm
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Detecting virtual machine" \
+--prgbox "Checking if system is a virtual machine" "pacman -S dmidecode --noconfirm""$HEIGHT" "$WIDTH"
+
 product=$(dmidecode -s system-product-name)
 hypervisor=$(dmesg | grep "Hypervisor detected" | cut -d ":" -f 2 | tr -d ' ')
 manufacturer=$(systemd-detect-virt)
 if [ "$product" = "VirtualBox" ] || [ "$hypervisor" = "VirtualBox" ] || [ "$manufacturer" = "oracle" ]; then
-	echo "$purple""System detected as VirtualBox VM. Installing guest additions""$reset" && sleep 3s
-	arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting virtual machine" \
+	--prgbox "Running in VirtualBox - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm""$HEIGHT" "$WIDTH"
 elif [ "$product" = "VMware Virtual Platform" ] || [ "$hypervisor" = "VMware" ] || [ "$manufacturer" = "vmware" ]; then
-	echo "$purple""System detected as VMware VM. Installing guest additions""$reset" && sleep 3s
-	arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm
-	arch-chroot /mnt systemctl enable vmtoolsd.service
-	arch-chroot /mnt systemctl enable vmware-vmblock-fuse.service
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting virtual machine" \
+	--prgbox "Running in VMWare - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm && arch-chroot /mnt systemctl enable vmtoolsd.service vmware-vmblock-fuse.service""$HEIGHT" "$WIDTH"
 fi
+clear
 
 
 #create themes, disable recents, disable thunar in session - one time script to be started after creating inital xfce config
@@ -594,11 +620,10 @@ fi
 #disable recents - https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way
 #BEGIN NEW XFCE CONFIG!! yay
 #Default wallpaper from manjaro forum
-clear && echo "$green""Copying over main config files from github""$reset" && sleep 1s
-pacman -S unzip --noconfirm
-wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip
-unzip master.zip
-rm -r master.zip #we rm all dl stuff to make sure the live usb doesnt run out of space
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Configuring system" \
+--prgbox "Downloading config files" "pacman -S unzip --noconfirm && wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip""$HEIGHT" "$WIDTH"
+
 #Create gtk-2.0 disable recents
 mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/home/"$user"/
 #Create gtk-3.0 disable recents
@@ -657,17 +682,19 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkMan
 
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
+clear
+
 
 #Change to and if -d /proc/bus/input/devices/wacom
 #check and setup touchscreen - like x201T/x220T
-if grep -i wacom /proc/bus/input/devices ; then
-	echo "$green""Wacom found""$reset" && sleep 1s
+if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
 #Check and setup touchpad
-if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" ; then
-	echo "$green""Touchpad or battery found - setting up synaptics driver and power saving""$reset" && sleep 1s
-	arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics ethtool tlp tlp-rdw --noconfirm
+if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" > /dev/null 2>&1 ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Laptop Found" \
+	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics ethtool tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service""$HEIGHT" "$WIDTH"
 	mv Arch-Linux-Installer-master/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#USB autosuspend
 	echo 'ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"' > /mnt/etc/udev/rules.d/50-usb_power_save.rules
@@ -676,8 +703,8 @@ if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -
 	echo 'ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/50-hd_power_save.rules
 	#Laptop mode to save power with spinning drives
 	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
-	arch-chroot /mnt systemctl enable tlp.service
 fi
+clear
 
 #Blacklist uncommon modules/protocols
 mv Arch-Linux-Installer-master/configs/modprobe/blacklist-uncommon-network-protocols.conf /mnt/etc/modprobe.d/
@@ -721,16 +748,19 @@ mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysc
 
 #network tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
-clear && echo "$green""Set configs - configuring Grub""$reset" && sleep 1s
 
 
 #grub install
 if [ "$boot" = efi ]; then
-	arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "EFI Platform" \
+	--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck""$HEIGHT" "$WIDTH"
 fi
 
 if [[ "$boot" = bios ]]; then
-	arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "BIOS Platform" \
+	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck""$HEIGHT" "$WIDTH"
 fi
 
 
