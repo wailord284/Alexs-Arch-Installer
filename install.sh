@@ -34,117 +34,140 @@ yellow=$(tput setaf 3)
 green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
-
+##Dialog
+HEIGHT=24
+WIDTH=80
+#WIDTH=0 #0 auto sets
+CHOICE_HEIGHT=40
+#dialog options
+dialogBacktitle="Alex's Arch Linux Installer"
+dialogHeight="8"
+dialogWidth="60"
+#wifi check - wget -q --spider http://google.com
 #configure internet
-clear && echo "$green""Welcome to Alex's automatic install script!""$reset"
-echo "$green""To use the default values in the script, press enter""$reset"
-echo "$green"'Checking internet connection...'"$reset"
-if wget -q --spider http://google.com ; then
-	echo "$green""Online""$reset"
-else
-	echo "$red""Offline - connecting to wifi""$reset"
-	sleep 1s
-	wifi-menu
-fi
+#Welcome messages
+dialog --title "Welcome!" \
+--backtitle "$dialogBacktitle" \
+--timeout 5 \
+--msgbox "$(printf %"s\n" "Welcome to Alex's automatic install script!" "To use the default values in the script, press enter.")" \
+"$dialogHeight" "$dialogWidth"
+
 #Set time
 timedatectl set-ntp true
 
-#user inputs
-#Set the hostname
-echo "$green""Enter hostname - default archlinux""$reset"
-read -r -p "Hostname: " host
-#set host to archlinux if user just presses enter
-host=${host:-archlinux}
-clear
-
-#Timezone - country
-echo "$green""Pick a country - default America""$reset"
-ls /usr/share/zoneinfo
-read -r -p "Country: " country
-country=${country:-America} #Default to America
-
-
-#Timezone - city
-if [ -d /usr/share/zoneinfo/"$country" ]; then #Check to see if the country has additional timezones
-	echo "$green""Pick a city - default Los Angeles""$reset"
-	ls /usr/share/zoneinfo/"$country"/
-	read -r -p "City: " city
-	#city=${city:-Phoenix}
-	city=${city:-Los_Angeles} #Default to Los_Angeles
-else
-	echo "$yellow""Country does not have any other timezones""$reset"
-fi
-clear && echo "$green""Timezone set as $country $city""$reset" && clear
-
 #desktop
 desktop=${desktop:-xfce}
+#hostname
+host=$(dialog --title "Hostname" \
+	--backtitle "$dialogBacktitle" \
+	--inputbox "Please enter a hostname. Default archlinux. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
+host=${host:-archlinux}
 
-#username
-echo "$green""Enter username - no caps - default alex""$reset"
-read -r -p "Username: " user
+#Username
+user=$(dialog --title "Username" \
+	--backtitle "$dialogBacktitle" \
+	--inputbox "Please enter a username. Default alex. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
 user=${user:-alex}
-clear
 
-#verify password match
-while : ;do
-	echo "$green""Enter password for default and root user - hidden - default pass""$reset"
-	read -r -s -p "Pass1: " pass1
+#Password input - run in a loop in case user enters wrong password
+while : ; do
+	#pass1
+	pass1=$(dialog --title "Password" \
+		--backtitle "$dialogBacktitle" \
+		--passwordbox "Please enter a password (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
 	pass1=${pass1:-pass}
-	clear
-	echo "$green""Enter password again - hidden - default pass""$reset"
-	read -r -s -p "Pass2: " pass2
+	#pass2
+	pass2=$(dialog --title "Password" \
+		--backtitle "$dialogBacktitle" \
+		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
 	pass2=${pass2:-pass}
-	clear
 	if [ "$pass1" = "$pass2" ]; then
-		echo "$green""Passwords match - continuing""$reset"
+		#dialog --pause "Passwords match!" "$dialogHeight" "$dialogWidth" 10
 		pass="$pass1"
 		break #exit loop
 	else
-		echo "$red""Passwords do not match - please try again""$reset"
+		dialog --msgbox "Pass1 and pass2 do not match. Please try again" "$dialogHeight" "$dialogWidth" && clear
 	fi
 done
 
-#Encryption/security - only availible on UEFI cause idk how it works on old BIOS (wont boot grub - maybe its encrypted?)
-echo "$green""Do you want to enable LUKS encryption? y/n - default (n)o""$reset"
-read -r -p "Encryption (y/n): " encrypt
-encrypt=${encrypt:-n}
-clear
+#encrypt
+dialog --title "Disk Encryption" \
+	--backtitle "$dialogBacktitle" \
+	--yesno "Do you want to enable disk encryption? " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty
+optionEncrypt=$?
+if [ "$optionEncrypt" = 0 ]; then
+	encrypt="y"
+else
+	encrypt="n"
+fi
 
-#If encrypt is yes, ask for encryption password
-##The goal of this was to input the users encryption password into cryptsetup 3 times so the user didnt have to
-##cryptsetup wont accept input for some reason and tends to set the password to the name of the variable
-#if [ "$encrypt" = y ]; then
-#	while : ;do #run infinite loop until encpass1 = encpass2
-#		echo "$green""You said yes to encryption. Please enter a password to use for the drive - hidden - default P4ssw0rd""$reset"
-#		read -r -s -p "Encryption Pass1: " encpass1
-#		pass1=${pass1:-P4ssw0rd}
-#		clear
-#		echo "$green""Enter password again - hidden - default P4ssw0rd""$reset"
-#		read -r -s -p "Encryption Pass2: " encpass2
-#		pass2=${pass2:-P4ssw0rd}
-#		clear
-#		if [ "$encpass1" = "$encpass2" ]; then
-#			echo "$green""Passwords match - continuing""$reset"
-#			encpass="$encpass1"
-#			#store pass into file
-#			ENCTEMP=$(mktemp) || exit 1
-#			trap 'rm -f "$ENCTEMP"' EXIT
-#			echo "$encpass" > "$ENCTEMP"
-#			echo "$encpass" > enc.txt
-#			break #exit loop
-#		else
-#			echo "$red""Passwords do not match - please try again""$reset"
-#		fi
-#	done
-#fi
+#Locale
+COUNT=0
+#replace space with '+' to avoid splitting
+for i in $(cat /etc/locale.gen | tail -n+24 | sed 's/  $//' | sed 's, ,+,g') ; do
+	COUNT=$((COUNT+1))
+	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+done
+syslocale=(dialog --backtitle "$dialogBacktitle" \
+	--title "Select your locale" \
+	--scrollbar \
+	--radiolist "Press space to select your locale" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 
-#Setup storage device for install
+options=(${MENU_OPTIONS})
+locale=$("${syslocale[@]}" "${options[@]}" 2>&1 >/dev/tty)
+#Replace '+' with a space
+locale=$(echo "$locale" | sed 's,+, ,g' | cut -c2-)
+
+#Timezone country
+unset COUNT MENU_OPTIONS options
+COUNT=0
+
+for i in $(ls /usr/share/zoneinfo/) ; do
+	COUNT=$((COUNT+1))
+	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+done
+systimezone=(dialog --backtitle "$dialogBacktitle" \
+	--title "Select your timezone" \
+	--scrollbar \
+	--radiolist "Press space to select your timezone" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+options=(${MENU_OPTIONS})
+countryTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
+
+#Timezone city
+unset COUNT MENU_OPTIONS options systimezone
+if [ -d /usr/share/zoneinfo/"$countryTimezone" ]; then #Check to see if the country has additional timezones
+	COUNT=0
+	for i in $(ls /usr/share/zoneinfo/"$countryTimezone"/) ; do
+		COUNT=$((COUNT+1))
+		MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+	done
+systimezone=(dialog --backtitle "$dialogBacktitle" \
+	--title "Select the city within your country" \
+	--scrollbar \
+	--radiolist "Press space to select your timezone city" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+options=(${MENU_OPTIONS})
+cityTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
+fi
+
+#Disk
 declare -a storagePartitions
 while : ; do
 	#Choose disk to install to - $storage. Only run if storage device was not set with -s ($optionStorage)
-	parted -l
-	echo -e "$green""Enter the disk you want to install Arch on.$reset$yellow\nThis will erase the entire drive and all its data.\nDual booting or manual partitioning is NOT available at this time.""$reset"
-	read -r -p "Drive: " storage
+	unset COUNT MENU_OPTIONS options
+	COUNT=-1
+	mapfile -t dialogDiskSize < <( fdisk -l | grep "Disk /" | cut -d' ' -f 3,4 | sed -e 's, ,,g' -e 's,\,,,g')
+	for i in $(fdisk -l | grep "Disk /" | cut -d ' ' -f 2 | sed -e 's,:,,g') ; do
+		COUNT=$((COUNT+1))
+		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogDiskSize[$COUNT]} off"
+	done
+	installDisk=(dialog --backtitle "$dialogBacktitle" \
+		--scrollbar \
+		--title "Select the drive to install Arch on" \
+		--radiolist "Press space to select your drive" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	options=(${MENU_OPTIONS})
+	installDisk=$("${installDisk[@]}" "${options[@]}" 2>&1 >/dev/tty)
+	#remove '|'
+	storage=$(echo "$installDisk" | sed 's/|.*//')
 	#determine storage type for partitions - nvme0n1p1, sda1 or mmcblk0p1 - $storagePartitions
 	if [[ "$storage" = /dev/nvme* ]]; then
 		echo "$green""NVME Storage Device""$reset"
@@ -159,10 +182,10 @@ while : ; do
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	else
-		echo "$red""Invalid storage device enetered. Must be in the format of /dev/sda, /dev/nvme0n1, /dev/mmcblk0.""$reset"
-		sleep 10s
+		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sda, /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && clear
 	fi
 done
+
 #Make sure the drive is at least 8GB (8589934592 bytes)
 #8589934592 / 1048576 = 8192MB (8GB)
 driveSize=$(fdisk -l "$storage" | grep -m1 Disk | cut -d ":" -f 2 | cut -d "," -f 2 | sed -e 's/[^0-9]/ /g' -e 's/ //g')
@@ -171,39 +194,40 @@ if [ "$driveSize" -lt "8589934592" ]; then
 	exit 1
 fi
 
-#Optionally erase the drive using shred
-echo -e "$green""\nDo you want to securely erase the drive by overwriting it with random data? y/n - default (n)o""$reset"
-echo "$yellow""Please note that depending on the size and speed of the drive, this can take a LONG time""$reset"
-read -r -p "Wipe (y/n): " wipe
-wipe=${wipe:-n}
-
-
-
-#Show the user the final install settings and prompt to continue
-clear && echo "$green""Installing with the following options:""$reset"
-echo "$green""Hostname: $reset$host"
-echo "$green""Timezone: $reset$country,$city"
-echo "$green""Username: $reset$user""$reset"
-echo "$green""Disk Encryption: $reset$encrypt"
-echo "$green""Install Drive: $reset$storage"
-echo "$green""Secure Drive Wipe: $reset$wipe"
-echo -e "$red""\n!!!WARNING!!! This will delete ALL DATA on the drive.\nAre you sure you want to continue? y/n""$reset"
-read -r -p "Continue Installation? (y/n): " finalInstall
-finalInstall=${finalInstall:-n}
-#Exit script is user enters n
-if [ "$finalInstall" = n ]; then
-	echo "$green""Installation canceled""$reset"
-	exit 1
+#disk wipe
+dialog --title "Secure Disk Erase" \
+	 --defaultno \
+	--backtitle "$dialogBacktitle" \
+	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty
+optionWipe=$?
+if [ "$optionwipe" = 0 ]; then
+	wipe="y"
 else
-	echo "$green""Starting installation on $storage with partitions ${storagePartitions[*]}""$reset"
-	echo "$red""Installing to $storage in 10 seconds...""$reset" && sleep 10s
+	wipe="n"
+fi
+
+#Ask the user if they want to continue with the current options
+#https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
+dialog --backtitle "$dialogBacktitle" \
+--title "Do you want to install with the following options?" \
+--yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage")" "$HEIGHT" "$WIDTH"
+
+finalInstall=$?
+if [ "$finalInstall" = 0 ]; then
+	dialog --backtitle "$dialogBacktitle" \
+	--title "Install starting!" \
+	--timeout 5 --msgbox "Starting install in 5 seconds" "$dialogHeight" "$dialogWidth"
+else
+	dialog --backtitle "$dialogBacktitle" \
+	--title "Install canceled" \
+	--msgbox "Press enter to quit" "$dialogHeight" "$dialogWidth"
 fi
 
 
 #Before starting, wipe the drive if user said y to wipe
 if [ "$wipe" = y ]; then
-	echo "$red""Overwriting all data. This may take a while...""$reset"
-	shred --verbose --random-source=/dev/urandom -n1 "$storage"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--prgbox "Erasing drive" "shred --verbose --random-source=/dev/urandom -n1 $storage" "$HEIGHT" "$WIDTH"
 fi
 
 
