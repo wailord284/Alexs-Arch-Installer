@@ -38,7 +38,7 @@ green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
 ##Dialog
-HEIGHT=40
+HEIGHT=50
 WIDTH=100
 #WIDTH=0 #0 auto sets
 CHOICE_HEIGHT=40
@@ -359,7 +359,7 @@ SigLevel = Never' >> /etc/pacman.conf
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist""$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --verbose --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
@@ -369,7 +369,7 @@ sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel --noconfirm""$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel --noconfirm" "$HEIGHT" "$WIDTH"
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\TotalDownload,TotalDownload,g" -i /mnt/etc/pacman.conf
@@ -380,17 +380,17 @@ clear
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools os-prober crda --noconfirm""$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools os-prober crda --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
 vendor=$(cat /proc/cpuinfo | grep -m 1 "vendor" | grep -o "Intel")
 if [ "$vendor" = Intel ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Autodetected Intel CPU" \
-	--prgbox "Installing Intel Microcode" "arch-chroot /mnt pacman -S intel-ucode --noconfirm""$HEIGHT" "$WIDTH"
+	--prgbox "Installing Intel Microcode" "arch-chroot /mnt pacman -S intel-ucode --noconfirm" "$HEIGHT" "$WIDTH"
 else
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Autodetected AMD CPU" \
-	--prgbox "Installing AMD Microcode" "arch-chroot /mnt pacman -S amd-ucode --noconfirm""$HEIGHT" "$WIDTH"
+	--prgbox "Installing AMD Microcode" "arch-chroot /mnt pacman -S amd-ucode --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 clear
 
@@ -415,7 +415,7 @@ fi
 sed "s,\#\$locale,$locale,g" -i /mnt/etc/locale.gen
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system..." \
---prgbox "Setting locale and system clock" "arch-chroot /mnt locale-gen && arch-chroot /mnt hwclock --systohc""$HEIGHT" "$WIDTH"
+--prgbox "Setting locale and system clock" "arch-chroot /mnt locale-gen && arch-chroot /mnt hwclock --systohc" "$HEIGHT" "$WIDTH"
 #Set language
 echo 'LANG=en_US.UTF-8' >> /mnt/etc/locale.conf
 #set hostname
@@ -484,31 +484,31 @@ SigLevel = Never
 #reinstall keyring in case of gpg errors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm""$HEIGHT" "$WIDTH"
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 #install desktop and software
 ##add back pinta?
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm""$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm""$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target systemd-swap earlyoom lxdm linux-modules-cleanup""$HEIGHT" "$WIDTH"
+--prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target systemd-swap earlyoom lxdm linux-modules-cleanup" "$HEIGHT" "$WIDTH"
 
 
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
 if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Services" \
-	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer""$HEIGHT" "$WIDTH"
+	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
 fi
 clear
 
@@ -521,21 +521,21 @@ sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
 #Determine installed GPU
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting hardware" \
---prgbox "Finding system graphics card" "pacman -S lshw --noconfirm""$HEIGHT" "$WIDTH"
+--prgbox "Finding system graphics card" "pacman -S lshw --noconfirm" "$HEIGHT" "$WIDTH"
 #vega=$(lspci | grep 'Radeon RX Vega 56/64') - old
 #https://www.cyberciti.biz/faq/linux-tell-which-graphics-vga-card-installed/
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then #|| glxinfo -B | grep "Radeon" ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S xf86-video-amdgpu opencl-amd --noconfirm""$HEIGHT" "$WIDTH"
+	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S xf86-video-amdgpu opencl-amd --noconfirm" "$HEIGHT" "$WIDTH"
 elif lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" > /dev/null 2>&1 ; then #|| glxinfo -B | grep "Intel" ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S xf86-video-intel libva-intel-driver --noconfirm""$HEIGHT" "$WIDTH"
+	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S xf86-video-intel libva-intel-driver --noconfirm" "$HEIGHT" "$WIDTH"
 elif lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then #|| glxinfo -B | grep "nouveau" ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found NVidia Graphics card" "arch-chroot /mnt pacman -S nvidia nvidia-settings libxnvctrl --noconfirm""$HEIGHT" "$WIDTH"
+	--prgbox "Found NVidia Graphics card" "arch-chroot /mnt pacman -S nvidia nvidia-settings libxnvctrl --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 clear
 
@@ -587,7 +587,7 @@ entropy=$(cat /proc/sys/kernel/random/entropy_avail)
 if [ "$entropy" -lt 1800 ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting Entropy" \
-	--prgbox "Low system entropy" "arch-chroot /mnt pacman -S rng-tools --noconfirm && arch-chroot /mnt systemctl enable rngd""$HEIGHT" "$WIDTH"
+	--prgbox "Low system entropy" "arch-chroot /mnt pacman -S rng-tools --noconfirm && arch-chroot /mnt systemctl enable rngd" "$HEIGHT" "$WIDTH"
 fi
 
 
@@ -598,7 +598,7 @@ fi
 #https://www.ostechnix.com/check-linux-system-physical-virtual-machine/
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting virtual machine" \
---prgbox "Checking if system is a virtual machine" "pacman -S dmidecode --noconfirm""$HEIGHT" "$WIDTH"
+--prgbox "Checking if system is a virtual machine" "pacman -S dmidecode --noconfirm" "$HEIGHT" "$WIDTH"
 
 product=$(dmidecode -s system-product-name)
 hypervisor=$(dmesg | grep "Hypervisor detected" | cut -d ":" -f 2 | tr -d ' ')
@@ -606,11 +606,11 @@ manufacturer=$(systemd-detect-virt)
 if [ "$product" = "VirtualBox" ] || [ "$hypervisor" = "VirtualBox" ] || [ "$manufacturer" = "oracle" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting virtual machine" \
-	--prgbox "Running in VirtualBox - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm""$HEIGHT" "$WIDTH"
+	--prgbox "Running in VirtualBox - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm" "$HEIGHT" "$WIDTH"
 elif [ "$product" = "VMware Virtual Platform" ] || [ "$hypervisor" = "VMware" ] || [ "$manufacturer" = "vmware" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting virtual machine" \
-	--prgbox "Running in VMWare - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm && arch-chroot /mnt systemctl enable vmtoolsd.service vmware-vmblock-fuse.service""$HEIGHT" "$WIDTH"
+	--prgbox "Running in VMWare - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm && arch-chroot /mnt systemctl enable vmtoolsd.service vmware-vmblock-fuse.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 
@@ -622,7 +622,7 @@ clear
 #Default wallpaper from manjaro forum
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
---prgbox "Downloading config files" "pacman -S unzip --noconfirm && wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip""$HEIGHT" "$WIDTH"
+--prgbox "Downloading config files" "pacman -S unzip --noconfirm && wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 
 #Create gtk-2.0 disable recents
 mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/home/"$user"/
@@ -694,7 +694,7 @@ fi
 if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
-	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics ethtool tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service""$HEIGHT" "$WIDTH"
+	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics ethtool tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
 	mv Arch-Linux-Installer-master/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#USB autosuspend
 	echo 'ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"' > /mnt/etc/udev/rules.d/50-usb_power_save.rules
@@ -754,14 +754,15 @@ mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 if [ "$boot" = efi ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "EFI Platform" \
-	--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck""$HEIGHT" "$WIDTH"
+	--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
 fi
 
 if [[ "$boot" = bios ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "BIOS Platform" \
-	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck""$HEIGHT" "$WIDTH"
+	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck" "$HEIGHT" "$WIDTH"
 fi
+clear
 
 
 #add custom menus to grub
@@ -769,66 +770,78 @@ fi
 ####ADD - BIOS FLASH/AMDVbflash
 #Custom grub binaries - gdisk, uefi shell, flappybird and tetris
 #add gdisk menu - https://wiki.archlinux.org/index.php/GPT_fdisk#gdisk_EFI_application
-pacman -S p7zip --noconfirm
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Configuring grub" \
+--prgbox "Downloading grub utilities" "pacman -S p7zip --noconfirm" "$HEIGHT" "$WIDTH"
 ###TOOLS###
-#Grub file manager https://github.com/a1ive/grub2-filemanager/releases
-wget https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
-7z x grubfm-en_US.7z
-mkdir -p /mnt/boot/EFI/tools
-mv grubfmx64.efi grubfm.iso loadfm /mnt/boot/EFI/tools/
-rm -r grubfm-en_US.7z grubfmia32.efi
-#uefi shell V1/V2 https://github.com/tianocore/edk2/blob/UDK2018/EdkShellBinPkg/
-#wget https://github.com/tianocore/edk2/releases/latest/download/ShellBinPkg.zip
-wget https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip #Current release
-wget https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
-unzip ShellBinPkg.zip
-mv ShellBinPkg/UefiShell/X64/Shell.efi /mnt/boot/EFI/tools/shellx64_v2.efi
-mv Shell.efi /mnt/boot/EFI/tools/shellx64_v1.efi
-rm -r ShellBinPkg.zip ShellBinPkg
-#gdisk - https://sourceforge.net/projects/gptfdisk/files/gptfdisk/
-gdiskVersion="1.0.4"
-wget https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/"$gdiskVersion"/gdisk-binaries/gdisk-efi-"$gdiskVersion".zip
-unzip gdisk-efi-"$gdiskVersion".zip
-mv gdisk-efi/gdisk_x64.efi /mnt/boot/EFI/tools/
-rm -r gdisk-efi-"$gdiskVersion".zip gdisk-efi
-#RU - Universal Chipset Reading # password 2002118028047
-#https://ruexe.blogspot.com/
-wget https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
-unzip -P 2002118028047 5.25.0379.zip
-mv RU.efi /mnt/boot/EFI/tools/ru.efi
-rm -r RU.EXE RU32.efi 5.25.0379.zip
+declare -a grubLinks
+grubLinks=(https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
+https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip
+https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
+https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/1.0.4/gdisk-binaries/gdisk-efi-1.0.4.zip
+https://github.com/manusov/UEFIdiskBenchmark/blob/master/executable/UefiDiskBenchmark.efi
+https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
+https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
+https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi)
+
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Configuring grub" \
+--prgbox "Downloading grub utilities" "wget ${grubLinks[*]}" "$HEIGHT" "$WIDTH"
+
 #Memtest86 - UEFI. Legacy BIOS handled by memtest86+ package
 #mount the img file on the target install to not run out of disk space
 #once mounted, we extract the UEFI bootable files
-wget https://www.memtest86.com/downloads/memtest86-usb.zip -P /mnt/memtest
-unzip /mnt/memtest/memtest86-usb.zip -d /mnt/memtest/
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Configuring grub" \
+--prgbox "Downloading grub utilities" "wget https://www.memtest86.com/downloads/memtest86-usb.zip -P /mnt/memtest && unzip /mnt/memtest/memtest86-usb.zip -d /mnt/memtest/" "$HEIGHT" "$WIDTH"
 mkdir -p /mnt/memtest/memimg
 #offset = 512*2048
 mount -o loop,offset=1048576 /mnt/memtest/memtest86-usb.img /mnt/memtest/memimg
 mv /mnt/memtest/memimg/EFI/BOOT/BOOTX64.efi /mnt/boot/EFI/tools/memtestx64.efi
 umount /mnt/memtest/memimg
 rm -r /mnt/memtest
+
+#Grub file manager https://github.com/a1ive/grub2-filemanager/releases
+#wget https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
+7z x grubfm-en_US.7z
+mkdir -p /mnt/boot/EFI/tools
+mv grubfmx64.efi grubfm.iso loadfm /mnt/boot/EFI/tools/
+rm -r grubfm-en_US.7z grubfmia32.efi
+#uefi shell V1/V2 https://github.com/tianocore/edk2/blob/UDK2018/EdkShellBinPkg/
+#wget https://github.com/tianocore/edk2/releases/latest/download/ShellBinPkg.zip
+#wget https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip #Current release
+#wget https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
+unzip ShellBinPkg.zip
+mv ShellBinPkg/UefiShell/X64/Shell.efi /mnt/boot/EFI/tools/shellx64_v2.efi
+mv Shell.efi /mnt/boot/EFI/tools/shellx64_v1.efi
+rm -r ShellBinPkg.zip ShellBinPkg
+#gdisk - https://sourceforge.net/projects/gptfdisk/files/gptfdisk/
+#wget https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/1.0.4/gdisk-binaries/gdisk-efi-1.0.4.zip
+unzip gdisk-efi-1.0.4.zip
+mv gdisk-efi/gdisk_x64.efi /mnt/boot/EFI/tools/
+rm -r gdisk-efi-1.0.4.zip gdisk-efi
+#RU - Universal Chipset Reading # password 2002118028047
+#https://ruexe.blogspot.com/
+wget https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
+unzip -P 2002118028047 5.25.0379.zip
+mv RU.efi /mnt/boot/EFI/tools/ru.efi
+rm -r RU.EXE RU32.efi 5.25.0379.zip
 #UEFIDiskBenchmark https://github.com/manusov/UEFIdiskBenchmark
-wget https://github.com/manusov/UEFIdiskBenchmark/blob/master/executable/UefiDiskBenchmark.efi
+#wget https://github.com/manusov/UEFIdiskBenchmark/blob/master/executable/UefiDiskBenchmark.efi
 mv UefiDiskBenchmark.efi /mnt/boot/EFI/tools/diskbenchmark.efi
 ###GAMES###
 #FlappyBird
 mkdir -p /mnt/boot/EFI/games
-wget https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
+#wget https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
 mv FlappyBird.efi /mnt/boot/EFI/games/
 #Tetris
-wget https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
-wget https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi
+#wget https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
+#wget https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi
 mv TETRIS.EFI /mnt/boot/EFI/games/tetris.efi
 mv tetris.efi /mnt/boot/EFI/games/tetrisClassic.efi
-#UEFIBoy https://github.com/RossMeikleham/UEFIBoy/
-#wget https://github.com/RossMeikleham/UEFIBoy/releases/download/0.1.0/Plutoboy.efi
-#wget -nc -nv -U "eye01" https://the-eye.eu/public/rom/Nintendo%20Gameboy/Galaga%20%26%20Galaxian%20%28U%29%20%5BS%5D%5B%21%5D.zip -O galaga.zip
-#unzip galaga.zip
-#mv "Galaga & Galaxian (U) [S][!].gb" /mnt/boot/EFI/games/autoload.rom
-#mv Plutoboy.efi /mnt/boot/EFI/games/
-#Create /boot/grub/bustom.cfg
+#Create /boot/grub/custom.cfg
 mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
+clear
 
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
 #grub config and unmount - https://make-linux-fast-again.com/ - nowatchdog pci=nommconf intel_pstate=disable acpi-cpufreq
@@ -847,6 +860,9 @@ fi
 #Change theme
 echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
 #generate grubcfg
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Configuring grub" \
+--prgbox "Generating grubcfg" "arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg" "$HEIGHT" "$WIDTH"
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 clear
 
