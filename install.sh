@@ -35,14 +35,14 @@ green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
 ##Dialog
-HEIGHT=24
-WIDTH=80
+HEIGHT=40
+WIDTH=100
 #WIDTH=0 #0 auto sets
 CHOICE_HEIGHT=40
 #dialog options
 dialogBacktitle="Alex's Arch Linux Installer"
-dialogHeight="8"
-dialogWidth="60"
+dialogHeight="10"
+dialogWidth="80"
 #wifi check - wget -q --spider http://google.com
 #configure internet
 #Welcome messages
@@ -51,6 +51,7 @@ dialog --title "Welcome!" \
 --timeout 5 \
 --msgbox "$(printf %"s\n" "Welcome to Alex's automatic install script!" "To use the default values in the script, press enter.")" \
 "$dialogHeight" "$dialogWidth"
+clear
 
 #Set time
 timedatectl set-ntp true
@@ -62,12 +63,14 @@ host=$(dialog --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
 	--inputbox "Please enter a hostname. Default archlinux. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
 host=${host:-archlinux}
+clear
 
 #Username
 user=$(dialog --title "Username" \
 	--backtitle "$dialogBacktitle" \
 	--inputbox "Please enter a username. Default alex. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
 user=${user:-alex}
+clear
 
 #Password input - run in a loop in case user enters wrong password
 while : ; do
@@ -89,9 +92,11 @@ while : ; do
 		dialog --msgbox "Pass1 and pass2 do not match. Please try again" "$dialogHeight" "$dialogWidth" && clear
 	fi
 done
+clear
 
 #encrypt
 dialog --title "Disk Encryption" \
+	--defaultno \
 	--backtitle "$dialogBacktitle" \
 	--yesno "Do you want to enable disk encryption? " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty
 optionEncrypt=$?
@@ -100,11 +105,12 @@ if [ "$optionEncrypt" = 0 ]; then
 else
 	encrypt="n"
 fi
+clear
 
 #Locale
 COUNT=0
-#replace space with '+' to avoid splitting
-for i in $(cat /etc/locale.gen | tail -n+24 | sed 's/  $//' | sed 's, ,+,g') ; do
+#replace space with '+' to avoid splitting, remove leading #
+for i in $(cat /etc/locale.gen | tail -n+24 | sed -e 's/  $//' -e 's, ,+,g' -e 's,#,,g') ; do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -116,7 +122,8 @@ syslocale=(dialog --backtitle "$dialogBacktitle" \
 options=(${MENU_OPTIONS})
 locale=$("${syslocale[@]}" "${options[@]}" 2>&1 >/dev/tty)
 #Replace '+' with a space
-locale=$(echo "$locale" | sed 's,+, ,g' | cut -c2-)
+locale=$(echo "$locale" | sed -e 's,+, ,g')
+clear
 
 #Timezone country
 unset COUNT MENU_OPTIONS options
@@ -132,6 +139,7 @@ systimezone=(dialog --backtitle "$dialogBacktitle" \
 	--radiolist "Press space to select your timezone" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
 countryTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
+clear
 
 #Timezone city
 unset COUNT MENU_OPTIONS options systimezone
@@ -148,6 +156,7 @@ systimezone=(dialog --backtitle "$dialogBacktitle" \
 options=(${MENU_OPTIONS})
 cityTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
 fi
+clear
 
 #Disk
 declare -a storagePartitions
@@ -182,9 +191,10 @@ while : ; do
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	else
-		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sda, /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && clear
+		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sda, /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && exit 1
 	fi
 done
+clear
 
 #Make sure the drive is at least 8GB (8589934592 bytes)
 #8589934592 / 1048576 = 8192MB (8GB)
@@ -196,31 +206,35 @@ fi
 
 #disk wipe
 dialog --title "Secure Disk Erase" \
-	 --defaultno \
+	--defaultno \
 	--backtitle "$dialogBacktitle" \
 	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty
 optionWipe=$?
-if [ "$optionwipe" = 0 ]; then
+if [ "$optionWipe" = 0 ]; then
 	wipe="y"
 else
 	wipe="n"
 fi
+clear
 
 #Ask the user if they want to continue with the current options
 #https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
 dialog --backtitle "$dialogBacktitle" \
 --title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage")" "$HEIGHT" "$WIDTH"
+--yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe")" "$HEIGHT" "$WIDTH"
+clear
 
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
 	--title "Install starting!" \
 	--timeout 5 --msgbox "Starting install in 5 seconds" "$dialogHeight" "$dialogWidth"
+	clear
 else
 	dialog --backtitle "$dialogBacktitle" \
 	--title "Install canceled" \
 	--msgbox "Press enter to quit" "$dialogHeight" "$dialogWidth"
+	exit 1
 fi
 
 
@@ -228,6 +242,7 @@ fi
 if [ "$wipe" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--prgbox "Erasing drive" "shred --verbose --random-source=/dev/urandom -n1 $storage" "$HEIGHT" "$WIDTH"
+	clear
 fi
 
 
@@ -241,10 +256,10 @@ else
 	boot="bios" #Set boot to bios
 fi
 if [[ "$boot" = efi && "$encrypt" = y ]]; then
-	echo "$green""UEFI boot with encryption""$reset"
 	#wipe drive - "${storagePartitions[1]}" is boot partition
-	wipefs --all "$storage"
-	yes | mkfs.ext4 "$storage"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "UEFI boot with encryption" \
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
 	parted -s "$storage" mkpart primary fat32 1MiB 260MiB
@@ -262,10 +277,10 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
 if [[ "$boot" = efi && "$encrypt" = n ]]; then
-	echo "$green""UEFI boot no encryption""$reset"
 	#wipe drive - "${storagePartitions[1]}" is boot partition
-	wipefs --all "$storage"
-	yes | mkfs.ext4 "$storage"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "UEFI boot no encryption" \
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
 	parted -s "$storage" mkpart primary fat32 1MiB 260MiB #551MiB
@@ -282,10 +297,10 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 fi
 #legacy
 if [[ "$boot" = bios && "$encrypt" = y ]]; then
-	echo "$green""Legacy BIOS with encryption""$reset"
 	#wipe drive - "${storagePartitions[1]}" is boot partition
-	wipefs --all "$storage"
-	yes | mkfs.ext4 "$storage"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Legacy BIOS with encryption" \
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
 	#create ext4 boot partition
 	parted -s "$storage" mklabel msdos #BIOS needs msdos
 	parted -s "$storage" mkpart primary ext4 1MiB 260MiB #bios requires ext4
@@ -303,14 +318,18 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
 if [[ "$boot" = bios && "$encrypt" = n ]]; then
-	echo "$green""Legacy BIOS without encryption""$reset"
 	#wipe drive - "${storagePartitions[1]}" is main partition
-	wipefs --all "$storage"
-	yes | mkfs.ext4 "$storage"
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Legacy BIOS without encryption" \
+	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 "$storage"" "$HEIGHT" "$WIDTH"
+	#Setup drive
 	parted -s "$storage" mklabel msdos
 	parted -s "$storage" mkpart primary ext4 1MiB 100%
 	parted -s "$storage" set 1 boot on
-	mkfs.ext4 "${storagePartitions[1]}"
+	#Format main partition
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Legacy BIOS without encryption" \
+	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}""$HEIGHT" "$WIDTH"
 	mount "${storagePartitions[1]}" /mnt
 fi
 
