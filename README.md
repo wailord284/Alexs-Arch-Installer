@@ -2,7 +2,7 @@
 A simple script to automatically install Arch Linux with the XFCE desktop, custom repository and many post install options.
 
 # About
-This is a small script I have been working on for over a year to simplify the Arch Linux install process across the many different types of hardware I have. The goal of this script is to install Arch with a useable experience right out of the box while still maintaining a mostly vanilla setup. Since I use my devices for many different things, I have tried to support many different configurations and optional configs/utilities a user may want. Once the script completes the user can implement 15+ optional features that may be beneficial to them.
+This is a small script I have been working on for over a year to simplify the Arch Linux install process across the many different types of hardware I have. The goal of this script is to install Arch with a useable experience right out of the box while still maintaining a mostly vanilla setup. Since I use my devices for many different things, I have tried to support many different configurations and optional configs/utilities a user may want. Once the script completes the user can implement 20+ optional features that may be beneficial to them.
 
 # How to use
 To use this script, you first need to create a bootable USB with the Arch Linux ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using wget. Both options will be kept up to date. 
@@ -11,22 +11,6 @@ To use the script, do the following:
 wget wailord284.club/repo/install.sh
 chmod +x install.sh
 ./install.sh
-```
-The script can also be run in a secondary mode which is more traditional for Linux applications.
-```
-./install.sh --help
-Defaults are used during the automated install. If a required option for installation is not specified, you will be prompted.
-List of all availible options:
-
--c	Set the country for the system timezone. A list can be found in /usr/share/zoneinfo. Default = America
--ci	Set the city for the system timezone. A list can be found in /usr/share/zoneinfo/country. Default = Phoenix
--e	Encrypt the main partition. Must be y or n for (y)es or (n)o. Default = n
--h	Set the hostname for the system. Default = archlinux
--p	Set the password for the root and default user account. Default = pass
--s	Specify the storage device to install to. Must be in the format of /dev/sda, /dev/nvme0n1 or /dev/mmcblk0
--u	Set the user for the default account. Do not use any caps. Default = alex
--w	Securely erase the drive before install using random data and shred. Must be y or n for (y)es or (n)o. Default = n
---help	Show this menu!
 ```
 The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Use y or n for yes and no during prompts if required.
 # Features!
