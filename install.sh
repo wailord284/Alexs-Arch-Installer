@@ -51,7 +51,8 @@ dialogWidth=80
 #Welcome messages
 dialog --title "Welcome!" \
 --backtitle "$dialogBacktitle" \
---timeout 8 \
+--timeout 10 \
+--ok-label "Begin" \
 --msgbox "$(printf %"s\n" "Welcome to Alex's automatic install script!" "To use the default values in the script, press enter.")" \
 "$dialogHeight" "$dialogWidth"
 clear
@@ -410,7 +411,7 @@ else
 	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$country"/"$city" /etc/localtime
 fi
 #set locale and clock
-sed "s,\#\$locale,$locale,g" -i /mnt/etc/locale.gen
+sed "s,\#$locale,$locale,g" -i /mnt/etc/locale.gen
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system..." \
 --prgbox "Setting locale and system clock" "arch-chroot /mnt locale-gen && arch-chroot /mnt hwclock --systohc" "$HEIGHT" "$WIDTH"
@@ -778,6 +779,7 @@ https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPk
 https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
 https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/1.0.4/gdisk-binaries/gdisk-efi-1.0.4.zip
 https://github.com/manusov/UEFIdiskBenchmark/blob/master/executable/UefiDiskBenchmark.efi
+https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
 https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
 https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
 https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi)
@@ -800,24 +802,23 @@ umount /mnt/memtest/memimg
 rm -r /mnt/memtest
 
 #Grub file manager https://github.com/a1ive/grub2-filemanager/releases
-7z x grubfm-en_US.7z
+7z -bb 0 -bd x grubfm-en_US.7z
 mkdir -p /mnt/boot/EFI/tools
 mv grubfmx64.efi grubfm.iso loadfm /mnt/boot/EFI/tools/
 rm -r grubfm-en_US.7z grubfmia32.efi
 #uefi shell V1/V2 https://github.com/tianocore/edk2/blob/UDK2018/EdkShellBinPkg/
 #https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip #Current release
-unzip ShellBinPkg.zip
+unzip -qq ShellBinPkg.zip
 mv ShellBinPkg/UefiShell/X64/Shell.efi /mnt/boot/EFI/tools/shellx64_v2.efi
 mv Shell.efi /mnt/boot/EFI/tools/shellx64_v1.efi
 rm -r ShellBinPkg.zip ShellBinPkg
 #gdisk - https://sourceforge.net/projects/gptfdisk/files/gptfdisk/
-unzip gdisk-efi-1.0.4.zip
+unzip -qq gdisk-efi-1.0.4.zip
 mv gdisk-efi/gdisk_x64.efi /mnt/boot/EFI/tools/
 rm -r gdisk-efi-1.0.4.zip gdisk-efi
 #RU - Universal Chipset Reading # password 2002118028047
 #https://ruexe.blogspot.com/
-wget https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
-unzip -P 2002118028047 5.25.0379.zip
+unzip -qq -P 2002118028047 5.25.0379.zip
 mv RU.efi /mnt/boot/EFI/tools/ru.efi
 rm -r RU.EXE RU32.efi 5.25.0379.zip
 #UEFIDiskBenchmark https://github.com/manusov/UEFIdiskBenchmark
