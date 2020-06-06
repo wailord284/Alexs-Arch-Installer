@@ -416,7 +416,8 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system..." \
 --prgbox "Setting locale and system clock" "arch-chroot /mnt locale-gen && arch-chroot /mnt hwclock --systohc" "$HEIGHT" "$WIDTH"
 #Set language
-echo 'LANG=en_US.UTF-8' >> /mnt/etc/locale.conf
+lang=$(echo "$locale" | cut -d ' ' -f 1)
+echo "$lang" >> /mnt/etc/locale.conf
 #set hostname
 echo "$host" >> /mnt/etc/hostname
 clear
