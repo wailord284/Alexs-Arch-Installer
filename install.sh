@@ -406,9 +406,9 @@ sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 genfstab -U /mnt >> /mnt/etc/fstab
 #Set timezone
 if [ -z "$city" ]; then
-	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$country" /etc/localtime
+	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$countryTimezone" /etc/localtime
 else
-	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$country"/"$city" /etc/localtime
+	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$countryTimezone"/"$cityTimezone" /etc/localtime
 fi
 #set locale and clock
 sed "s,\#$locale,$locale,g" -i /mnt/etc/locale.gen
