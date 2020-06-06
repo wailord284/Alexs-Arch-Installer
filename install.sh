@@ -38,20 +38,20 @@ green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
 ##Dialog
-HEIGHT=50
-WIDTH=100
+HEIGHT=45
+WIDTH=140
 #WIDTH=0 #0 auto sets
 CHOICE_HEIGHT=40
 #dialog options
 dialogBacktitle="Alex's Arch Linux Installer"
-dialogHeight="10"
-dialogWidth="80"
+dialogHeight=20
+dialogWidth=80
 #wifi check - wget -q --spider http://google.com
 #configure internet
 #Welcome messages
 dialog --title "Welcome!" \
 --backtitle "$dialogBacktitle" \
---timeout 5 \
+--timeout 8 \
 --msgbox "$(printf %"s\n" "Welcome to Alex's automatic install script!" "To use the default values in the script, press enter.")" \
 "$dialogHeight" "$dialogWidth"
 clear
@@ -225,8 +225,6 @@ clear
 dialog --backtitle "$dialogBacktitle" \
 --title "Do you want to install with the following options?" \
 --yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe")" "$HEIGHT" "$WIDTH"
-clear
-
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
@@ -344,7 +342,7 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	#Format main partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS without encryption" \
-	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}""$HEIGHT" "$WIDTH"
+	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	mount "${storagePartitions[1]}" /mnt
 fi
 clear
@@ -802,21 +800,17 @@ umount /mnt/memtest/memimg
 rm -r /mnt/memtest
 
 #Grub file manager https://github.com/a1ive/grub2-filemanager/releases
-#wget https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
 7z x grubfm-en_US.7z
 mkdir -p /mnt/boot/EFI/tools
 mv grubfmx64.efi grubfm.iso loadfm /mnt/boot/EFI/tools/
 rm -r grubfm-en_US.7z grubfmia32.efi
 #uefi shell V1/V2 https://github.com/tianocore/edk2/blob/UDK2018/EdkShellBinPkg/
-#wget https://github.com/tianocore/edk2/releases/latest/download/ShellBinPkg.zip
-#wget https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip #Current release
-#wget https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
+#https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip #Current release
 unzip ShellBinPkg.zip
 mv ShellBinPkg/UefiShell/X64/Shell.efi /mnt/boot/EFI/tools/shellx64_v2.efi
 mv Shell.efi /mnt/boot/EFI/tools/shellx64_v1.efi
 rm -r ShellBinPkg.zip ShellBinPkg
 #gdisk - https://sourceforge.net/projects/gptfdisk/files/gptfdisk/
-#wget https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/1.0.4/gdisk-binaries/gdisk-efi-1.0.4.zip
 unzip gdisk-efi-1.0.4.zip
 mv gdisk-efi/gdisk_x64.efi /mnt/boot/EFI/tools/
 rm -r gdisk-efi-1.0.4.zip gdisk-efi
@@ -827,16 +821,12 @@ unzip -P 2002118028047 5.25.0379.zip
 mv RU.efi /mnt/boot/EFI/tools/ru.efi
 rm -r RU.EXE RU32.efi 5.25.0379.zip
 #UEFIDiskBenchmark https://github.com/manusov/UEFIdiskBenchmark
-#wget https://github.com/manusov/UEFIdiskBenchmark/blob/master/executable/UefiDiskBenchmark.efi
 mv UefiDiskBenchmark.efi /mnt/boot/EFI/tools/diskbenchmark.efi
 ###GAMES###
 #FlappyBird
 mkdir -p /mnt/boot/EFI/games
-#wget https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
 mv FlappyBird.efi /mnt/boot/EFI/games/
 #Tetris
-#wget https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
-#wget https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi
 mv TETRIS.EFI /mnt/boot/EFI/games/tetris.efi
 mv tetris.efi /mnt/boot/EFI/games/tetrisClassic.efi
 #Create /boot/grub/custom.cfg
