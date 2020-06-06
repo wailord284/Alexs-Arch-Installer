@@ -11,7 +11,7 @@ alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
 export VISUAL="gedit"
-export BROWSER="brave"
+export BROWSER="librewolf"
 export EDITOR="nano"
 export SUDO_EDITOR="nano"
 shopt -s autocd
