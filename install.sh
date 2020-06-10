@@ -26,6 +26,7 @@
 #https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/ - rkhunter script
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
+#Add grub game - http://www.erikyyy.de/invaders/
 
 ##Make sure locale setting works
 
@@ -37,12 +38,12 @@ yellow=$(tput setaf 3)
 green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
-##Dialog
+##Dialog prgbox
 HEIGHT=45
 WIDTH=140
 #WIDTH=0 #0 auto sets
 CHOICE_HEIGHT=40
-#dialog options
+#dialog options for user input
 dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
@@ -204,7 +205,7 @@ clear
 #8589934592 / 1048576 = 8192MB (8GB)
 driveSize=$(fdisk -l "$storage" | grep -m1 Disk | cut -d ":" -f 2 | cut -d "," -f 2 | sed -e 's/[^0-9]/ /g' -e 's/ //g')
 if [ "$driveSize" -lt "8589934592" ]; then
-	echo "$red""Your hard drive is smaller than 8GB. Please use a larger drive""$reset"
+	dialog --msgbox "Your hard drive is smaller than 8GB. Please use a larger drive" "$dialogHeight" "$dialogWidth"
 	exit 1
 fi
 
@@ -405,7 +406,7 @@ sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #Create FSTAB and use inputs
 genfstab -U /mnt >> /mnt/etc/fstab
 #Set timezone
-if [ -z "$city" ]; then
+if [ -z "$cityTimezone" ]; then
 	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$countryTimezone" /etc/localtime
 else
 	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$countryTimezone"/"$cityTimezone" /etc/localtime
