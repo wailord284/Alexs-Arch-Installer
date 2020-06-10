@@ -27,6 +27,7 @@
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
 #Add grub game - http://www.erikyyy.de/invaders/
+#https://askubuntu.com/questions/1094389/what-is-the-use-of-systemd-journal-flush-service
 
 ##Make sure locale setting works
 
@@ -679,7 +680,7 @@ mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/
 mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
 mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
 #Allow user in the network group to add/modify/delete networks without a password
-mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
+#mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
 
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
