@@ -20,7 +20,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Automatically detect if running in VirtualBox or VMware and install appropriate guest additions
 - Optionally overwrite the drive with random data (Secure erase)
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
-- Increased password security (Increased hashing rounds, user lockout and minimum input password time)
 - Earlyoom daemon to trigger the Linux OOM killer sooner
 - Kernel Modules hook to restore functionality when the running kernel updates
 - Pacman cleanup hook to clean the pacman cache when updating
@@ -51,7 +50,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Arch Linux theme
     * Reboot, shutdown, File Manager for both UEFI/BIOS
     * UEFI Only tools: UEFI Shell, GDisk partition editor, Chipset reader
-    * UEFI Only games: Tetris, Flappybird, UEFIBoy BG/GBC emulator
+    * UEFI Only games: Tetris, Flappybird
     * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 works on all systems)
 - Makepkg changes:
     * Change makeflags to account for all cores in the system (-j)
@@ -70,17 +69,17 @@ The user will now be prompted to supply basic information such as hostname, user
 - Sudo changes:
     * Prevent password timeout when running long commands
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
-    * visudo editor changed to nano
+    * visudo editor changed from vi to nano
     * Commented line to run specific commands without requiring sudo password
 - Modified NetworkManager setup:
     * Random wireless MAC address
     * Increased IPv6 privacy
-    * DNS cacheing and handeling by dnsmasq
-    * Secure DNS servers (1.1.1.1, 1.0.0.1, 9.9.9.9)
+    * DNS cacheing with dnsmasq
+    * Secure DNS servers (1.1.1.1, 1.0.0.1, 9.9.9.9) (replaced by dnscrypt and dnsmasq if selected)
     * Automatic hardware clock updates using NTP (Updates everytime device connects to internet)
 - Aurmageddon repository maintained by me. Contains 1500+ packages updated every 6 hours.
-    * Packages installed from Aurmageddon include: 
-    * ```arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git pokeshell```
+    * Packages installed from Aurmageddon include:
+    * ```arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git pokeshell librewolf-bin```
     * View the public repository here: http://wailord284.club/repo/aurmageddon/x86_64/
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
