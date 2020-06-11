@@ -640,9 +640,12 @@ mv Arch-Linux-Installer-master/configs/local/helpers/ /mnt/home/"$user"/.local/s
 mv Arch-Linux-Installer-master/configs/htop/ /mnt/home/"$user"/.config/
 #Default wallpaper
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
+#Librewolf config - add extension and change default settings
+mv Arch-Linux-Installer-master/configs/librewolf/ /mnt/home/"$user"/.librewolf
 #Take ownership
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.config
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.local
+arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.librewolf
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.gtkrc-2.0
 
 #Bash stuffs
@@ -857,7 +860,6 @@ echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
 --prgbox "Generating grubcfg" "arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg" "$HEIGHT" "$WIDTH"
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 clear
 
 
