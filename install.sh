@@ -496,7 +496,7 @@ clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -516,9 +516,9 @@ clear
 
 
 #setup zram
-sed "s,zswap_enabled=1,zswap_enabled=0,g" -i /mnt/etc/systemd/swap.conf
-sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
-
+sed "s,zswap_enabled=1,zswap_enabled=0,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
+sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
+sed "s,zram_count=\${NCPU},zram_count=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
 
 #Determine installed GPU
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
