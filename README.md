@@ -23,7 +23,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Earlyoom daemon to trigger the Linux OOM killer sooner
 - Kernel Modules hook to restore functionality when the running kernel updates
 - Pacman cleanup hook to clean the pacman cache when updating
-- FSTrim if a SSD is detected
+- FSTrim timer if a SSD is detected
 - Modified IO Schedulers for hard drives, SSDs and NVME drives
 - Change mkinitcpio compression to lz4 (Faster but bigger size)
 - Custom nanorc file to include syntax highlighting
@@ -56,11 +56,11 @@ The user will now be prompted to supply basic information such as hostname, user
     * Change makeflags to account for all cores in the system (-j)
     * Change -mtune=generic to native
     * Use .tar as default package extension (No compression)
-    * Add multithreaded capable compression programs for makepkg supported files
+    * Add multithreaded capable compression programs for supported files
     * Enable max compression when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
 - Systemd changes:
-    * SystemD service timeout changed from 90 seconds to 45 seconds
-    * Enable systemd-zram instead of traditional swap (sets to 1/4 total RAM)
+    * Systemd service timeout changed from 90 seconds to 45 seconds
+    * Enable zram instead of traditional swap (sets to 1/5 total RAM)
     * Promiscuous mode systemd service to make packet sniffing easier (disabled by default)
 - Password changes (How the password is stored):
     * Increase hashing rounds and change hash to SHA512
@@ -79,7 +79,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Automatic hardware clock updates using NTP (Updates everytime device connects to internet)
 - Aurmageddon repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * Packages installed from Aurmageddon include:
-    * ```arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git pokeshell librewolf-bin```
+    * ```surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap```
     * View the public repository here: http://wailord284.club/repo/aurmageddon/x86_64/
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs

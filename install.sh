@@ -491,19 +491,20 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 ##add back pinta?
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger systemd-swap pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
 #Enable services
+#Disabled
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target systemd-swap earlyoom lxdm linux-modules-cleanup" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup" "$HEIGHT" "$WIDTH"
 
 
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
@@ -515,11 +516,14 @@ fi
 clear
 
 
+#disabled, replaced with zramswap
 #setup zram
-sed "s,zswap_enabled=1,zswap_enabled=0,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
-sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
-sed "s,zram_count=\${NCPU},zram_count=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
-
+#sed "s,zswap_enabled=1,zswap_enabled=0,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
+#sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
+#sed "s,zram_count=\${NCPU},zram_count=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
+#sed "s,\#zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
+#sed "s,\#zram_size=\$(( RAM_SIZE / 4)),zram_size=\$(( RAM_SIZE / 4 )),g" -i /mnt/etc/systemd/swap.conf
+#sed "s,zram_count=\${NCPU},zram_count=1,g" -i /mnt/etc/systemd/swap.conf
 #Determine installed GPU
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting hardware" \
