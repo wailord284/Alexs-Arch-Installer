@@ -4,10 +4,6 @@
 #To use this, burn the Arch Linux ISO to a usb drive and boot it. Once botted download this file.
 #If you're on wifi, run wifi-menu first to connect to the internet or put this script on a second drive to be prompted.
 #1) wget wailord284.club/repo/install.sh 2) chmod +x install.sh 3) ./install.sh
-#This script can operate in two different modes.
-##Mode 1: Interactive. Running the script (./install.sh) with no arguments will prompt the user for required values.
-##Mode 2: Traditional. Running the script with flag options. Run ./install --help to get a list of options
-###Example command: ./install.sh -c America -ci Los_Angeles -h Arch -p password -s /dev/sda -u wailord284 -w n
 ###ABOUT###
 #This script will autodetect a large range of hardware and should automatically configure many systems out of the box.
 #This script will install Arch with mainly vanilla settings plus some programs and features I personally use.
@@ -23,18 +19,16 @@
 #add permrs https://github.com/gort818/permrs - make systemd timer https://www.putorius.net/using-systemd-timers.html
 #add option for fail2ban
 #tzupdate to replace networkmanager curl timezone thing
-#https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/ - rkhunter script
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
-#Add grub game - http://www.erikyyy.de/invaders/
 #https://askubuntu.com/questions/1094389/what-is-the-use-of-systemd-journal-flush-service
 
 ##Make sure locale setting works
 
 #colors
 #white=$(tput setaf 7)
-purple=$(tput setaf 5)
-blue=$(tput setaf 4)
+#purple=$(tput setaf 5)
+#blue=$(tput setaf 4)
 yellow=$(tput setaf 3)
 green=$(tput setaf 2)
 red=$(tput setaf 1)
@@ -67,14 +61,14 @@ desktop=${desktop:-xfce}
 #hostname
 host=$(dialog --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
-	--inputbox "Please enter a hostname. Default archlinux. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
+	--inputbox "Please enter a hostname. Default archlinux. " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1)
 host=${host:-archlinux}
 clear
 
 #Username
 user=$(dialog --title "Username" \
 	--backtitle "$dialogBacktitle" \
-	--inputbox "Please enter a username. Default alex. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
+	--inputbox "Please enter a username. Default alex. " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1)
 user=${user:-alex}
 clear
 
@@ -83,12 +77,12 @@ while : ; do
 	#pass1
 	pass1=$(dialog --title "Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter a password (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
+		--passwordbox "Please enter a password (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1)
 	pass1=${pass1:-pass}
 	#pass2
 	pass2=$(dialog --title "Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty)
+		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1)
 	pass2=${pass2:-pass}
 	if [ "$pass1" = "$pass2" ]; then
 		#dialog --pause "Passwords match!" "$dialogHeight" "$dialogWidth" 10
@@ -104,7 +98,7 @@ clear
 dialog --title "Disk Encryption" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to enable disk encryption? " "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty
+	--yesno "Do you want to enable disk encryption? " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionEncrypt=$?
 if [ "$optionEncrypt" = 0 ]; then
 	encrypt="y"
@@ -127,15 +121,16 @@ syslocale=(dialog --backtitle "$dialogBacktitle" \
 
 options=(${MENU_OPTIONS})
 locale=$("${syslocale[@]}" "${options[@]}" 2>&1 >/dev/tty)
-#Replace '+' with a space
-locale=$(echo "$locale" | sed -e 's,+, ,g')
+#locale=$(echo "$locale" | sed -e 's,+, ,g')
+locale=$(echo "${locale//+/ }")
 clear
 
 #Timezone country
 unset COUNT MENU_OPTIONS options
 COUNT=0
 
-for i in $(ls /usr/share/zoneinfo/) ; do
+for i in /usr/share/zoneinfo/* ; do
+	i=$(basename "$i") #remove the directory path
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -151,7 +146,8 @@ clear
 unset COUNT MENU_OPTIONS options systimezone
 if [ -d /usr/share/zoneinfo/"$countryTimezone" ]; then #Check to see if the country has additional timezones
 	COUNT=0
-	for i in $(ls /usr/share/zoneinfo/"$countryTimezone"/) ; do
+	for i in /usr/share/zoneinfo/"$countryTimezone"/* ; do
+		i=$(basename "$i")
 		COUNT=$((COUNT+1))
 		MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 	done
@@ -175,12 +171,12 @@ while : ; do
 		COUNT=$((COUNT+1))
 		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogDiskSize[$COUNT]} off"
 	done
-	installDisk=(dialog --backtitle "$dialogBacktitle" \
+	targetDisk=(dialog --backtitle "$dialogBacktitle" \
 		--scrollbar \
 		--title "Select the drive to install Arch on" \
 		--radiolist "Press space to select your drive" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 	options=(${MENU_OPTIONS})
-	installDisk=$("${installDisk[@]}" "${options[@]}" 2>&1 >/dev/tty)
+	installDisk=$("${targetDisk[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	#remove '|'
 	storage=$(echo "$installDisk" | sed 's/|.*//')
 	#determine storage type for partitions - nvme0n1p1, sda1 or mmcblk0p1 - $storagePartitions
@@ -214,7 +210,7 @@ fi
 dialog --title "Secure Disk Erase" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "$dialogHeight" "$dialogWidth" 2>&1 >/dev/tty
+	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionWipe=$?
 if [ "$optionWipe" = 0 ]; then
 	wipe="y"
@@ -769,7 +765,7 @@ fi
 if [[ "$boot" = bios ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "BIOS Platform" \
-	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc "$storage" --recheck" "$HEIGHT" "$WIDTH"
+	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc $storage --recheck" "$HEIGHT" "$WIDTH"
 fi
 clear
 
@@ -1125,7 +1121,7 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		#https://wiki.archlinux.org/index.php/NetworkManager#/etc/resolv.conf
 		#https://wiki.archlinux.org/index.php/Dnscrypt-proxy
 		echo "$green""Setting up DNSCrypt and DNSMasq""$reset"
-		arch-chroot /mnt pacman -S dnscrypt-proxy dnsmasq --noconfirm
+		arch-chroot /mnt pacman -S dnscrypt-proxy --noconfirm
 		#Remove stock network manager configs (Conflict with dnscrypt)
 		rm -r /mnt/etc/NetworkManager/dnsmasq.d/*
 		rm -r /mnt/etc/NetworkManager/conf.d/dns-servers.conf
