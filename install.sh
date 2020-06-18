@@ -23,7 +23,6 @@
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
 #https://askubuntu.com/questions/1094389/what-is-the-use-of-systemd-journal-flush-service
 
-##Make sure locale setting works
 
 #colors
 #white=$(tput setaf 7)
@@ -34,8 +33,8 @@ green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
 ##Dialog prgbox
-HEIGHT=45
-WIDTH=140
+HEIGHT=40
+WIDTH=130
 #WIDTH=0 #0 auto sets
 CHOICE_HEIGHT=40
 #dialog options for user input
@@ -58,10 +57,10 @@ timedatectl set-ntp true
 
 #desktop
 desktop=${desktop:-xfce}
-#hostname
+#hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
 host=$(dialog --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
-	--inputbox "Please enter a hostname. Default archlinux. " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1)
+	--inputbox "Please enter a hostname. Default archlinux. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 host=${host:-archlinux}
 clear
 
@@ -73,16 +72,17 @@ user=${user:-alex}
 clear
 
 #Password input - run in a loop in case user enters wrong password
+#for some reason 2>&1 needs to be first or else password gets leaked in the text field for a second when you press enter
 while : ; do
 	#pass1
 	pass1=$(dialog --title "Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter a password (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1)
+		--passwordbox "Please enter a password (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	pass1=${pass1:-pass}
 	#pass2
 	pass2=$(dialog --title "Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1)
+		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	pass2=${pass2:-pass}
 	if [ "$pass1" = "$pass2" ]; then
 		#dialog --pause "Passwords match!" "$dialogHeight" "$dialogWidth" 10
