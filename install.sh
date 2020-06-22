@@ -33,8 +33,8 @@ green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
 ##Dialog prgbox
-HEIGHT=40
-WIDTH=130
+HEIGHT=42
+WIDTH=135
 #WIDTH=0 #0 auto sets
 CHOICE_HEIGHT=40
 #dialog options for user input
@@ -780,15 +780,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Downloading grub utilities" "pacman -S p7zip --noconfirm" "$HEIGHT" "$WIDTH"
 ###TOOLS###
 declare -a grubLinks
-grubLinks=(https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z
-https://github.com/tianocore/edk2/releases/download/edk2-stable202002/ShellBinPkg.zip
-https://github.com/tianocore/edk2/raw/UDK2018/EdkShellBinPkg/MinimumShell/X64/Shell.efi
-https://cfhcable.dl.sourceforge.net/project/gptfdisk/gptfdisk/1.0.4/gdisk-binaries/gdisk-efi-1.0.4.zip
-https://github.com/manusov/UEFIdiskBenchmark/blob/master/executable/UefiDiskBenchmark.efi
-https://github.com/JamesAmiTw/ru-uefi/raw/master/5.25.0379.zip
-https://raw.githubusercontent.com/hymen81/UEFI-Game-FlappyBirdy/master/binary/FlappyBird.efi
-https://github.com/manusov/UEFImarkAndTetris64/raw/master/executable/TETRIS.EFI
-https://github.com/a1ive/uefi-tetris/blob/master/tetris.efi)
+grubLinks=(https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z)
 
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
