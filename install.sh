@@ -22,6 +22,7 @@
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
 #https://askubuntu.com/questions/1094389/what-is-the-use-of-systemd-journal-flush-service
+#add control + alt + backspace to bring up xorg-xkill
 
 
 #colors
@@ -43,6 +44,17 @@ dialogHeight=20
 dialogWidth=80
 #wifi check - wget -q --spider http://google.com
 #configure internet
+#Set time before init
+echo "$yellow""Please wait while the system clock and keyring are set""$reset"
+timedatectl set-ntp true
+#Set hwclock as well in case system has no battery for RTC
+ntpd -qg
+hwclock --systohc
+gpg --refresh-keys
+pacman-key --init
+pacman-key --populate
+clear
+
 #Welcome messages
 dialog --title "Welcome!" \
 --backtitle "$dialogBacktitle" \
@@ -51,9 +63,6 @@ dialog --title "Welcome!" \
 --msgbox "$(printf %"s\n" "Welcome to Alex's automatic install script!" "To use the default values in the script, press enter.")" \
 "$dialogHeight" "$dialogWidth"
 clear
-
-#Set time
-timedatectl set-ntp true
 
 #desktop
 desktop=${desktop:-xfce}
@@ -817,7 +826,7 @@ clear
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
 #grub config and unmount - https://make-linux-fast-again.com/ - nowatchdog pci=nommconf intel_pstate=disable acpi-cpufreq
 #Generate grubcfg with root UUID if encrypt=y
-mitigations=$(curl https://make-linux-fast-again.com/)
+mitigations=$(curl -s https://make-linux-fast-again.com/)
 if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3 $mitigations\",g" -i /mnt/etc/default/grub
