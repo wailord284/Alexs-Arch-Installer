@@ -45,6 +45,7 @@ dialogWidth=80
 #wifi check - wget -q --spider http://google.com
 #configure internet
 #Set time before init
+#This is useful if you installed coreboot. The clock will have no time set by default and this will update it.
 echo "$yellow""Please wait while the system clock and keyring are set""$reset"
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
@@ -53,6 +54,8 @@ hwclock --systohc
 gpg --refresh-keys
 pacman-key --init
 pacman-key --populate
+pacman -Syy
+pacman -S archlinux-keyring
 clear
 
 #Welcome messages
@@ -489,9 +492,9 @@ SigLevel = Never
 
 
 #reinstall keyring in case of gpg errors
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing additional packages" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
+#dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+#--title "Installing additional packages" \
+#--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 #install desktop and software
 ##add back pinta?
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
