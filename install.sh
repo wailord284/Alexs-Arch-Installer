@@ -963,7 +963,6 @@ cache-size=1000' >> /mnt/etc/dnsmasq.conf
 		echo "$green""Configuring iwd as the default wifi backend in NetworkManager""$reset"
 		mv Arch-Linux-Installer-master/configs/networkmanager/wifi_backend.conf /mnt/etc/NetworkManager/conf.d/
 		arch-chroot /mnt pacman -S iwd --noconfirm
-		arch-chroot /mnt systemctl enable iwd
 		sleep 3s
 		;;
 
