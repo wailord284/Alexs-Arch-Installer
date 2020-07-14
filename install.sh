@@ -259,6 +259,11 @@ if [ "$wipe" = y ]; then
 fi
 
 
+#Boot type override. You can manually change this variable to the platform you want to install to.
+#This is useful if youre installing on a 64bit uefi device but want a 32bit uefi boot (Ex. moving the drive to a different computer)
+#Set boot override to 64 or 32
+bootOverride=""
+
 #Start the install
 #detect efi/uefi bios
 #https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
@@ -268,6 +273,19 @@ if [ -d /sys/firmware/efi/ ]; then #if efi is present in /sys/firmware/ then sys
 else
 	boot="bios" #Set boot to bios
 fi
+#Also detect the boot arch. Some platforms have a 32bit uefi (NOT to be confused with 32bit cpu)
+if [ "$boot" = "efi" ]; then
+	bootArch="$(cat /sys/firmware/efi/fw_platform_size)"
+	echo "$bootArch"
+fi
+
+#Change boot arch if manually set above
+if [ "$bootOverride" = 64 ]; then
+	bootArch="64"
+elif [ "$bootOverride" = 32 ]; then
+	bootArch="32"
+fi
+
 if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -768,11 +786,17 @@ mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysc
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 
 
-#grub install
+#grub install - support uefi 64 and 32
 if [ "$boot" = efi ]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "EFI Platform" \
-	--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
+	if [ "$bootArch" = 64 ]; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "EFI Platform" \
+		--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
+	else
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "EFI Platform" \
+		--prgbox "Installing grub for 32 bit UEFI" "arch-chroot /mnt grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
+	fi
 fi
 
 if [[ "$boot" = bios ]]; then
