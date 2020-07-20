@@ -24,7 +24,9 @@
 #https://askubuntu.com/questions/1094389/what-is-the-use-of-systemd-journal-flush-service
 #add control + alt + backspace to bring up xorg-xkill
 #Add check for nvidia graphics by dmesg | grep nv_backlight
-
+#Change ext4 reserved blocks to 3% instead of 5% (use -m 3 in mkfs.ext4)
+#Add E4rat for non ssds
+#Check soon for systemd-oomd
 
 #colors
 #white=$(tput setaf 7)
@@ -276,14 +278,15 @@ fi
 #Also detect the boot arch. Some platforms have a 32bit uefi (NOT to be confused with 32bit cpu)
 if [ "$boot" = "efi" ]; then
 	bootArch="$(cat /sys/firmware/efi/fw_platform_size)"
-	echo "$bootArch"
 fi
 
 #Change boot arch if manually set above
 if [ "$bootOverride" = 64 ]; then
 	bootArch="64"
+	boot="efi"
 elif [ "$bootOverride" = 32 ]; then
 	bootArch="32"
+	boot="efi"
 fi
 
 if [[ "$boot" = efi && "$encrypt" = y ]]; then
@@ -516,14 +519,15 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 #install desktop and software
 ##add back pinta?
+#maybe add systembus-notify for earlyoom - becomes a startup service which i dont love
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit galculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ xorg-xrandr systembus-notify --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ xorg-xrandr iotop --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
