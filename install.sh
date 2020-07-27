@@ -27,6 +27,7 @@
 #Change ext4 reserved blocks to 3% instead of 5% (use -m 3 in mkfs.ext4)
 #Add E4rat for non ssds
 #Check soon for systemd-oomd
+#Maybe add spindown for unused drives - https://wiki.archlinux.org/index.php/Hdparm#Putting_a_drive_to_sleep_directly_after_boot
 
 #colors
 #white=$(tput setaf 7)
@@ -741,8 +742,12 @@ if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -
 	echo "options usbcore autosuspend=5" > /mnt/etc/modprobe.d/usb-autosuspend.conf
 	#HDD power save
 	echo 'ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/50-hd_power_save.rules
+	#HDD Spindown - values of 0-127 let drives spin down (hard drives ONLY)
+	echo 'ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 127 /dev/%k"' > /etc/udev/rules.d/69-hdparm.rules
 	#Laptop mode to save power with spinning drives
 	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
+	#Disable watchdog - may help with power
+	mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
 fi
 clear
 
@@ -766,8 +771,6 @@ sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wir
 mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
 
 #Setup sysctl tweaks - Arch stores some defaults in /usr/lib/sysctl.d/
-##disable watchdog - No longer enabled by default. May be useful to leave for servers
-#mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
 #fix usb speeds - currently disabled due to system lockups when copying files
 #mv Arch-Linux-Installer-master/configs/sysctl/00-usb-speed-fix.conf /mnt/etc/sysctl.d/
 
