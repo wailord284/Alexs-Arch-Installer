@@ -523,7 +523,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 #maybe add systembus-notify for earlyoom - becomes a startup service which i dont love
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin conky xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ xorg-xrandr iotop --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bc bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ xorg-xrandr iotop --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -890,7 +890,7 @@ echo "$green""1$reset - Install Bedrock Linux"
 echo "$green""2$reset - Enable X2Go remote management server"
 echo "$green""3$reset - Enable sshd"
 echo "$green""4$reset - Route all traffic over Tor"
-echo "$green""5$reset - Sort mirrors with Reflector - Will also enable weekly reflector timer $green(recommended)"
+echo "$green""5$reset - Sort mirrors with Reflector$green(recommended)"
 echo "$green""6$reset - Enable and install the UFW firewall"
 echo "$green""7$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager $green(recommended)"
 echo "$green""8$reset - Restore old network interface names (eth0, wlan0...)"
@@ -974,7 +974,7 @@ cache-size=1000' >> /mnt/etc/dnsmasq.conf
 		echo "$green""Sorting mirrors""$reset"
 		arch-chroot /mnt pacman -S reflector reflector-timer --noconfirm
 		arch-chroot /mnt reflector --verbose --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
-		arch-chroot /mnt systemctl enable reflector.timer
+		#arch-chroot /mnt systemctl enable reflector.timer
 		sed '/mirror.lty.me/d' -i /mnt/etc/pacman.d/mirrorlist
 		sed '/mirrors.kernel.org/d' -i /mnt/etc/pacman.d/mirrorlist
 		sleep 3s

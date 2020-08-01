@@ -8,13 +8,13 @@ This is a small script I have been working on for over a year to simplify the Ar
 To use this script, you first need to create a bootable USB with the Arch Linux ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using wget. Both options will be kept up to date. 
 To use the script, do the following:
 ```
-wget wailord284.club/repo/install.sh
+curl wailord284.club/repo/install.sh -o install.sh
 chmod +x install.sh
 ./install.sh
 ```
 The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Use y or n for yes and no during prompts if required.
 # Features!
-- Works with both UEFI and BIOS!
+- Works with both UEFI (64 and 32 bit) and BIOS!
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatic detection for Intel and AMD CPUs (installs correct microcode)
 - Automatically detect if running in VirtualBox or VMware and install appropriate guest additions
@@ -24,6 +24,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Kernel Modules hook to restore functionality when the running kernel updates
 - Pacman cleanup hook to clean the pacman cache when updating
 - FSTrim timer if a SSD is detected
+- Zram instead of swap (sets to 20% of total ram using zramswap)
 - Modified IO Schedulers for hard drives, SSDs and NVME drives
 - Change mkinitcpio compression to lz4 (Faster but bigger size)
 - Custom nanorc file to include syntax highlighting
@@ -46,21 +47,20 @@ The user will now be prompted to supply basic information such as hostname, user
     * Enable TLP and various power saving tweaks
 - Grub changes:
     * Disabled spectre/meltdown patches (Increase performance. Edit /etc/defult/grub to remove)
-    * Custom menus
+    * Trust CPU Random Number Generation (random.trust_cpu=on) improves boot time
     * Arch Linux theme
-    * Reboot, shutdown, File Manager for both UEFI/BIOS
+    * Reboot, shutdown, File Manager option for both UEFI/BIOS
     * UEFI Only tools: UEFI Shell, GDisk partition editor, Chipset reader
     * UEFI Only games: Tetris, Flappybird
     * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 works on all systems)
 - Makepkg changes:
     * Change makeflags to account for all cores in the system (-j)
     * Change -mtune=generic to native
-    * Use .tar as default package extension (No compression)
+    * Use .tar as default package extension (No compression) when building AUR packages
     * Add multithreaded capable compression programs for supported files
     * Enable max compression when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
 - Systemd changes:
     * Systemd service timeout changed from 90 seconds to 45 seconds
-    * Enable zram instead of traditional swap (sets to 1/5 total RAM)
     * Promiscuous mode systemd service to make packet sniffing easier (disabled by default)
 - Password changes (How the password is stored):
     * Increase hashing rounds and change hash to SHA512
@@ -79,7 +79,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Automatic hardware clock updates using NTP (Updates everytime device connects to internet)
 - Aurmageddon repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * Packages installed from Aurmageddon include:
-    * ```surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-ms-fonts ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap```
+    * ```surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent imagewriter kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont update-grub materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap```
     * View the public repository here: http://wailord284.club/repo/aurmageddon/x86_64/
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
@@ -87,9 +87,9 @@ The user will now be prompted to supply basic information such as hostname, user
     * X2Go remote management server
     * Enable SSHD
     * Route all traffic over Tor (Not reversible)
-    * Sort mirrors with Reflector - Will also enable weekly reflector timer (Recommended)
+    * Sort mirrors with Reflector (Recommended)
     * Use the IWD wifi backend instead of wpa_supplicant for NetworkManager (Recommended)
-    * Restore old network interface names (eth0, wlan0...)
+    * Restore traditional network interface names (eth0, wlan0...)
     * Disable/Blacklist bluetooth and webcam (Recommended)
     * Enable Firejail for all supported applications
     * Enable VNstat webui traffic monitor
