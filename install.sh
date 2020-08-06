@@ -28,7 +28,8 @@
 #Add E4rat for non ssds
 #Check soon for systemd-oomd
 #Maybe add spindown for unused drives - https://wiki.archlinux.org/index.php/Hdparm#Putting_a_drive_to_sleep_directly_after_boot
-
+#Maybe add option for pkgstats - optionally reports installed packages etc...
+#Add labels to drives https://www.reddit.com/r/linux/comments/i3z9u0/nows_a_good_time_to_update_your_servers_to_use/
 #colors
 #white=$(tput setaf 7)
 #purple=$(tput setaf 5)
@@ -54,7 +55,7 @@ echo "$yellow""Please wait while the system clock and keyring are set""$reset"
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring ntp wget --noconfirm
+pacman -S archlinux-keyring ntp wget dialog --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
