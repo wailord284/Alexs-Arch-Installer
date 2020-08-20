@@ -31,6 +31,7 @@
 #Maybe add option for pkgstats - optionally reports installed packages etc...
 #Add labels to drives https://www.reddit.com/r/linux/comments/i3z9u0/nows_a_good_time_to_update_your_servers_to_use/
 #Auto-cpufreq https://github.com/AdnanHodzic/auto-cpufreq
+#readd the pam lockout after 3 failed passwords - broken in newest update
 
 #colors
 #white=$(tput setaf 7)
@@ -483,7 +484,7 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 #Lockout a user after 10 failed attempts for 10 mins
 #unlock a user with: pam_tally2 --reset --user username
 echo "#unlock a user account with: pam_tally2 --reset --user username" >> /mnt/etc/pam.d/system-login
-echo "auth required pam_tally2.so deny=10 unlock_time=600 onerr=succeed file=/var/log/tallylog" >> /mnt/etc/pam.d/system-login
+echo "#auth required pam_tally2.so deny=10 unlock_time=600 onerr=succeed file=/var/log/tallylog" >> /mnt/etc/pam.d/system-login
 
 
 #Install repos - multilib, aurmageddon, archlinuxcn, archstrike and repo-ck
