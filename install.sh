@@ -703,6 +703,8 @@ arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/font
 sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
 mv -f Arch-Linux-Installer-master/configs/fonts/local.conf /mnt/etc/fonts/local.conf
 
+#Add xorg file that allows the user to press control, alt, backspace to kill xorg (returns to login manager)
+mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 
 #NetworkManager/Network startup scripts
 #interface=$(ip a | grep "state UP" | cut -c4- | sed 's/:.*//')
