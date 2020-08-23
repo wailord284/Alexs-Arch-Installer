@@ -620,7 +620,7 @@ sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/make
 sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSXZ=(xz -c -z -),COMPRESSXZ=(xz -e -9 -c -z --threads=0 -),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=0 -),g" -i /mnt/etc/makepkg.conf
-sed "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
+sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 
 
 #If Entropy is low, install rng-tools
@@ -978,7 +978,7 @@ cache-size=1000' >> /mnt/etc/dnsmasq.conf
 
 		5)
 		echo "$green""Sorting mirrors""$reset"
-		arch-chroot /mnt pacman -S reflector reflector-timer --noconfirm
+		arch-chroot /mnt pacman -S reflector --noconfirm
 		arch-chroot /mnt reflector --verbose --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
 		#arch-chroot /mnt systemctl enable reflector.timer
 		sed '/mirror.lty.me/d' -i /mnt/etc/pacman.d/mirrorlist
