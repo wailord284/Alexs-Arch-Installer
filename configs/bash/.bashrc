@@ -45,7 +45,7 @@ alias mousefix='sudo modprobe -r psmouse && sudo modprobe psmouse'
 alias ipinfo='curl ipinfo.io'
 alias cls='clear'
 alias dl='youtube-dl -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 --prefer-ffmpeg --embed-thumbnail -ci -o "%(title)s-%(id)s.%(ext)s"'
-alias update-mirror="sudo reflector --latest 50 --protocol https --protocol http --country US --number 20 --sort age --save /etc/pacman.d/mirrorlist"
+alias update-mirror="sudo reflector --verbose --latest 50 --protocol https --protocol http --country US --sort rate --save /etc/pacman.d/mirrorlist"
 #https://askubuntu.com/questions/627621/no-object-for-d-bus-interface-when-mounting-with-nautilus/1128845
 alias dbusfix='systemctl --user restart gvfs-udisks2-volume-monitor'
 #Calculator - needs bc to function
