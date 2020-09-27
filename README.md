@@ -74,7 +74,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Modified NetworkManager setup:
     * Random wireless MAC address
     * Increased IPv6 privacy
-    * DNS cacheing with dnsmasq
+    * DNS cacheing with dnsmasq (currently disabled)
     * Secure DNS servers (1.1.1.1, 1.0.0.1, 9.9.9.9) (replaced by dnscrypt and dnsmasq if selected)
     * Automatic hardware clock updates using NTP (Updates everytime device connects to internet)
 - Aurmageddon repository maintained by me. Contains 1500+ packages updated every 6 hours.

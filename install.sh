@@ -602,7 +602,7 @@ sed "s,\#\ %wheel ALL=(ALL) ALL, %wheel ALL=(ALL) ALL,g" -i /mnt/etc/sudoers
 echo 'Defaults !tty_tickets' >> /mnt/etc/sudoers
 echo 'Defaults passwd_timeout=0' >> /mnt/etc/sudoers
 echo 'Defaults editor=/usr/bin/rnano' >> /mnt/etc/sudoers
-echo "#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/makepkg,/usr/bin/cpupower,/usr/bin/halt,/usr/bin/poweroff,/usr/bin/reboot" >> /mnt/etc/sudoers
+echo "#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot" >> /mnt/etc/sudoers
 
 
 #set a lower systemd timeout
@@ -713,7 +713,7 @@ mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
 mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
 #IPv6 privacy and managed connection
 echo -e "[connection]\nipv6.ip6-privacy=2\n[ifupdown]\nmanaged=true" >> /mnt/etc/NetworkManager/NetworkManager.conf
-#Use dnsmasq for dns
+#Use dnsmasq for dns - this is currently disabled - networkmanager sets resolv.conf to 127.0.0.1 when dns=dnsmasq
 mv Arch-Linux-Installer-master/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
 echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
 echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
@@ -737,7 +737,7 @@ if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
 #Check and setup touchpad
-if grep -i TouchPad /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" > /dev/null 2>&1 ; then
+if grep -i TouchPad /proc/bus/input/devices || grep -i "Lid Switch" /proc/bus/input/devices ||arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
 	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics ethtool tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
