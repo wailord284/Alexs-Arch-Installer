@@ -5,6 +5,12 @@
 cat /usr/share/pokeshell/$(($RANDOM % 151 + 1)).pokemon
 #Colors for ls
 . /usr/share/LS_COLORS/dircolors.sh
+#Do not save cmds with " " in front or duplicate commands run after eachother
+HISTCONTROL=ignoreboth
+HISTSIZE=1000
+HISTFILESIZE=2000
+#Add date formatting to .bash_history
+export HISTTIMEFORMAT="%h %d %H:%M:%S "
 #Alias stuff
 alias ls='ls --color=auto --group-directories-first'
 alias dir='dir --color=auto'
@@ -19,10 +25,6 @@ shopt -s checkwinsize
 shopt -s cdspell
 shopt -s dirspell
 shopt -s histappend
-HISTCONTROL=ignoredups
-HISTCONTROL=ignoreboth
-HISTSIZE=1000
-HISTFILESIZE=2000
 #Personal pacman/yay commands
 alias ys='yay'
 alias ydd='yay -Rdd'
@@ -48,10 +50,8 @@ alias dl='youtube-dl -x --format m4a --youtube-skip-dash-manifest --audio-qualit
 alias update-mirror="sudo reflector --verbose --latest 50 --protocol https --protocol http --country US --sort rate --save /etc/pacman.d/mirrorlist"
 #https://askubuntu.com/questions/627621/no-object-for-d-bus-interface-when-mounting-with-nautilus/1128845
 alias dbusfix='systemctl --user restart gvfs-udisks2-volume-monitor'
-#Calculator - needs bc to function
-calc() {
-    echo "scale=3;$@" | bc -l
-}
+alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+
 ### ARCHIVE EXTRACTION
 # usage: ex <file>
 ex ()
@@ -90,13 +90,9 @@ PROMPT_COMMAND=exitstatus
 exitstatus() {
 if [ "$?" -eq "0" ]; then
 	SC="${BGREEN}:)"
-	directory=$(echo -en "\033]0;$(pwd) 🙂\a")
 else
 	SC="${BRED}:("
-	directory=$(echo -en "\033]0;$(pwd) 🙃\a")
-	#lastcmd="$(history | tac | head -n 1 | cut -c 8-)"
-	#echo -e "${lastcmd} failed with exit code $?\n"
 fi
 #${directory}
-PS1="[${BGWHITE}\u${BGWHITE}@${BGREEN}\h ${BGWHITE}\W${BGWHITE}] ${SC}${BGWHITE} "
+PS1="${BGWHITE}[\A][\u${BGWHITE}@${BGREEN}\h ${BGWHITE}\W${BGWHITE}] ${SC}${BGWHITE} "
 }
