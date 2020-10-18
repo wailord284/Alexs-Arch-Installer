@@ -432,10 +432,11 @@ clear
 
 
 #Enable encryption mkinitcpio hooks if needed and set lz4 compression (Faster but bigger size)
+#ZSTD compression: https://kernelnewbies.org/Linux_5.9#Support_for_ZSTD_compressed_kernel.2C_ramdisk_and_initramfs
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
-sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
+sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"zstd\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
 
 

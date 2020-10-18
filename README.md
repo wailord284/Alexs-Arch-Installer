@@ -26,7 +26,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - FSTrim timer if a SSD is detected
 - Zram instead of swap (sets to 20% of total ram using zramswap)
 - Modified IO Schedulers for hard drives, SSDs and NVME drives
-- Change mkinitcpio compression to lz4 (Faster but bigger size)
+- Change mkinitcpio compression to ZSTD (Added in kernel 5.9)
 - Custom nanorc file to include syntax highlighting
 - Support for Touchscreen devices (such as the Thinkpad X201T/X220T)
 - Modified freetype2 and fonts/local.conf to improve font rendering (default font: Ubuntu)
