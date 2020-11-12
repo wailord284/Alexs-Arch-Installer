@@ -301,10 +301,10 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
-	parted -s "$storage" mkpart primary fat32 1MiB 260MiB
+	parted -s "$storage" mkpart primary fat32 1MiB 512MiB
 	parted -s "$storage" set 1 esp on
 	#create ext4 root partition
-	parted -s "$storage" mkpart primary ext4 260MiB 100%
+	parted -s "$storage" mkpart primary ext4 512MiB 100%
 	#Format partitions
 	clear #Run cryptsetup just in terminal
 	cryptsetup -v -y --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
@@ -318,6 +318,10 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot with encryption" \
 	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+	#add label to the filesystem
+	tune2fs -L ArchLinux "${storagePartitions[2]}"
+	fatlabel ${storagePartitions[1]} ArchBoot
+	#mount drives
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
@@ -328,14 +332,17 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
-	parted -s "$storage" mkpart primary fat32 1MiB 260MiB #551MiB
+	parted -s "$storage" mkpart primary fat32 1MiB 512MiB #551MiB
 	parted -s "$storage" set 1 esp on
 	#create ext4 root partition
-	parted -s "$storage" mkpart primary ext4 260MiB 100% #551MiB
+	parted -s "$storage" mkpart primary ext4 512MiB 100% #551MiB
 	#Format partitions
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot no encryption" \
 	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]} && mkfs.ext4 ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+	#add label to the filesystem
+	tune2fs -L ArchLinux "${storagePartitions[2]}"
+	fatlabel ${storagePartitions[1]} ArchBoot
 	#Mount drive
 	mount "${storagePartitions[2]}" /mnt
 	mkdir /mnt/boot
@@ -349,10 +356,10 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create ext4 boot partition
 	parted -s "$storage" mklabel msdos #BIOS needs msdos
-	parted -s "$storage" mkpart primary ext4 1MiB 260MiB #bios requires ext4
+	parted -s "$storage" mkpart primary ext4 1MiB 512MiB #bios requires ext4
 	parted -s "$storage" set 1 boot on #mark bootable
 	#create ext4 root partition
-	parted -s "$storage" mkpart primary ext4 260MiB 100%
+	parted -s "$storage" mkpart primary ext4 512MiB 100%
 	#Format partitions
 	clear #run in terminal
 	cryptsetup -v -y --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
@@ -365,6 +372,9 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS with encryption" \
 	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+	#add label to the filesystem
+	tune2fs -L ArchLinux "${storagePartitions[1]}"
+	#mount drives
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
@@ -381,6 +391,9 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS without encryption" \
 	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+	#add label to the filesystem
+	tune2fs -L ArchLinux "${storagePartitions[1]}"
+	#mount drive
 	mount "${storagePartitions[1]}" /mnt
 fi
 clear
@@ -431,12 +444,12 @@ fi
 clear
 
 
-#Enable encryption mkinitcpio hooks if needed and set lz4 compression (Faster but bigger size)
+#Enable encryption mkinitcpio hooks if needed and set zstd compression
 #ZSTD compression: https://kernelnewbies.org/Linux_5.9#Support_for_ZSTD_compressed_kernel.2C_ramdisk_and_initramfs
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
-sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"zstd\",g" -i /mnt/etc/mkinitcpio.conf
+sed "s,\#\COMPRESSION=\"zstd\",COMPRESSION=\"zstd\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
 
 
@@ -924,7 +937,7 @@ selection=${selection:- 5 15 18 q}
 
 		1)
 		#bedrock - https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
-		bedrockVersion="0.7.17"
+		bedrockVersion="0.7.18"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
@@ -974,7 +987,6 @@ selection=${selection:- 5 15 18 q}
 		echo "$green""Sorting mirrors""$reset"
 		arch-chroot /mnt pacman -S reflector --noconfirm
 		arch-chroot /mnt reflector --verbose --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
-		#arch-chroot /mnt systemctl enable reflector.timer
 		sed '/mirror.lty.me/d' -i /mnt/etc/pacman.d/mirrorlist
 		sed '/mirrors.kernel.org/d' -i /mnt/etc/pacman.d/mirrorlist
 		sleep 3s
@@ -985,7 +997,7 @@ selection=${selection:- 5 15 18 q}
 		arch-chroot /mnt pacman -S ufw gufw --noconfirm
 		arch-chroot /mnt ufw default deny
 		arch-chroot /mnt ufw allow Transmission
-		arch-chroot /mnt ufw limit ssh
+		arch-chroot /mnt ufw limit SSH
 		arch-chroot /mnt ufw enable
 		arch-chroot /mnt systemctl enable ufw.service
 		sleep 3s
