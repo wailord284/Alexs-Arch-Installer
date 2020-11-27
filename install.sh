@@ -18,20 +18,18 @@
 ###Things to maybe add###
 #add permrs https://github.com/gort818/permrs - make systemd timer https://www.putorius.net/using-systemd-timers.html
 #add option for fail2ban
-#tzupdate to replace networkmanager curl timezone thing
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
 #https://askubuntu.com/questions/1094389/what-is-the-use-of-systemd-journal-flush-service
-#add control + alt + backspace to bring up xorg-xkill
 #Add check for nvidia graphics by dmesg | grep nv_backlight
 #Change ext4 reserved blocks to 3% instead of 5% (use -m 3 in mkfs.ext4)
 #Add E4rat for non ssds
 #Maybe add spindown for unused drives - https://wiki.archlinux.org/index.php/Hdparm#Putting_a_drive_to_sleep_directly_after_boot
 #Maybe add option for pkgstats - optionally reports installed packages etc...
-#Add labels to drives https://www.reddit.com/r/linux/comments/i3z9u0/nows_a_good_time_to_update_your_servers_to_use/
 #Auto-cpufreq https://github.com/AdnanHodzic/auto-cpufreq
 #readd the pam lockout after 3 failed passwords - broken in newest update
 #look at readding dnsmasq cache in networkmanager - currently sets /etc/resolv.conf to 127.0.0.1
+#Consider moving bash and other use configs to /etc/skel
 
 #colors
 #white=$(tput setaf 7)
@@ -373,7 +371,8 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	--title "Legacy BIOS with encryption" \
 	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	#add label to the filesystem
-	tune2fs -L ArchLinux "${storagePartitions[1]}"
+	tune2fs -L ArchLinux "${storagePartitions[2]}"
+	tune2fs -L ArchBoot "${storagePartitions[1]}"
 	#mount drives
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
@@ -471,6 +470,10 @@ lang=$(echo "$locale" | cut -d ' ' -f 1)
 echo "LANG=$lang" >> /mnt/etc/locale.conf
 #set hostname
 echo "$host" >> /mnt/etc/hostname
+#add hostname and ip stuffs to /etc/hosts
+echo "127.0.0.1	localhost
+::1		localhost
+127.0.1.1	"$host".localdomain	"$host"" > /mnt/etc/hosts
 clear
 
 
@@ -937,7 +940,7 @@ selection=${selection:- 5 15 18 q}
 
 		1)
 		#bedrock - https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
-		bedrockVersion="0.7.18"
+		bedrockVersion="0.7.19"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
