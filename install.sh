@@ -543,7 +543,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 #maybe add systembus-notify for earlyoom - becomes a startup service which i dont love
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver gpart pinta --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme deadbeef ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver gpart pinta haveged irqbalance --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -556,7 +556,7 @@ clear
 #Disabled
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged.service irqbalance.service" "$HEIGHT" "$WIDTH"
 
 
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
@@ -637,16 +637,6 @@ sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makep
 sed "s,COMPRESSXZ=(xz -c -z -),COMPRESSXZ=(xz -e -9 -c -z --threads=0 -),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=0 -),g" -i /mnt/etc/makepkg.conf
 sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
-
-
-#If Entropy is low, install rng-tools
-#rng-tools may not work well on older systems, so you may want to install https://wiki.archlinux.org/index.php/Haveged
-entropy=$(cat /proc/sys/kernel/random/entropy_avail)
-if [ "$entropy" -lt 1800 ]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Detecting Entropy" \
-	--prgbox "Low system entropy" "arch-chroot /mnt pacman -S rng-tools --noconfirm && arch-chroot /mnt systemctl enable rngd" "$HEIGHT" "$WIDTH"
-fi
 
 
 #Detect if running in virtual machine and install guest additions
@@ -926,12 +916,10 @@ echo "$green""15$reset - Enable automatic desktop login in lxdm $green(recommend
 echo "$green""16$reset - Enable daily rootkit detection scan"
 echo "$green""17$reset - Enable Ananicy - Daemon for setting CPU priority and scheduling. May increase performance"
 echo "$green""18$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
-echo "$green""19$reset - Enable IRQBalance - helps balance the cpu load generated by interrupts across all of a systems cpus"
-echo "$green""20$reset - Enable Haveged - increase system entropy and randomness"
-echo "$green""21$reset - Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq"
+echo "$green""19$reset - Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq"
 
 echo "$reset""Default options are:$green 5 15 18$red q""$reset"
-echo "Enter$green 1-21$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
+echo "Enter$green 1-19$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
 selection=${selection:- 5 15 18 q}
 	for entry in $selection ;do
@@ -1118,36 +1106,6 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		;;
 
 		19)
-		#IRQbalance
-		echo "$green""Installing and enabling IRQBalance""$reset"
-		arch-chroot /mnt pacman -S irqbalance --noconfirm
-		arch-chroot /mnt systemctl enable irqbalance.service
-		sleep 3s
-		;;
-
-		20)
-		#https://wiki.archlinux.org/index.php/Haveged
-		if [ "$entropy" -lt 1800 ]; then
-			echo "$yellow""rng-tools was already installed after low entropy was detected""$reset"
-			echo "$yellow""Would you like to remove rng-tools and install haveged? - y/n"
-			read -r -p "Install Haveged: " haveged
-			if [ "$haveged" = y ]; then
-				echo "$green""Disabling rng-tools and installing Haveged to increase system entropy""$reset"
-				arch-chroot /mnt pacman -S haveged --noconfirm
-				arch-chroot /mnt systemctl disable rngd.service
-				arch-chroot /mnt systemctl enable haveged.service
-			else
-				echo "$green""Keeping rng-tools installed""$reset"
-			fi
-		else
-			echo "$green""Installing Haveged to increase system entropy""$reset"
-			arch-chroot /mnt pacman -S haveged --noconfirm
-			arch-chroot /mnt systemctl enable haveged.service
-		fi
-		sleep 3s
-		;;
-
-		21)
 		#https://wiki.archlinux.org/index.php/Dnsmasq
 		#https://wiki.archlinux.org/index.php/NetworkManager#/etc/resolv.conf
 		#https://wiki.archlinux.org/index.php/Dnscrypt-proxy
