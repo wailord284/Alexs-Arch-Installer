@@ -408,7 +408,7 @@ SigLevel = Never' >> /etc/pacman.conf
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector -f 10 --verbose --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector -f 10 --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
@@ -863,6 +863,7 @@ mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
 mv Arch-Linux-Installer-master/configs/grub/tools/* /mnt/boot/EFI/tools/
 mv Arch-Linux-Installer-master/configs/grub/games/*.efi /mnt/boot/EFI/games/
+mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
 
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
