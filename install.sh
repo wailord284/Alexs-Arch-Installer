@@ -837,12 +837,12 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
 --prgbox "Downloading grub utilities" "pacman -S p7zip --noconfirm" "$HEIGHT" "$WIDTH"
 ###TOOLS###
-declare -a grubLinks
-grubLinks=(https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z)
+#declare -a grubLinks
+#grubLinks=(https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z)
 
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Configuring grub" \
---prgbox "Downloading grub utilities" "wget ${grubLinks[*]}" "$HEIGHT" "$WIDTH"
+#dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+#--title "Configuring grub" \
+#--prgbox "Downloading grub utilities" "wget ${grubLinks[*]}" "$HEIGHT" "$WIDTH"
 
 #Memtest86 - UEFI. Legacy BIOS handled by memtest86+ package
 #mount the img file on the target install to not run out of disk space
@@ -856,21 +856,14 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 #mv /mnt/memtest/memimg/EFI/BOOT/BOOTX64.efi /mnt/boot/EFI/tools/memtestx64.efi
 #umount /mnt/memtest/memimg
 #rm -r /mnt/memtest
+
 ##Changed memtest to download from github
-#Move efi items
+#Move grub boot items
 mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
-mv Arch-Linux-Installer-master/configs/grub/tools/*.efi /mnt/boot/EFI/tools/
+mv Arch-Linux-Installer-master/configs/grub/tools/* /mnt/boot/EFI/tools/
 mv Arch-Linux-Installer-master/configs/grub/games/*.efi /mnt/boot/EFI/games/
 
-#Grub file manager https://github.com/a1ive/grub2-filemanager/releases
-7z -bb 0 -bd x grubfm-en_US.7z
-mkdir -p /mnt/boot/EFI/tools
-mv grubfmx64.efi grubfm.iso loadfm /mnt/boot/EFI/tools/
-rm -r grubfm-en_US.7z grubfmia32.efi
-#Create /boot/grub/custom.cfg
-mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
-clear
 
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
 #grub config and unmount - https://make-linux-fast-again.com/ - nowatchdog pci=nommconf intel_pstate=disable acpi-cpufreq
@@ -903,7 +896,7 @@ echo "$green""1$reset - Install Bedrock Linux"
 echo "$green""2$reset - Enable X2Go remote management server"
 echo "$green""3$reset - Enable sshd"
 echo "$green""4$reset - Route all traffic over Tor"
-echo "$green""5$reset - Sort mirrors with Reflector$green(recommended)"
+echo "$green""5$reset - Sort mirrors with Reflector for new install$green(recommended)"
 echo "$green""6$reset - Enable and install the UFW firewall"
 echo "$green""7$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager"
 echo "$green""8$reset - Restore old network interface names (eth0, wlan0...)"
@@ -978,7 +971,7 @@ selection=${selection:- 5 15 18 q}
 		5)
 		echo "$green""Sorting mirrors""$reset"
 		arch-chroot /mnt pacman -S reflector --noconfirm
-		arch-chroot /mnt reflector --verbose --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
+		arch-chroot /mnt reflector -f 10 --verbose --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
 		sed '/mirror.lty.me/d' -i /mnt/etc/pacman.d/mirrorlist
 		sed '/mirrors.kernel.org/d' -i /mnt/etc/pacman.d/mirrorlist
 		sleep 3s
