@@ -30,6 +30,7 @@
 #readd the pam lockout after 3 failed passwords - broken in newest update
 #look at readding dnsmasq cache in networkmanager - currently sets /etc/resolv.conf to 127.0.0.1
 #Consider moving bash and other use configs to /etc/skel
+#Reflector might be busted
 
 #colors
 #white=$(tput setaf 7)
@@ -407,7 +408,7 @@ SigLevel = Never' >> /etc/pacman.conf
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --verbose --latest 200 --country US --protocol http --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector -f 10 --verbose --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
@@ -556,7 +557,7 @@ clear
 #Disabled
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged.service irqbalance.service" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged irqbalance" "$HEIGHT" "$WIDTH"
 
 
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
