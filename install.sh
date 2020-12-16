@@ -20,16 +20,13 @@
 #add option for fail2ban
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
-#https://askubuntu.com/questions/1094389/what-is-the-use-of-systemd-journal-flush-service
 #Add check for nvidia graphics by dmesg | grep nv_backlight
-#Change ext4 reserved blocks to 3% instead of 5% (use -m 3 in mkfs.ext4)
 #Add E4rat for non ssds
 #Maybe add spindown for unused drives - https://wiki.archlinux.org/index.php/Hdparm#Putting_a_drive_to_sleep_directly_after_boot
 #Maybe add option for pkgstats - optionally reports installed packages etc...
 #Auto-cpufreq https://github.com/AdnanHodzic/auto-cpufreq
 #readd the pam lockout after 3 failed passwords - broken in newest update
 #look at readding dnsmasq cache in networkmanager - currently sets /etc/resolv.conf to 127.0.0.1
-#Consider moving bash and other use configs to /etc/skel
 #Reflector might be busted
 
 #colors
@@ -49,8 +46,7 @@ CHOICE_HEIGHT=40
 dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
-#wifi check - wget -q --spider http://google.com
-#configure internet
+
 #Set time before init
 #This is useful if you installed coreboot. The clock will have no time set by default and this will update it.
 echo "$yellow""Please wait while the system clock and keyring are set""$reset"
@@ -408,8 +404,7 @@ SigLevel = Never' >> /etc/pacman.conf
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm" "$HEIGHT" "$WIDTH"
-reflector --verbose -f 10 --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --verbose -f 10 --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
@@ -545,7 +540,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 #maybe add systembus-notify for earlyoom - becomes a startup service which i dont love
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati vulkan-icd-loader firefox firefox-extension-https-everywhere firefox-extension-privacybadger firefox-ublock-origin --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati vulkan-icd-loader firefox firefox-extension-https-everywhere firefox-extension-privacybadger firefox-ublock-origin hdparm --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -570,15 +565,6 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 fi
 clear
 
-
-#disabled, replaced with zramswap
-#setup zram
-#sed "s,zswap_enabled=1,zswap_enabled=0,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
-#sed "s,zram_enabled=0,zram_enabled=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
-#sed "s,zram_count=\${NCPU},zram_count=1,g" -i /mnt/usr/share/systemd-swap/swap-default.conf
-#sed "s,\#zram_enabled=0,zram_enabled=1,g" -i /mnt/etc/systemd/swap.conf
-#sed "s,\#zram_size=\$(( RAM_SIZE / 4)),zram_size=\$(( RAM_SIZE / 4 )),g" -i /mnt/etc/systemd/swap.conf
-#sed "s,zram_count=\${NCPU},zram_count=1,g" -i /mnt/etc/systemd/swap.conf
 
 #Determine installed GPU - by default we now install the stuff required for AMD/Intel since those just autoload drivers
 #Nvidia will still auto detect so we can install the proprietary driver

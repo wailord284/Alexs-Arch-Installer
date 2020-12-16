@@ -13,6 +13,7 @@ HISTFILESIZE=2000
 export HISTTIMEFORMAT="%h %d %H:%M:%S "
 #Alias stuff
 alias ls='ls --color=auto --group-directories-first'
+alias ip='ip -c'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'

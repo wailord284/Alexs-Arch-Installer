@@ -103,5 +103,4 @@ The user will now be prompted to supply basic information such as hostname, user
 
 ### Todos
 
- - Change some if statements to use if -d (For touchpad/wacom)
- - Add better support for NVidia detection
+ - https://kernelnewbies.org/Linux_5.10#Ext4_fast_commit_support.2C_for_faster_metadata_performance look into this for ext4 performance
