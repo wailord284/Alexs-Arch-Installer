@@ -5,7 +5,7 @@ A simple script to automatically install Arch Linux with the XFCE desktop, custo
 This is a small script I have been working on for over a year to simplify the Arch Linux install process across the many different types of hardware I have. The goal of this script is to install Arch with a useable experience right out of the box while still maintaining a mostly vanilla setup. Since I use my devices for many different things, I have tried to support many different configurations and optional configs/utilities a user may want. Once the script completes the user can implement 20+ optional features that may be beneficial to them.
 
 # How to use
-To use this script, you first need to create a bootable USB with the Arch Linux ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using wget. Both options will be kept up to date. 
+To use this script, you first need to create a bootable USB with the Arch Linux ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date. 
 To use the script, do the following:
 ```
 curl wailord284.club/repo/install.sh -o install.sh
@@ -34,6 +34,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Disabled "Recents" found in most file managers
 - LXDM display manager with Archlinux theme
 - Large amount of sysctl.d/ configs gathered from the Arch wiki to increase performance and stability
+- Xorg keybind (Control + Alt + Backspace) to return to login screen
 - Add the Archlinuxcn repository for additional software
 - Bash changes:
     * Custom .inputrc to add color and improve tab completion
@@ -79,7 +80,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Aurmageddon repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * Packages installed from Aurmageddon include:
     * ```surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap```
-    * View the public repository here: http://wailord284.club/repo/aurmageddon/x86_64/
+    * View the public repository here: https://wailord284.club/repo/aurmageddon/x86_64/
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
     * Bedrock Linux (Not reversible)

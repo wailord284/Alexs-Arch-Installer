@@ -46,7 +46,7 @@ alias syncwatch='watch -d grep -e Dirty: -e Writeback: /proc/meminfo'
 alias carp='sudo ip -s -s neigh flush all'
 alias cpr='rsync -ah --info=progress2'
 alias mousefix='sudo modprobe -r psmouse && sudo modprobe psmouse'
-alias ipinfo='curl ipinfo.io'
+alias ipinfo='curl ipinfo.io' #ifconfig.me
 alias cls='clear'
 alias dl='youtube-dl -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 --prefer-ffmpeg --embed-thumbnail -ci -o "%(title)s-%(id)s.%(ext)s"'
 alias update-mirror="sudo reflector -f 10 --verbose --latest 20 --protocol https --country US --save /etc/pacman.d/mirrorlist"
