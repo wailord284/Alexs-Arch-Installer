@@ -546,7 +546,7 @@ clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell librewolf-bin arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -682,11 +682,12 @@ mv Arch-Linux-Installer-master/configs/htop/ /mnt/home/"$user"/.config/
 #Default wallpaper
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
 #Librewolf config - add extension and change default settings
-mv Arch-Linux-Installer-master/configs/librewolf/ /mnt/home/"$user"/.librewolf
+#mv Arch-Linux-Installer-master/configs/librewolf/ /mnt/home/"$user"/.librewolf
+
 #Take ownership
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.config
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.local
-arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.librewolf
+#arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.librewolf
 arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.gtkrc-2.0
 
 #Bash stuffs
