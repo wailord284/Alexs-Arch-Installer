@@ -728,7 +728,7 @@ mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/
 mv Arch-Linux-Installer-master/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
 #Create one time ntpdupdate + hwclock to set date
 mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
-mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
+mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/#
 #Allow user in the network group to add/modify/delete networks without a password
 #mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
 
@@ -781,6 +781,12 @@ sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wir
 #Systemd services
 #https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode - packet sniffing/monitoring
 mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
+
+#Set journal to output log contents to TTY12
+mkdir /mnt/etc/systemd/journald.conf.d
+mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
+#Set journal to only keep 512M of logs
+mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 
 #Setup sysctl tweaks - Arch stores some defaults in /usr/lib/sysctl.d/
 #fix usb speeds - currently disabled due to system lockups when copying files

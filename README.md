@@ -62,6 +62,8 @@ The user will now be prompted to supply basic information such as hostname, user
 - Systemd changes:
     * Systemd service timeout changed from 90 seconds to 45 seconds
     * Promiscuous mode systemd service to make packet sniffing easier (disabled by default)
+    * Journal log always visible on tty12 (control + alt + F12)
+    * Keep only 512MB of journald logs (/var/log/journal)
 - Password changes (How the password is stored):
     * Increase hashing rounds and change hash to SHA512
     * 4 second delay between password attempts
@@ -83,7 +85,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * View the public repository here: https://wailord284.club/repo/aurmageddon/x86_64/
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
-    * Bedrock Linux (Not reversible)
+    * Convert to Bedrock Linux (Not reversible)
     * X2Go remote management server
     * Enable SSHD
     * Route all traffic over Tor (Not reversible)
