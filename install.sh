@@ -28,6 +28,7 @@
 #readd the pam lockout after 3 failed passwords - broken in newest update
 #look at readding dnsmasq cache in networkmanager - currently sets /etc/resolv.conf to 127.0.0.1
 #Reflector might be busted
+#https://aur.archlinux.org/packages/mkinitcpio-archlogo/
 
 #colors
 #white=$(tput setaf 7)
@@ -723,6 +724,8 @@ echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
 mv Arch-Linux-Installer-master/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
 #Set default DNS to cloudflare and quad9
 mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
+#Set network manager to avoid systemd-resolved. Fixes issue "unit dbus-org.freedesktop.resolve1.service not found" in journal log
+mv Arch-Linux-Installer-master/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
 #Create one time ntpdupdate + hwclock to set date
 mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
 mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
