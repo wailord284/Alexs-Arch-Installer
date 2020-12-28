@@ -8,7 +8,7 @@ This is a small script I have been working on for over a year to simplify the Ar
 To use this script, you first need to create a bootable USB with the Arch Linux ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date. 
 To use the script, do the following:
 ```
-curl wailord284.club/repo/install.sh -o install.sh
+curl https://wailord284.club/repo/install.sh -o install.sh
 chmod +x install.sh
 ./install.sh
 ```
