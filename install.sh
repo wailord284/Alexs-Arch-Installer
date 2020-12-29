@@ -397,7 +397,7 @@ clear
 
 #Install system, grub, mirrors
 #add my repo to pacman.conf to install glxinfo later
-echo '#My custom repo with many aur packages
+echo '#wailord284 custom repo with many aur packages
 [aurmageddon]
 Server = http://wailord284.club/repo/$repo/$arch
 SigLevel = Never' >> /etc/pacman.conf
@@ -515,7 +515,7 @@ Server = https://cdn.repo.archlinuxcn.org/$arch
 #Include = /etc/pacman.d/archlinuxcn-mirrorlist
 SigLevel = PackageOptional
 
-#My custom repo with many aur packages
+#wailord284 custom repo with many aur packages
 [aurmageddon]
 Server = https://wailord284.club/repo/$repo/$arch
 Server = https://wailord284.club/repo/$repo/$arch
@@ -624,9 +624,9 @@ sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/sys
 
 
 #setup makepkg configure and determine core count
-#cores=$(lscpu | grep 'CPU(s):' | head -1 | grep -Eo "([0-9]+)")
-cores=$(grep -c ^processor /proc/cpuinfo)
-sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j$cores\",g" -i /mnt/etc/makepkg.conf
+#cores=$(grep -c ^processor /proc/cpuinfo)
+#sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j$cores\",g" -i /mnt/etc/makepkg.conf
+sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
 sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makepkg.conf
@@ -659,11 +659,8 @@ fi
 clear
 
 
-#create themes, disable recents, disable thunar in session - one time script to be started after creating inital xfce config
-#Screensaver does not apply correctly - gets reset to 0 which is blank screen
 #disable recents - https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way
 #BEGIN NEW XFCE CONFIG!! yay
-#Default wallpaper from manjaro forum
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "pacman -S unzip wget --noconfirm && wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
@@ -680,7 +677,7 @@ mkdir -p /mnt/home/"$user"/.local/share/xfce4
 mv Arch-Linux-Installer-master/configs/local/helpers/ /mnt/home/"$user"/.local/share/xfce4/
 #Htop config
 mv Arch-Linux-Installer-master/configs/htop/ /mnt/home/"$user"/.config/
-#Default wallpaper
+#Default wallpaper from manjaro forum
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
 
 #Take ownership
@@ -708,7 +705,7 @@ mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d
 
 #NetworkManager/Network startup scripts
 #interface=$(ip a | grep "state UP" | cut -c4- | sed 's/:.*//')
-#configure mac address spoofing on startup via networkmanager
+#configure mac address spoofing on startup via networkmanager. Only wireless addresses are randomized
 mkdir -p /mnt/etc/NetworkManager/conf.d/
 mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
 mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
@@ -739,6 +736,7 @@ clear
 if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
+
 #Check and setup touchpad
 if grep -i TouchPad /proc/bus/input/devices || grep -i "Lid Switch" /proc/bus/input/devices || arch-chroot /mnt acpi -i | grep -E "Battery[0-9]" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
