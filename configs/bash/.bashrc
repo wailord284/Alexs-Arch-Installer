@@ -17,7 +17,7 @@ alias ip='ip -c'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
-export VISUAL="gedit"
+export VISUAL="nano"
 export BROWSER="librewolf"
 export EDITOR="nano"
 export SUDO_EDITOR="nano"
@@ -96,5 +96,5 @@ else
 	SC="${BRED}:("
 fi
 #${directory}
-PS1="${BGWHITE}[\A][\u${BGWHITE}@${BGREEN}\h ${BGWHITE}\W${BGWHITE}] ${SC}${BGWHITE} "
+PS1="${BGWHITE}[\A][\u${BGWHITE}@${BMAGENTA}\h ${BGWHITE}\W${BGWHITE}] ${SC}${BGWHITE} "
 }

@@ -105,5 +105,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq
 
 ### Todos
+ - Use hostnamectl for laptop detection
  - Move user configs to /etc/skel so new users can get same config setup
  - https://kernelnewbies.org/Linux_5.10#Ext4_fast_commit_support.2C_for_faster_metadata_performance look into this for ext4 performance
