@@ -95,7 +95,6 @@ while : ; do
 		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	pass2=${pass2:-pass}
 	if [ "$pass1" = "$pass2" ]; then
-		#dialog --pause "Passwords match!" "$dialogHeight" "$dialogWidth" 10
 		pass="$pass1"
 		break #exit loop
 	else
@@ -104,7 +103,7 @@ while : ; do
 done
 clear
 
-#encrypt
+#Ask user if they want disk encryption
 dialog --title "Disk Encryption" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
@@ -115,6 +114,27 @@ if [ "$optionEncrypt" = 0 ]; then
 else
 	encrypt="n"
 fi
+clear
+
+#If user wants disk encryption, prompt them for a password twice
+while : ; do
+	#encpass1
+	encpass1=$(dialog --title "Disk Encryption Password" \
+		--backtitle "$dialogBacktitle" \
+		--passwordbox "Please enter a password to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+	encpass1=${encpass1:-pass}
+	#encpass2
+	encpass2=$(dialog --title "Password" \
+		--backtitle "$dialogBacktitle" \
+		--passwordbox "Please enter your password again to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+	encpass2=${encpass2:-pass}
+	if [ "$encpass1" = "$encpass2" ]; then
+		encpass="$encpass1"
+		break #exit loop
+	else
+		dialog --msgbox "encass1 and encpass2 do not match. Please try again" "$dialogHeight" "$dialogWidth" && clear
+	fi
+done
 clear
 
 #Locale
@@ -284,6 +304,7 @@ elif [ "$bootOverride" = 32 ]; then
 	boot="efi"
 fi
 
+#Begin disk partitioning - UEFI
 if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -296,9 +317,10 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	#create ext4 root partition
 	parted -s "$storage" mkpart primary ext4 512MiB 100%
 	#Format partitions
-	clear #Run cryptsetup just in terminal
-	cryptsetup -v -y --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
-	cryptsetup open "${storagePartitions[2]}" cryptroot
+	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
+	echo "$green""Setting up disk encryption. Please wait.""$reset"
+	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
+	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 	#Format partitions
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot with encryption" \
@@ -338,7 +360,7 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
 fi
-#legacy
+#Begin disk partitioning - Legacy bios
 if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -351,9 +373,10 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	#create ext4 root partition
 	parted -s "$storage" mkpart primary ext4 512MiB 100%
 	#Format partitions
-	clear #run in terminal
-	cryptsetup -v -y --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
-	cryptsetup open "${storagePartitions[2]}" cryptroot
+	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
+	echo "$green""Setting up disk encryption. Please wait.""$reset"
+	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
+	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS with encryption" \
 	--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
@@ -568,7 +591,6 @@ clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting hardware" \
 --prgbox "Finding system graphics card" "pacman -S lshw --noconfirm" "$HEIGHT" "$WIDTH"
-#vega=$(lspci | grep 'Radeon RX Vega 56/64') - old
 #https://www.cyberciti.biz/faq/linux-tell-which-graphics-vga-card-installed/
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
