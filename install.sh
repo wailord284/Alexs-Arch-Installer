@@ -2,7 +2,7 @@
 #Automated Arch Linux installation script by Alex "wailord284" Gaudino.
 ###HOW TO USE###
 #To use this, burn the Arch Linux ISO to a usb drive and boot it. Once botted download this file.
-#If you're on wifi, run wifi-menu first to connect to the internet or put this script on a second drive to be prompted.
+#If you're on wifi, run wifi-menu(rip) first to connect to the internet or put this script on a second drive to be prompted.
 #1) wget wailord284.club/repo/install.sh 2) chmod +x install.sh 3) ./install.sh
 ###ABOUT###
 #This script will autodetect a large range of hardware and should automatically configure many systems out of the box.
@@ -16,19 +16,13 @@
 #This is an ongoing project of mine and will recieve constant updates and improvements.
 
 ###Things to maybe add###
-#add permrs https://github.com/gort818/permrs - make systemd timer https://www.putorius.net/using-systemd-timers.html
 #add option for fail2ban
 #https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
-#Add check for nvidia graphics by dmesg | grep nv_backlight
-#Add E4rat for non ssds
-#Maybe add spindown for unused drives - https://wiki.archlinux.org/index.php/Hdparm#Putting_a_drive_to_sleep_directly_after_boot
 #Maybe add option for pkgstats - optionally reports installed packages etc...
 #Auto-cpufreq https://github.com/AdnanHodzic/auto-cpufreq
 #readd the pam lockout after 3 failed passwords - broken in newest update
 #look at readding dnsmasq cache in networkmanager - currently sets /etc/resolv.conf to 127.0.0.1
-#Reflector might be busted
-#https://aur.archlinux.org/packages/mkinitcpio-archlogo/
 
 #colors
 #white=$(tput setaf 7)
@@ -576,17 +570,17 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Finding system graphics card" "pacman -S lshw --noconfirm" "$HEIGHT" "$WIDTH"
 #vega=$(lspci | grep 'Radeon RX Vega 56/64') - old
 #https://www.cyberciti.biz/faq/linux-tell-which-graphics-vga-card-installed/
-if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then #|| glxinfo -B | grep "Radeon" ; then
+if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
 	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S amdvlk vulkan-radeon --noconfirm" "$HEIGHT" "$WIDTH"
 fi
-if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" > /dev/null 2>&1 ; then #|| glxinfo -B | grep "Intel" ; then
+if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
 	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S vulkan-intel libva-intel-driver intel-media-driver --noconfirm" "$HEIGHT" "$WIDTH"
 fi
-if lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then #|| glxinfo -B | grep "nouveau" ; then
+if lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
 	--prgbox "Found NVidia Graphics card" "arch-chroot /mnt pacman -S nvidia nvidia-utils nvidia-settings libxnvctrl --noconfirm" "$HEIGHT" "$WIDTH"
