@@ -17,7 +17,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Works with both UEFI (64 and 32 bit) and BIOS!
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatic detection for Intel and AMD CPUs (installs correct microcode)
-- Automatically detect if running in VirtualBox or VMware and install appropriate guest additions
+- Automatically detect if running in VirtualBox, KVM or VMware and install appropriate guest additions
 - Optionally overwrite the drive with random data (Secure erase)
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
 - Earlyoom daemon to trigger the Linux OOM killer sooner
