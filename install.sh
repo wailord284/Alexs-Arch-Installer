@@ -16,12 +16,9 @@
 #This is an ongoing project of mine and will recieve constant updates and improvements.
 
 ###Things to maybe add###
-#add option for fail2ban
-#https://wiki.archlinux.org/index.php/Getty#Automatic_login_to_virtual_console
 #Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
 #Maybe add option for pkgstats - optionally reports installed packages etc...
 #Auto-cpufreq https://github.com/AdnanHodzic/auto-cpufreq
-#readd the pam lockout after 3 failed passwords - broken in newest update
 #look at readding dnsmasq cache in networkmanager - currently sets /etc/resolv.conf to 127.0.0.1
 
 #colors
@@ -513,10 +510,6 @@ unset pass1 pass2 pass encpass encpass1 encpass2
 #https://wiki.archlinux.org/index.php/Security#User_setup
 #Increase delay between password attempts to 4 seconds
 echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
-#Lockout a user after 10 failed attempts for 10 mins
-#unlock a user with: pam_tally2 --reset --user username
-echo "#unlock a user account with: pam_tally2 --reset --user username" >> /mnt/etc/pam.d/system-login
-echo "#auth required pam_tally2.so deny=10 unlock_time=600 onerr=succeed file=/var/log/tallylog" >> /mnt/etc/pam.d/system-login
 
 
 #Install repos - multilib, aurmageddon, archlinuxcn, archstrike and repo-ck
@@ -532,17 +525,12 @@ Server = https://cdn.repo.archlinuxcn.org/$arch
 #Include = /etc/pacman.d/archlinuxcn-mirrorlist
 SigLevel = PackageOptional
 
-#wailord284 custom repo with many aur packages
+#wailord284/maintainer custom repo with many aur packages
+#https://wailord284.club/repo/aurmageddon/x86_64/
 [aurmageddon]
 Server = https://wailord284.club/repo/$repo/$arch
 Server = https://wailord284.club/repo/$repo/$arch
 SigLevel = Never
-
-#Packages related to pen testing
-#Auto install archstrike-setuptool-git
-#[archstrike]
-#Server = https://mirror.archstrike.org/$arch/$repo
-#Include = /etc/pacman.d/archstrike-mirrorlist
 
 #Repo containing custom compiled kernels with linux-ck
 #[repo-ck]
@@ -551,16 +539,21 @@ SigLevel = Never
 #Server = http://repo-ck.com/$arch' >> /mnt/etc/pacman.conf
 
 
-#reinstall keyring in case of gpg errors
+#reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring chaotic-keyring chaotic-mirrorlist --noconfirm" "$HEIGHT" "$WIDTH"
+
+#add chaotic-aur repo to pacman.conf. Currently nothing is installed from this
+echo '[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
+
 #install desktop and software
-#maybe add systembus-notify for earlyoom - becomes a startup service which i dont love
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-extension-https-everywhere firefox-extension-privacybadger firefox-ublock-origin hdparm usbutils logrotate ethtool --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "pacman -Syy && arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird nemo nemo-fileroller xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-extension-https-everywhere firefox-extension-privacybadger firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker --noconfirm" "$HEIGHT" "$WIDTH"
 clear
+
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
@@ -569,7 +562,6 @@ clear
 
 
 #Enable services
-#Disabled
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged irqbalance logrotate.timer" "$HEIGHT" "$WIDTH"
@@ -582,6 +574,14 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	--title "Enabling Services" \
 	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
 fi
+clear
+
+
+#Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
+#https://wiki.archlinux.org/index.php/D-Bus#Alternative_Implementations
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Enabling Services" \
+--prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl disable dbus.service && arch-chroot /mnt systemctl enable dbus-broker.service && arch-chroot /mnt systemctl --global enable dbus-broker.service" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -667,7 +667,7 @@ if [ "$product" = "VirtualBox" ] || [ "$hypervisor" = "VirtualBox" ] || [ "$manu
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting virtual machine" \
 	--prgbox "Running in VirtualBox - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm" "$HEIGHT" "$WIDTH"
-elif [ "$product" = "KVM" ] || [ "$hypervisor" = "KVM" ] || [ "$manufacturer" = "kvm" ]; then
+elif [ "$product" = "Standard PC (i440FX + PIIX, 1996)" ] || [ "$hypervisor" = "KVM" ] || [ "$manufacturer" = "kvm" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting virtual machine" \
 	--prgbox "Running in KVM - Installing guest additions" "arch-chroot /mnt pacman -S qemu-guest-agent --noconfirm && arch-chroot /mnt systemctl enable qemu-guest-agent.service" "$HEIGHT" "$WIDTH"
