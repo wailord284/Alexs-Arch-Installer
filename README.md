@@ -35,7 +35,8 @@ The user will now be prompted to supply basic information such as hostname, user
 - LXDM display manager with Archlinux theme
 - Large amount of sysctl.d/ configs gathered from the Arch wiki to increase performance and stability
 - Xorg keybind (Control + Alt + Backspace) to return to login screen
-- Add the Archlinuxcn repository for additional software
+- Add the Archlinuxcn and chaotic-aur repository for additional software
+- D-Bus-Broker over traditional D-Bus for higher performance and reliability
 - Bash changes:
     * Custom .inputrc to add color and improve tab completion
     * Add colored output to ls (installed ls-colors-git)
@@ -67,7 +68,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Password changes (How the password is stored):
     * Increase hashing rounds and change hash to SHA512
     * 4 second delay between password attempts
-    * Lockout a user after 10 failed password attempts within 10 minutes
 - Sudo changes:
     * Prevent password timeout when running long commands
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
