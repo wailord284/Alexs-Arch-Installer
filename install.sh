@@ -114,6 +114,7 @@ fi
 clear
 
 #If user wants disk encryption, prompt them for a password twice
+if [ "$encrypt" = y ]; then
 while : ; do
 	#encpass1
 	encpass1=$(dialog --title "Disk Encryption Password" \
@@ -132,6 +133,7 @@ while : ; do
 		dialog --msgbox "encass1 and encpass2 do not match. Please try again" "$dialogHeight" "$dialogWidth" && clear
 	fi
 done
+fi
 clear
 
 #Locale
