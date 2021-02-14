@@ -14,7 +14,7 @@ chmod +x install.sh
 ```
 The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Make sure to press space before pressing enter on options that require selecting something from a list.
 # Features!
-- Works with both UEFI (64 and 32 bit) and BIOS!
+- Works with both UEFI [(64 and 32 bit)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/install.sh#L292) and BIOS!
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatic detection for Intel and AMD CPUs (installs correct microcode)
 - Automatically detect if running in VirtualBox, KVM or VMware and install appropriate guest additions
