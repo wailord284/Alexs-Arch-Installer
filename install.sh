@@ -753,6 +753,10 @@ mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/syst
 
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
+
+#Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
+#https://wiki.archlinux.org/index.php/Libvirt#Using_polkit
+mv -f Arch-Linux-Installer-master/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
 clear
 
 
