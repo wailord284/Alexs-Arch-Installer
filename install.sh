@@ -318,7 +318,7 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	#Format partitions
 	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
 	echo "$green""Setting up disk encryption. Please wait.""$reset"
-	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
+	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2i luksFormat "${storagePartitions[2]}"
 	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 	#Format partitions
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -374,7 +374,7 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	#Format partitions
 	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
 	echo "$green""Setting up disk encryption. Please wait.""$reset"
-	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --key-size 512 --hash sha512 luksFormat "${storagePartitions[2]}"
+	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2i luksFormat "${storagePartitions[2]}"
 	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS with encryption" \
