@@ -560,7 +560,7 @@ clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -579,6 +579,14 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 fi
 clear
 
+#Enable prelockd daemon if ram is over ~2GB - https://github.com/hakavlad/prelockd
+ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
+if [ "$ramTotal" -gt "2000000" ]; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Enabling Services" \
+	--prgbox "Enabling prelock daemon" "arch-chroot /mnt systemctl enable prelockd.service" "$HEIGHT" "$WIDTH"
+fi
+clear
 
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
 #https://wiki.archlinux.org/index.php/D-Bus#Alternative_Implementations
