@@ -560,7 +560,7 @@ clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -579,12 +579,12 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 fi
 clear
 
-#Enable prelockd daemon if ram is over ~2GB - https://github.com/hakavlad/prelockd
+#Enable prelockd and preload daemon if ram is over ~2GB - https://github.com/hakavlad/prelockd https://wiki.archlinux.org/index.php/Preload
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Services" \
-	--prgbox "Enabling prelock daemon" "arch-chroot /mnt systemctl enable prelockd.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling prelock and preload daemon" "arch-chroot /mnt systemctl enable prelockd.service preload.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 
@@ -635,6 +635,13 @@ sed "s,\#\ set keycolor brightmagenta, set keycolor brightmagenta,g" -i /mnt/etc
 sed "s,\#\ set functioncolor magenta, set functioncolor magenta,g" -i /mnt/etc/nanorc
 sed "s,\#\ include \"/usr/share/nano/\*.nanorc\", include \"/usr/share/nano/\*.nanorc\",g" -i /mnt/etc/nanorc
 echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
+
+
+#Change pulseaudio to have higher priority and enable realtime priority - https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level
+sed "s,\; high-priority = yes,high-priority = yes,g" -i /mnt/etc/pulse/daemon.conf
+sed "s,\; nice-level = -11,nice-level = -11,g" -i /mnt/etc/pulse/daemon.conf
+sed "s,\; realtime-scheduling = yes,realtime-scheduling = yes,g" -i /mnt/etc/pulse/daemon.conf
+sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemon.conf
 
 
 #add sudo changes
