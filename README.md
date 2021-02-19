@@ -13,13 +13,15 @@ chmod +x install.sh
 ./install.sh
 ```
 The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Make sure to press space before pressing enter on options that require selecting something from a list.
-# Features!
+# Features! (in no particular order)
 - Works with both UEFI (64 and 32 bit) and BIOS!
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatically detect if running in VirtualBox, KVM or VMware and install appropriate guest additions
-- Automatic detection for Intel and AMD CPUs [Installs correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
-- Optionally overwrite the drive with random data [Secure erase](https://wiki.archlinux.org/index.php/Securely_wipe_disk#shred)
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
+- Slightly modified XFCE configuration to enable compositing, change font and change theme
+- Custom nanorc file to include syntax highlighting
+- Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
+- Optionally overwrite the drive with random data to [securely erase](https://wiki.archlinux.org/index.php/Securely_wipe_disk#shred) the drive
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
 - [Kernel Modules hook](https://github.com/saber-nyan/kernel-modules-hook) to restore functionality when the running kernel updates
 - [Pacman cleanup hook](https://aur.archlinux.org/packages/pacman-cleanup-hook/) to minimize the pacman cache size when updating
@@ -27,32 +29,32 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 20% of total ram using zramswap)
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SSDs and NVME drives
 - Change [mkinitcpio compression to ZSTD](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) (Added in kernel 5.9)
-- Custom nanorc file to include syntax highlighting
 - Support for [Touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
 - Modified freetype2 and fonts/local.conf to [improve font rendering](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/fonts/local.conf) (default font: Ubuntu)
-- Slightly modified XFCE configuration to enable compositing, change font and change theme
-- Disabled ["Recents"](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/gtk-3.0/settings.ini) found in most file managers
+- Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) found in most file managers
 - LXDM display manager with [Archlinux theme](https://aur.archlinux.org/packages/archlinux-lxdm-theme/)
-- Large amount of [sysctl.d/ configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
+- Large amount of [sysctl.d/configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
 - Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to return to login screen
 - Add the [Archlinuxcn](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn) and [chaotic-aur](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#chaotic-aur) repository for additional software
 - [DBus-Broker](https://wiki.archlinux.org/index.php/D-Bus#dbus-broker) over traditional D-Bus for higher performance and reliability
+- [Realtime priority](https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level) in Pulseaudio
 - [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
+- [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
 - Bash changes:
     * Custom [.inputrc](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/bash/.inputrc) to add color and improve tab completion
+    * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
     * Add colored output to ls (installed ls-colors-git)
     * Custom aliases for yay/pacman and other system tasks
-    * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
 - Laptop Changes (If detected):
     * Modified [trackpad behavior](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) to be more comfortable
     * Implement USB and hard drive [power saving features](https://wiki.archlinux.org/index.php/Power_management#Power_saving) like TLP
 - Grub changes:
     * [Disabled spectre/meltdown patches](https://make-linux-fast-again.com/) (Increase performance. Edit /etc/defult/grub to remove)
-    * Trust CPU Random Number Generation (random.trust_cpu=on) improves boot time
-    * Arch Linux theme
     * Reboot, shutdown, [File Manager](https://github.com/a1ive/grub2-filemanager) option for both UEFI/BIOS
     * UEFI Only [tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor, Chipset reader
     * UEFI Only [games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
+    * Trust CPU Random Number Generation (random.trust_cpu=on) improves boot time
+    * Arch Linux theme
     * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 works on all systems)
 - Makepkg changes:
     * Change makeflags to account for [all cores](https://github.com/wailord284/Arch-Linux-Installer/blob/master/install.sh#L648) in the system (-j)
@@ -61,28 +63,28 @@ The user will now be prompted to supply basic information such as hostname, user
     * Add [multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
     * Enable max compression when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
 - Systemd changes:
-    * Systemd service timeout changed from 90 seconds to 45 seconds
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
     * Keep only [512MB of journald logs](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) (/var/log/journal)
+    * Systemd service timeout changed from 90 seconds to 45 seconds
 - Password changes (How the password is stored):
     * Increase hashing rounds and change hash to [SHA512](https://wiki.archlinux.org/index.php/Security#User_setup)
     * 4 second delay between password attempts
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
-    * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
     * Commented line to run specific commands [without requiring sudo password](https://github.com/wailord284/Arch-Linux-Installer/blob/master/install.sh#L637)
+    * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
 - Modified NetworkManager setup:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
-    * Increased [IPv6 privacy](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
+    * [IPv6 privacy extensions](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
     * [DNS cacheing](https://wiki.archlinux.org/index.php/NetworkManager#DNS_caching_and_conditional_forwarding) with dnsmasq (currently disabled)
     * [Secure DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1, 9.9.9.9) (replaced by dnscrypt and dnsmasq if selected)
     * Automatic hardware clock updates using [NTP](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/networkmanager/hwclock.conf) (Updates everytime device connects to internet)
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
-    * Packages installed from Aurmageddon include:
-    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd```
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
+    * Packages installed from Aurmageddon include:
+    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload```
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
     * Convert to [Bedrock Linux](https://bedrocklinux.org/) (Not reversible)
@@ -106,5 +108,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Encrypt and cache DNS requests](https://wiki.archlinux.org/index.php/Dnscrypt-proxy) - Enables DNSCrypt and DNSMasq
 
 ### Todos
+ - Fix cancel option in dialog
  - Move user configs to /etc/skel so new users can get same config setup
  - https://kernelnewbies.org/Linux_5.10#Ext4_fast_commit_support.2C_for_faster_metadata_performance look into this for ext4 performance
