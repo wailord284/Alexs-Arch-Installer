@@ -41,7 +41,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
 - [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
 - Bash changes:
-    * Custom [.inputrc](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/bash/.inputrc) to add color and improve tab completion
+    * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
     * Add colored output to ls (installed ls-colors-git)
     * Custom aliases for yay/pacman and other system tasks
