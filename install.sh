@@ -51,6 +51,8 @@ hwclock --systohc
 gpg --refresh-keys
 pacman-key --init
 pacman-key --populate
+#Stop the reflector.service as it always fails half way in
+systemctl stop reflector.service
 clear
 
 #Welcome messages
@@ -491,29 +493,6 @@ echo "127.0.0.1	localhost
 clear
 
 
-#create and add user/password
-arch-chroot /mnt groupadd -r autologin
-arch-chroot /mnt useradd -m -G network,autologin,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
-#create a temp file to store the password in and delete it when the script finishes using a trap
-#https://www.pixelstech.net/article/1577768087-Create-temp-file-in-Bash-using-mktemp-and-trap
-TMPFILE=$(mktemp) || exit 1
-trap 'rm -f "$TMPFILE"' EXIT
-#root password and user password and setup stronger password encryption
-arch-chroot /mnt echo -e "$pass\n$pass" | passwd
-sed '/nullok/d' -i /mnt/etc/pam.d/passwd
-#setup more secure passwd by increasing hashes
-echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
-echo "$user":"$pass" > "$TMPFILE"
-arch-chroot /mnt chpasswd < "$TMPFILE"
-arch-chroot /mnt echo -e "$pass\n$pass" | passwd
-#unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
-unset pass1 pass2 pass encpass encpass1 encpass2
-#Setup stronger password security
-#https://wiki.archlinux.org/index.php/Security#User_setup
-#Increase delay between password attempts to 4 seconds
-echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
-
-
 #Install repos - multilib, aurmageddon, archlinuxcn, archstrike and repo-ck
 echo '[multilib]
 Include = /etc/pacman.d/mirrorlist
@@ -697,40 +676,54 @@ fi
 clear
 
 
-#disable recents - https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way
-#BEGIN NEW XFCE CONFIG!! yay
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "pacman -S unzip wget --noconfirm && wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 
+#Create /etc/skel dirs for configs to be applied to our new user
+mkdir -p /mnt/etc/skel/.config/gtk-3.0/
+mkdir -p /mnt/etc/skel/.local/share/xfce4/
+#Move configs files to /etc/skel
 #Create gtk-2.0 disable recents
-mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/home/"$user"/
+mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/etc/skel
 #Create gtk-3.0 disable recents
-mkdir -p /mnt/home/"$user"/.config/gtk-3.0/
-mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/home/"$user"/.config/gtk-3.0/
+mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
 #Create the xfce configs for a wayyy better desktop setup than the xfconfs
-mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/home/"$user"/.config/
+mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/etc/skel/.config/
 #Include xfce helpers
-mkdir -p /mnt/home/"$user"/.local/share/xfce4
-mv Arch-Linux-Installer-master/configs/local/helpers/ /mnt/home/"$user"/.local/share/xfce4/
+mv Arch-Linux-Installer-master/configs/local/helpers/ /mnt/etc/skel/.local/share/xfce4/
 #Htop config
-mv Arch-Linux-Installer-master/configs/htop/ /mnt/home/"$user"/.config/
+mv Arch-Linux-Installer-master/configs/htop/ /mnt/etc/skel/.config/
 #Default wallpaper from manjaro forum
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
-
-#Take ownership
-arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.config
-arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.local
-arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.gtkrc-2.0
-
 #Bash stuffs and screenrc
-#https://wiki.archlinux.org/index.php/Readline#Faster_completion
-mv Arch-Linux-Installer-master/configs/bash/.inputrc /mnt/home/"$user"/
-mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/home/"$user"/
-mv Arch-Linux-Installer-master/configs/bash/.screenrc /mnt/home/"$user"/
-arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.inputrc
-arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.bashrc
-arch-chroot /mnt chown -R "$user":"$user" /home/"$user"/.screenrc
+mv Arch-Linux-Installer-master/configs/bash/.inputrc /mnt/etc/skel/
+mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
+mv Arch-Linux-Installer-master/configs/bash/.screenrc /mnt/etc/skel/
+
+
+#Add user here to get /etc/skel configs
+arch-chroot /mnt groupadd -r autologin
+arch-chroot /mnt useradd -m -G network,autologin,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
+#create a temp file to store the password in and delete it when the script finishes using a trap
+#https://www.pixelstech.net/article/1577768087-Create-temp-file-in-Bash-using-mktemp-and-trap
+TMPFILE=$(mktemp) || exit 1
+trap 'rm -f "$TMPFILE"' EXIT
+#root password and user password and setup stronger password encryption
+arch-chroot /mnt echo -e "$pass\n$pass" | passwd
+sed '/nullok/d' -i /mnt/etc/pam.d/passwd
+#setup more secure passwd by increasing hashes
+echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
+echo "$user":"$pass" > "$TMPFILE"
+arch-chroot /mnt chpasswd < "$TMPFILE"
+arch-chroot /mnt echo -e "$pass\n$pass" | passwd
+#unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
+unset pass1 pass2 pass encpass encpass1 encpass2
+#Setup stronger password security
+#https://wiki.archlinux.org/index.php/Security#User_setup
+#Increase delay between password attempts to 4 seconds
+echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
+
 
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
