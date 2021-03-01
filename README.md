@@ -40,12 +40,18 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Realtime priority](https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level) in Pulseaudio
 - [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
 - [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
+- Firefox changes (All installed with package manager):
+    * [Ublock Origin](https://ublockorigin.com/) ad blocker
+    * [Privacy Badger](https://privacybadger.org/)
+    * [HTTPS Everywhere](https://www.eff.org/https-everywhere)
+    * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/)
+    * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/)
 - Bash changes:
     * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
     * Add colored output to ls (installed ls-colors-git)
     * Custom aliases for yay/pacman and other system tasks
-- Laptop Changes (If detected):
+- Laptop changes (If detected):
     * Modified [trackpad behavior](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) to be more comfortable
     * Implement USB and hard drive [power saving features](https://wiki.archlinux.org/index.php/Power_management#Power_saving) like TLP
 - Grub changes:
@@ -75,7 +81,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
     * Commented line to run specific commands [without requiring sudo password](https://github.com/wailord284/Arch-Linux-Installer/blob/master/install.sh#L637)
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
-- Modified NetworkManager setup:
+- NetworkManager changes:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
     * [IPv6 privacy extensions](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
     * [DNS cacheing](https://wiki.archlinux.org/index.php/NetworkManager#DNS_caching_and_conditional_forwarding) with dnsmasq (currently disabled)
@@ -84,7 +90,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
     * Packages installed from Aurmageddon include:
-    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload```
+    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-clearurls firefox-extension-canvasblocker```
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
     * Convert to [Bedrock Linux](https://bedrocklinux.org/) (Not reversible)
