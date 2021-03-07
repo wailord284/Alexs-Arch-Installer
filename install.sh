@@ -313,10 +313,10 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
-	parted -s "$storage" mkpart primary fat32 1MiB 512MiB
+	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
 	parted -s "$storage" set 1 esp on
 	#create ext4 root partition
-	parted -s "$storage" mkpart primary ext4 512MiB 100%
+	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100%
 	#Format partitions
 	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
 	echo "$green""Setting up disk encryption. Please wait.""$reset"
@@ -345,10 +345,10 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 efi partition
 	parted -s "$storage" mklabel gpt
-	parted -s "$storage" mkpart primary fat32 1MiB 512MiB #551MiB
+	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB #551MiB
 	parted -s "$storage" set 1 esp on
 	#create ext4 root partition
-	parted -s "$storage" mkpart primary ext4 512MiB 100% #551MiB
+	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100% #551MiB
 	#Format partitions
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot no encryption" \
@@ -369,10 +369,10 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#create ext4 boot partition
 	parted -s "$storage" mklabel msdos #BIOS needs msdos
-	parted -s "$storage" mkpart primary ext4 1MiB 512MiB #bios requires ext4
+	parted -a optimal -s "$storage" mkpart primary ext4 1MiB 512MiB #bios requires ext4
 	parted -s "$storage" set 1 boot on #mark bootable
 	#create ext4 root partition
-	parted -s "$storage" mkpart primary ext4 512MiB 100%
+	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100%
 	#Format partitions
 	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
 	echo "$green""Setting up disk encryption. Please wait.""$reset"
@@ -400,7 +400,7 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	#Setup drive
 	parted -s "$storage" mklabel msdos
-	parted -s "$storage" mkpart primary ext4 1MiB 100%
+	parted -a optimal -s "$storage" mkpart primary ext4 1MiB 100%
 	parted -s "$storage" set 1 boot on
 	#Format main partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
