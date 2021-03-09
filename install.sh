@@ -791,8 +791,6 @@ if [ "$chassisType" = laptop ]; then
 	echo "options usbcore autosuspend=5" > /mnt/etc/modprobe.d/usb-autosuspend.conf
 	#HDD power save
 	echo 'ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/50-hd_power_save.rules
-	#HDD Spindown - values of 0-127 let drives spin down (hard drives ONLY)
-	echo 'ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 127 /dev/%k"' > /etc/udev/rules.d/69-hdparm.rules
 	#Laptop mode to save power with spinning drives
 	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
 	#Disable watchdog - may help with power
