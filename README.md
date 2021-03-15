@@ -116,5 +116,4 @@ The user will now be prompted to supply basic information such as hostname, user
 
 ### Todos
  - Fix cancel option in dialog
- - Move user configs to /etc/skel so new users can get same config setup
  - https://kernelnewbies.org/Linux_5.10#Ext4_fast_commit_support.2C_for_faster_metadata_performance look into this for ext4 performance
