@@ -6,11 +6,12 @@ cat /usr/share/pokeshell/$(($RANDOM % 151 + 1)).pokemon
 #Colors for ls
 . /usr/share/LS_COLORS/dircolors.sh
 #Do not save cmds with " " in front or duplicate commands run after eachother
-HISTCONTROL=ignoreboth
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=2500
+HISTFILESIZE=10000
+HISTCONTROL ="erasedups:ignoreboth"
 #Add date formatting to .bash_history
 export HISTTIMEFORMAT="%h %d %H:%M:%S "
+
 #Alias stuff
 alias ls='ls --color=auto --group-directories-first'
 alias ip='ip -c'
@@ -18,7 +19,7 @@ alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
 export VISUAL="nano"
-export BROWSER="librewolf"
+export BROWSER="firefox"
 export EDITOR="nano"
 export SUDO_EDITOR="nano"
 shopt -s autocd
@@ -26,6 +27,8 @@ shopt -s checkwinsize
 shopt -s cdspell
 shopt -s dirspell
 shopt -s histappend
+shopt -s cmdhist
+
 #Personal pacman/yay commands
 alias ys='yay'
 alias ydd='yay -Rdd'
@@ -39,6 +42,7 @@ alias pss='sudo pacman -Ss'
 alias ycc='yay -Scc'
 alias ysn='yay -Syua --noconfirm'
 alias orphan='sudo pacman -Rns $(pacman -Qtdq)'
+
 #Other alias commands
 alias entropy='cat /proc/sys/kernel/random/entropy_avail'
 alias cpuwatch='watch grep \"cpu MHz\" /proc/cpuinfo'
