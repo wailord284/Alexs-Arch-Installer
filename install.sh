@@ -69,15 +69,15 @@ desktop=${desktop:-xfce}
 #hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
 host=$(dialog --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
-	--inputbox "Please enter a hostname. Default archlinux. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
-host=${host:-archlinux}
+	--inputbox "Please enter a hostname. Default linux. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+host=${host:-linux}
 clear
 
 #Username
 user=$(dialog --title "Username" \
 	--backtitle "$dialogBacktitle" \
-	--inputbox "Please enter a username. Default alex. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
-user=${user:-alex}
+	--inputbox "Please enter a username. Default arch. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+user=${user:-arch}
 clear
 
 #Password input - run in a loop in case user enters wrong password
@@ -1072,10 +1072,8 @@ selection=${selection:- 5 15 18 q}
 Description = WebUI traffic monitor vnstatui
 After = network.target
 After = vnstat.service
-
 [Service]
 ExecStart = vnstatui -i $(ip a | grep "state UP" | cut -c4- | sed 's/:.*//')
-
 [Install]
 WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.service
 
