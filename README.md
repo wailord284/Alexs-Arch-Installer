@@ -42,12 +42,12 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
 - [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
 - Firefox changes (All installed with package manager):
-    * [Ublock Origin](https://ublockorigin.com/) ad blocker
-    * [Privacy Badger](https://privacybadger.org/)
-    * [HTTPS Everywhere](https://www.eff.org/https-everywhere)
-    * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/)
-    * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/)
-    * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab)
+    * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
+    * [Privacy Badger](https://privacybadger.org/) - Tracker blocker
+    * [HTTPS Everywhere](https://www.eff.org/https-everywhere) - Force HTTPS
+    * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
+    * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
+    * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
 - Bash changes:
     * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
