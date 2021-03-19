@@ -47,6 +47,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [HTTPS Everywhere](https://www.eff.org/https-everywhere)
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/)
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/)
+    * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab)
 - Bash changes:
     * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
@@ -62,7 +63,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * UEFI Only [games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
     * Trust CPU Random Number Generation (random.trust_cpu=on) improves boot time
     * Arch Linux theme
-    * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 works on all systems)
+    * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 should work on all systems)
 - Makepkg changes:
     * Change makeflags to account for [all cores](https://github.com/wailord284/Arch-Linux-Installer/blob/master/install.sh#L648) in the system (-j)
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
@@ -116,4 +117,3 @@ The user will now be prompted to supply basic information such as hostname, user
 
 ### Todos
  - Fix cancel option in dialog
- - https://kernelnewbies.org/Linux_5.10#Ext4_fast_commit_support.2C_for_faster_metadata_performance look into this for ext4 performance
