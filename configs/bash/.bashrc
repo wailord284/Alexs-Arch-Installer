@@ -8,7 +8,7 @@ cat /usr/share/pokeshell/$(($RANDOM % 151 + 1)).pokemon
 #Do not save cmds with " " in front or duplicate commands run after eachother
 HISTSIZE=2500
 HISTFILESIZE=10000
-HISTCONTROL ="erasedups:ignoreboth"
+HISTCONTROL="erasedups:ignoreboth"
 #Add date formatting to .bash_history
 export HISTTIMEFORMAT="%h %d %H:%M:%S "
 
