@@ -9,8 +9,7 @@ To use this script, you first need to [create a bootable USB](https://www.howtog
 To use the script, do the following:
 ```
 curl https://wailord284.club/repo/install.sh -o install.sh
-chmod +x install.sh
-./install.sh
+bash install.sh
 ```
 The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Make sure to press space before pressing enter on options that require selecting something from a list.
 # Features! (in no particular order)
@@ -117,3 +116,4 @@ The user will now be prompted to supply basic information such as hostname, user
 
 ### Todos
  - Fix cancel option in dialog
+ - https://wiki.archlinux.org/index.php/systemd-boot#Grml_on_ESP
