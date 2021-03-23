@@ -583,6 +583,7 @@ clear
 #add chaotic-aur and rpeo-ck repo to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
 echo '#Chaotic-aur repo with many packages
 [chaotic-aur]
+Server = https://us-ca-mirror.chaotic.cx/$repo/$arch
 Include = /etc/pacman.d/chaotic-mirrorlist
 #Repo containing custom compiled kernels with linux-ck
 [repo-ck]
@@ -600,7 +601,7 @@ clear
 if [ "$kernel" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Custom kernel" \
-	--prgbox "Install custom kernel and headers" "arch-chroot /mnt pacman -S $installKernel $installKernelHeaders" "$HEIGHT" "$WIDTH"
+	--prgbox "Install custom kernel and headers" "arch-chroot /mnt pacman -S $installKernel $installKernelHeaders --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 
 #Enable services
