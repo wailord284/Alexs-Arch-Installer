@@ -526,10 +526,6 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring chaotic-keyring chaotic-mirrorlist --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
-#add chaotic-aur repo to pacman.conf. Currently nothing is installed from this
-echo '#[chaotic-aur]
-#Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
-
 #install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
@@ -542,6 +538,14 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-clearurls firefox-extension-canvasblocker firefox-extension-user-agent-switcher --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
+#add chaotic-aur repo to pacman.conf. Currently nothing is installed from this
+echo '[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
+
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Updating pacman repos" \
+--prgbox "Updating pacman repos for chaotic-aur" "arch-chroot /mnt pacman -Syy && pacman -Syy " "$HEIGHT" "$WIDTH"
+clear
 
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
