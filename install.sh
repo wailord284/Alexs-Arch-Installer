@@ -39,12 +39,23 @@ dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
 
+#Add repo-ck and chaotic-aur to live ISO pacman config in case user wants custom kernel.
+echo '#Repo-ck containing kernels with ck patch
+[repo-ck]
+Server = https://mirror.lesviallon.fr/$repo/os/$arch
+Server = http://repo-ck.com/$arch
+SigLevel = Never
+[chaotic-aur]
+Server = https://random-mirror.chaotic.cx/$repo/$arch
+SigLevel = Never
+' >> /etc/pacman.conf
+
 #Set time before init
 #This is useful if you installed coreboot. The clock will have no time set by default and this will update it.
 echo "$yellow""Please wait while the system clock and keyring are set""$reset"
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
-pacman -Sy
+pacman -Syy
 pacman -S archlinux-keyring ntp wget dialog --noconfirm
 ntpd -qg
 hwclock --systohc
@@ -250,11 +261,43 @@ else
 fi
 clear
 
+#Kernel
+#Ask user if they want a custom kernel
+dialog --title "Custom Kernels" \
+	--defaultno \
+	--backtitle "$dialogBacktitle" \
+	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-ck and Linux-tkg" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+optionKernel=$?
+if [ "$optionKernel" = 0 ]; then
+	kernel="y"
+else
+	kernel="n"
+fi
+clear
+#If user wants a custom kernel, prompt with linux-ck (repo-ck) and linux-tkg (chaotic-aur) kernels.
+#Installation of the kernel will happen at the end
+if [ "$kernel" = y ]; then
+	unset COUNT MENU_OPTIONS options
+	COUNT=-1
+	mapfile -t dialogRepoCKKernel < <(pacman -Sl repo-ck | grep linux-ck | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' && pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' )
+	for i in $(pacman -Sl repo-ck | grep linux-ck | cut -d" " -f2 | sed '/-headers/d' && pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d') ; do
+		COUNT=$((COUNT+1))
+		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogRepoCKKernel[$COUNT]} off"
+	done
+	targetKernel=(dialog --backtitle "$dialogBacktitle" \
+	--scrollbar \
+	--title "Select a kernel you would like to install" \
+	--radiolist "Press space to select your Kernel. If unsure, select linux-ck." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	options=(${MENU_OPTIONS})
+	installKernel=$("${targetKernel[@]}" "${options[@]}" 2>&1 >/dev/tty)
+	installKernelHeaders=$(echo "$installKernel" | sed 's/$/-headers/')
+fi
+
 #Ask the user if they want to continue with the current options
 #https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
 dialog --backtitle "$dialogBacktitle" \
 --title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe")" "$HEIGHT" "$WIDTH"
+--yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $kernel")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
@@ -511,14 +554,13 @@ SigLevel = PackageOptional
 [aurmageddon]
 Server = https://wailord284.club/repo/$repo/$arch
 Server = https://wailord284.club/repo/$repo/$arch
-SigLevel = Never
+SigLevel = Never' >> /mnt/etc/pacman.conf
 
-#Repo containing custom compiled kernels with linux-ck
-#[repo-ck]
-#Server = http://repo-ck.com/$arch
-#Server = http://repo-ck.com/$arch
-#Server = http://repo-ck.com/$arch' >> /mnt/etc/pacman.conf
-
+#Sign the repo-ck key
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing repo-ck key" \
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver hkp://pool.sks-keyservers.net && pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
+clear
 
 #reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -538,14 +580,28 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-clearurls firefox-extension-canvasblocker firefox-extension-user-agent-switcher --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
-#add chaotic-aur repo to pacman.conf. Currently nothing is installed from this
-echo '[chaotic-aur]
-Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
+#add chaotic-aur and rpeo-ck repo to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
+echo '#Chaotic-aur repo with many packages
+[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist
+#Repo containing custom compiled kernels with linux-ck
+[repo-ck]
+Server = https://mirror.lesviallon.fr/$repo/os/$arch
+Server = http://repo-ck.com/$arch
+Server = http://repo-ck.com/$arch' >> /mnt/etc/pacman.conf
 
+#Update repos
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Updating pacman repos" \
 --prgbox "Updating pacman repos for chaotic-aur" "arch-chroot /mnt pacman -Syy && pacman -Syy " "$HEIGHT" "$WIDTH"
 clear
+
+#If user wants a custom kernel, install it here
+if [ "$kernel" = y ]; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Custom kernel" \
+	--prgbox "Install custom kernel and headers" "arch-chroot /mnt pacman -S $installKernel $installKernelHeaders" "$HEIGHT" "$WIDTH"
+fi
 
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -596,11 +652,11 @@ if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915 driver" 
 	--title "Detecting hardware" \
 	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S vulkan-intel libva-intel-driver intel-media-driver --noconfirm" "$HEIGHT" "$WIDTH"
 fi
-if lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Detecting hardware" \
-	--prgbox "Found NVidia Graphics card" "arch-chroot /mnt pacman -S nvidia nvidia-utils nvidia-settings libxnvctrl --noconfirm" "$HEIGHT" "$WIDTH"
-fi
+#if lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then
+#	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+#	--title "Detecting hardware" \
+#	--prgbox "Found NVidia Graphics card" "arch-chroot /mnt pacman -S nvidia nvidia-utils nvidia-settings libxnvctrl --noconfirm" "$HEIGHT" "$WIDTH"
+#fi
 clear
 
 
