@@ -19,6 +19,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Custom nanorc file to include syntax highlighting
+- Optionally install custom kernels (linux-ck or linux-tkg) with CPU optimizations from repo-ck and chaotic-aur
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
 - Optionally overwrite the drive with random data to [securely erase](https://wiki.archlinux.org/index.php/Securely_wipe_disk#shred) the drive
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
