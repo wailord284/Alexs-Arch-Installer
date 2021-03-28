@@ -19,7 +19,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Custom nanorc file to include syntax highlighting
-- Optionally install custom kernels (linux-ck or linux-tkg) with CPU optimizations from repo-ck and chaotic-aur
+- Optionally install custom kernels (linux-ck or linux-tkg) with GCC CPU optimizations from repo-ck and chaotic-aur
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
 - Optionally overwrite the drive with random data to [securely erase](https://wiki.archlinux.org/index.php/Securely_wipe_disk#shred) the drive
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
@@ -92,7 +92,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
     * Packages installed from Aurmageddon include:
-    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-clearurls firefox-extension-canvasblocker```
+    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme-git nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker```
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
     * Convert to [Bedrock Linux](https://bedrocklinux.org/) (Not reversible)
@@ -118,3 +118,5 @@ The user will now be prompted to supply basic information such as hostname, user
 ### Todos
  - Fix cancel option in dialog
  - https://wiki.archlinux.org/index.php/systemd-boot#Grml_on_ESP
+ - Add zlib-ng over zlib
+ - Add linux-zen, linux-hardened, linux-lts and aurmageddon kernels
