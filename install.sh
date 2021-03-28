@@ -584,12 +584,15 @@ clear
 echo '#Chaotic-aur repo with many packages
 [chaotic-aur]
 Server = https://us-ca-mirror.chaotic.cx/$repo/$arch
-Include = /etc/pacman.d/chaotic-mirrorlist
-#Repo containing custom compiled kernels with linux-ck
+Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
+
+if [ "$kernel" = y ]; then
+echo '#Repo containing custom compiled kernels with linux-ck
 [repo-ck]
 Server = https://mirror.lesviallon.fr/$repo/os/$arch
 Server = http://repo-ck.com/$arch
 Server = http://repo-ck.com/$arch' >> /mnt/etc/pacman.conf
+fi
 
 #Update repos
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
