@@ -1199,6 +1199,8 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		arch-chroot /mnt pacman -S hblock --noconfirm #installed from Aurmageddon
 		arch-chroot /mnt hblock -l -r
 		arch-chroot /mnt systemctl enable hblock.timer
+		#Make sure to replace the hostname from archiso
+		sed -i "s/archiso/$host/g" /mnt/etc/hosts
 		sleep 3s
 		;;
 
