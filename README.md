@@ -2,7 +2,7 @@
 A simple script to automatically install Arch Linux with the XFCE desktop, custom repository and many post install options.
 
 # About
-This is a small script I have been working on for over a year to simplify the Arch Linux install process across the many different types of hardware I have. The goal of this script is to install Arch with a useable experience right out of the box while still maintaining a mostly vanilla setup. Since I use my devices for many different things, I have tried to support many different configurations and optional configs/utilities a user may want. Once the script completes the user can implement 20+ optional features that may be beneficial to them.
+This is a small script I have been working on for over a year to simplify the Arch Linux install process across the many different types of hardware I have. The goal of this script is to install Arch with a useable experience right out of the box with settings tuned for perfomance and stability. Since I use my devices for many different things, I have tried to support many different configurations and optional configs/utilities a user may want. Once the script completes the user can implement 20+ optional features that may be beneficial to them.
 
 # How to use
 To use this script, you first need to [create a bootable USB](https://www.howtogeek.com/howto/linux/create-a-bootable-ubuntu-usb-flash-drive-the-easy-way/) with the [Arch Linux ISO.](https://archlinux.org/download/) Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date. Make sure you run the script using bash, otherwise zsh will interpret the script and error.
@@ -114,6 +114,16 @@ The user will now be prompted to supply basic information such as hostname, user
     * Enable [Ananicy](https://github.com/Nefelim4ag/Ananicy) - Daemon for setting CPU priority and scheduling
     * [Block ads](https://github.com/hectorm/hblock) system wide using Hblock to modify the hosts file (Recommended)
     * [Encrypt and cache DNS requests](https://wiki.archlinux.org/index.php/Dnscrypt-proxy) - Enables DNSCrypt and DNSMasq
+    
+# Things to consider when using this installer:
+- NO Automatic updates, you are expected to update the system regularly!
+- NO Man pages installed (tldr is installed instead)
+- NO manual partitioning (you can only select the drive) or support for filesystems other than EXT4
+- NO support from Arch communities (due to not being installed the "Arch way" from/by the wiki)
+- AUR Support is enabled with yay package manager
+- Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
+- A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
+- Autodetects hardware. This can detect and install for the wrong hardware if incorrectly detected
 
 ### Todos
  - Fix cancel option in dialog
@@ -121,3 +131,4 @@ The user will now be prompted to supply basic information such as hostname, user
  - Add zlib-ng over zlib
  - Add linux-zen, linux-hardened, linux-lts and aurmageddon kernels
  - https://github.com/Dr-Noob/cpufetch
+ - Add iptables-nft maybe
