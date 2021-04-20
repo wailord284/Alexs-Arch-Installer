@@ -44,7 +44,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
     * [Privacy Badger](https://privacybadger.org/) - Tracker blocker
-    * [HTTPS Everywhere](https://www.eff.org/https-everywhere) - Force HTTPS
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
@@ -114,18 +113,20 @@ The user will now be prompted to supply basic information such as hostname, user
     * Enable [Ananicy](https://github.com/Nefelim4ag/Ananicy) - Daemon for setting CPU priority and scheduling
     * [Block ads](https://github.com/hectorm/hblock) system wide using Hblock to modify the hosts file (Recommended)
     * [Encrypt and cache DNS requests](https://wiki.archlinux.org/index.php/Dnscrypt-proxy) - Enables DNSCrypt and DNSMasq
-    
-# Things to consider when using this installer:
-- NO Automatic updates, you are expected to update the system regularly!
+
+# Things to consider when using this installer
+- NO Automatic updates. You are expected to update the system regularly!
 - NO Man pages installed (tldr is installed instead)
 - NO manual partitioning (you can only select the drive) or support for filesystems other than EXT4
 - NO support from Arch communities (due to not being installed the "Arch way" from/by the wiki)
+- NO guarantee of common or well-known utilities such as CUPS for printing being installed
+- Spectre and Meltdown mitigations are disabled!
 - AUR Support is enabled with yay package manager
 - Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 - Autodetects hardware. This can detect and install for the wrong hardware if incorrectly detected
 
-### Todos
+# Todos
  - Fix cancel option in dialog
  - https://wiki.archlinux.org/index.php/systemd-boot#Grml_on_ESP
  - Add zlib-ng over zlib
