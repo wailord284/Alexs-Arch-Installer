@@ -472,11 +472,11 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 
-#Begin base system install
+#Begin base system install and install zlib-ng from aurmageddon
 clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft --noconfirm" "$HEIGHT" "$WIDTH"
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\TotalDownload,TotalDownload,g" -i /mnt/etc/pacman.conf
@@ -571,13 +571,13 @@ clear
 #install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-extension-privacybadger firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart veracrypt peek firefox-clearurls tldr iptables-nft --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-extension-privacybadger firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart veracrypt peek firefox-clearurls tldr --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
-#additional aurmageddon packages - use yes | to confirm zlib-ng overwrite
+#additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt yes | pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-user-agent-switcher zlib-ng --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-user-agent-switcher --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #add chaotic-aur and rpeo-ck repo to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
