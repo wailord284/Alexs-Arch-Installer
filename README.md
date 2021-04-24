@@ -67,6 +67,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Makepkg changes:
     * Change makeflags to account for [all cores](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) in the system (-j)
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
+    * Change RUSTFLAGS to build [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) binaries
     * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (No compression) when building AUR packages
     * Add [multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
     * Enable max compression when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
