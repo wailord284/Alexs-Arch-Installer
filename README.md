@@ -20,6 +20,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Custom nanorc file to include syntax highlighting
 - Optionally install custom kernels (linux-ck or linux-tkg) with GCC CPU optimizations from repo-ck and chaotic-aur
+- Support for either [EXT4](https://wiki.archlinux.org/index.php/Ext4) or [F2FS](https://wiki.archlinux.org/index.php/F2FS) filesystems
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
 - Optionally overwrite the drive with random data to [securely erase](https://wiki.archlinux.org/index.php/Securely_wipe_disk#shred) the drive
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
@@ -119,7 +120,7 @@ The user will now be prompted to supply basic information such as hostname, user
 # Things to consider when using this installer
 - NO Automatic updates. You are expected to update the system regularly!
 - NO Man pages installed (tldr is installed instead)
-- NO manual partitioning (you can only select the drive) or support for filesystems other than EXT4
+- NO manual partitioning (you can only select the drive)
 - NO support from Arch communities (due to not being installed the "Arch way" from/by the wiki)
 - NO guarantee of common or well-known utilities such as CUPS for printing being installed
 - NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)

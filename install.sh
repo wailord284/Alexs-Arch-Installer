@@ -248,6 +248,20 @@ if [ "$driveSize" -lt "8589934592" ]; then
 	exit 1
 fi
 
+#Filesystem
+unset COUNT MENU_OPTIONS options
+for i in $(echo "ext4 f2fs"); do
+	COUNT=$((COUNT+1))
+	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+done
+sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
+	--title "Select your filesystem. EXT4 is the recommended choice" \
+	--scrollbar \
+	--radiolist "Press space to select your filesystem" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+options=(${MENU_OPTIONS})
+filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
+clear
+
 #disk wipe
 dialog --title "Secure Disk Erase" \
 	--defaultno \
@@ -297,7 +311,7 @@ fi
 #https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
 dialog --backtitle "$dialogBacktitle" \
 --title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $kernel")" "$HEIGHT" "$WIDTH"
+--yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $kernel" "Filesystem: $filesystem")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
@@ -365,17 +379,24 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	echo "$green""Setting up disk encryption. Please wait.""$reset"
 	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2i luksFormat "${storagePartitions[2]}"
 	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
-	#Format partitions
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "UEFI boot with encryption" \
-	--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	#Filesystem creation
+	if [ "$filesystem" = ext4 ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "UEFI boot with encryption" \
+		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		#Add filesystem label
+		tune2fs -L ArchLinux "${storagePartitions[2]}"
+	else
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "UEFI boot with encryption" \
+		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	fi
 	mount /dev/mapper/cryptroot /mnt
 	#Mount and partition boot drive
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot with encryption" \
 	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	#add label to the filesystem
-	tune2fs -L ArchLinux "${storagePartitions[2]}"
 	fatlabel ${storagePartitions[1]} ArchBoot
 	#mount drives
 	mkdir /mnt/boot
@@ -392,12 +413,22 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	parted -s "$storage" set 1 esp on
 	#create ext4 root partition
 	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100% #551MiB
-	#Format partitions
+	#Filesystem creation
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "UEFI boot no encryption" \
-	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]} && mkfs.ext4 ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+	if [ "$filesystem" = ext4 ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "UEFI boot no encryption" \
+		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+		#add label to the filesystem
+		tune2fs -L ArchLinux "${storagePartitions[2]}"
+	else
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "UEFI boot no encryption" \
+		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	fi
 	#add label to the filesystem
-	tune2fs -L ArchLinux "${storagePartitions[2]}"
 	fatlabel ${storagePartitions[1]} ArchBoot
 	#Mount drive
 	mount "${storagePartitions[2]}" /mnt
@@ -421,16 +452,24 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	echo "$green""Setting up disk encryption. Please wait.""$reset"
 	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2i luksFormat "${storagePartitions[2]}"
 	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Legacy BIOS with encryption" \
-	--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	#Filesystem creation
+	if [ "$filesystem" = ext4 ] ; then 
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Legacy BIOS with encryption" \
+		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		#Add filesystem label
+		tune2fs -L ArchLinux "${storagePartitions[2]}"
+	else
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Legacy BIOS with encryption" \
+		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	fi
 	mount /dev/mapper/cryptroot /mnt
 	#Mount and partition boot drive
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS with encryption" \
 	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	#add label to the filesystem
-	tune2fs -L ArchLinux "${storagePartitions[2]}"
 	tune2fs -L ArchBoot "${storagePartitions[1]}"
 	#mount drives
 	mkdir /mnt/boot
@@ -446,11 +485,17 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	parted -a optimal -s "$storage" mkpart primary ext4 1MiB 100%
 	parted -s "$storage" set 1 boot on
 	#Format main partition
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Legacy BIOS without encryption" \
-	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	#add label to the filesystem
-	tune2fs -L ArchLinux "${storagePartitions[1]}"
+	if [ "$filesystem" = ext4 ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Legacy BIOS without encryption" \
+		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+		#add label to the filesystem
+		tune2fs -L ArchLinux "${storagePartitions[1]}"
+	else
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Legacy BIOS without encryption" \
+		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	fi
 	#mount drive
 	mount "${storagePartitions[1]}" /mnt
 fi
@@ -701,8 +746,6 @@ sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/sys
 
 
 #setup makepkg configure and determine core count
-#cores=$(grep -c ^processor /proc/cpuinfo)
-#sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j$cores\",g" -i /mnt/etc/makepkg.conf
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
 sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
 sed "s,\#\RUSTFLAGS=\"-C opt-level=2\",RUSTFLAGS=\"-C opt-level=2 -C target-cpu=native\",g" -i /mnt/etc/makepkg.conf
