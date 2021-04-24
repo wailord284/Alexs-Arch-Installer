@@ -65,7 +65,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Arch Linux theme
     * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 should work on all systems)
 - Makepkg changes:
-    * Change makeflags to account for [all cores](https://github.com/wailord284/Arch-Linux-Installer/blob/master/install.sh#L648) in the system (-j)
+    * Change makeflags to account for [all cores](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) in the system (-j)
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
     * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (No compression) when building AUR packages
     * Add [multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
@@ -121,6 +121,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - NO manual partitioning (you can only select the drive) or support for filesystems other than EXT4
 - NO support from Arch communities (due to not being installed the "Arch way" from/by the wiki)
 - NO guarantee of common or well-known utilities such as CUPS for printing being installed
+- NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)
 - Spectre and Meltdown mitigations are disabled!
 - AUR Support is enabled with yay package manager
 - Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
