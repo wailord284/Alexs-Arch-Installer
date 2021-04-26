@@ -250,7 +250,7 @@ fi
 
 #Filesystem
 unset COUNT MENU_OPTIONS options
-for i in $(echo "ext4 f2fs"); do
+for i in $(echo "ext4 f2fs btrfs"); do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -386,10 +386,15 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		#Add filesystem label
 		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	else
+	elif [ "$filesystem" = f2fs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "UEFI boot with encryption" \
 		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	else
+		#BTRFS
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "UEFI boot with encryption" \
+		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	fi
 	mount /dev/mapper/cryptroot /mnt
 	#Mount and partition boot drive
@@ -423,10 +428,15 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		#add label to the filesystem
 		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	else
+	elif [ "$filesystem" = f2fs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "UEFI boot no encryption" \
-		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+	else
+		#BTRFS
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "UEFI boot no encryption" \
+		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 	fi
 	#add label to the filesystem
 	fatlabel ${storagePartitions[1]} ArchBoot
@@ -459,10 +469,15 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		#Add filesystem label
 		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	else
+	elif [ "$filesystem" = f2fs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Legacy BIOS with encryption" \
 		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+	else
+		#BTRFS
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Legacy BIOS with encryption" \
+		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	fi
 	mount /dev/mapper/cryptroot /mnt
 	#Mount and partition boot drive
@@ -491,10 +506,15 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 		#add label to the filesystem
 		tune2fs -L ArchLinux "${storagePartitions[1]}"
-	else
+	elif [ "$filesystem" = f2fs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Legacy BIOS without encryption" \
-		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+	else
+		#BTRFS
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Legacy BIOS without encryption" \
+		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	fi
 	#mount drive
 	mount "${storagePartitions[1]}" /mnt
