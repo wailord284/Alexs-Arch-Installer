@@ -21,7 +21,8 @@ The user will now be prompted to supply basic information such as hostname, user
 - Custom nanorc file to include syntax highlighting
 - Optionally install custom kernels (linux-ck or linux-tkg) with GCC CPU optimizations from repo-ck and chaotic-aur
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [F2FS](https://wiki.archlinux.org/index.php/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
-    * BTRFS will use compress=ZSTD for default compression. Edit /etc/fstab to change to LZO or ZLIB
+    * BTRFS will use [compress=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression. Edit /etc/fstab to change to LZO or ZLIB
+    * BTRFS scrub timer will be enabled for the root directory if selected
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
 - Optionally overwrite the drive with random data to [securely erase](https://wiki.archlinux.org/index.php/Securely_wipe_disk#shred) the drive
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner

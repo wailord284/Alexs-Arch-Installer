@@ -255,9 +255,9 @@ for i in $(echo "ext4 f2fs btrfs"); do
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
 sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
-	--title "Select your filesystem. EXT4 is the recommended choice" \
+	--title "Select your filesystem" \
 	--scrollbar \
-	--radiolist "Press space to select your filesystem" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your filesystem. EXT4 is the recommended choice." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
 filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
@@ -695,6 +695,12 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged irqbalance logrotate.timer" "$HEIGHT" "$WIDTH"
 
+#If the user is using BTRFS, enable BTRFS-scrub service
+if [ "$filesystem" = btrfs ] ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Enabling Services" \
+	--prgbox "Enabling BTRFS Scrub" "arch-chroot /mnt systemctl enable btrfs-scrub@-.timer" "$HEIGHT" "$WIDTH"
+fi
 
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
 #This works however, if you install via usb itll detect the usb drive as nonrotational and enable fstrim
