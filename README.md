@@ -51,6 +51,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
+    * [Decentral Eyes](https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/) - local privacy increasing CDN
 - Bash changes:
     * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
