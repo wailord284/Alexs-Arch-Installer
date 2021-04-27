@@ -126,6 +126,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - NO support from Arch communities (due to not being installed the "Arch way" from/by the wiki)
 - NO guarantee of common or well-known utilities such as CUPS for printing being installed
 - NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)
+- NO Snapshots or backup system enabled even if BTRFS is selected
 - Spectre and Meltdown mitigations are disabled!
 - AUR Support is enabled with yay package manager
 - Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
