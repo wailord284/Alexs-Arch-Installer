@@ -397,6 +397,10 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	fi
 	mount /dev/mapper/cryptroot /mnt
+	#Mount and partition boot drive
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "UEFI boot with encryption" \
+	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	#add label to the filesystem
 	fatlabel ${storagePartitions[1]} ArchBoot
 	#mount drives
@@ -476,6 +480,12 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	fi
 	mount /dev/mapper/cryptroot /mnt
+	#Mount and partition boot drive
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Legacy BIOS with encryption" \
+	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+	#add label to the filesystem
+	tune2fs -L ArchBoot "${storagePartitions[1]}"
 	#mount drives
 	mkdir /mnt/boot
 	mount "${storagePartitions[1]}" /mnt/boot
