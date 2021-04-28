@@ -687,7 +687,7 @@ clear
 if [ "$kernel" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Custom kernel" \
-	--prgbox "Install custom kernel and headers" "arch-chroot /mnt pacman -S $installKernel $installKernelHeaders --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Install custom kernel and headers" "arch-chroot /mnt pacman -S $(echo $installKernel $installKernelHeaders) --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 
 #Enable services
