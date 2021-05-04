@@ -15,12 +15,6 @@
 #All the post install options are optional but may improve your experience. Some options are selected by default.
 #This is an ongoing project of mine and will recieve constant updates and improvements.
 
-###Things to maybe add###
-#Change vnstat thing to use cat /sys/class/net/wlan/operstate to see if up or down
-#Maybe add option for pkgstats - optionally reports installed packages etc...
-#Auto-cpufreq https://github.com/AdnanHodzic/auto-cpufreq
-#look at readding dnsmasq cache in networkmanager - currently sets /etc/resolv.conf to 127.0.0.1
-
 #colors
 #white=$(tput setaf 7)
 #purple=$(tput setaf 5)
@@ -250,14 +244,14 @@ fi
 
 #Filesystem
 unset COUNT MENU_OPTIONS options
-for i in $(echo "ext4 f2fs btrfs"); do
+for i in $(echo "ext4 xfs btrfs"); do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
 sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
 	--title "Select your filesystem" \
 	--scrollbar \
-	--radiolist "Press space to select your filesystem. EXT4 is the recommended choice." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your filesystem. EXT4 or XFS is the recommended choice." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
 filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
@@ -386,10 +380,10 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		#Add filesystem label
 		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	elif [ "$filesystem" = f2fs ] ; then
+	elif [ "$filesystem" = xfs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "UEFI boot with encryption" \
-		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	else
 		#BTRFS
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -398,9 +392,9 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	fi
 	#Mount the BTRFS drive using -o compress=zstd
 	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd /dev/mapper/cryptroot /mnt
+		mount -o compress=zstd,noatime /dev/mapper/cryptroot /mnt
 	else
-		mount /dev/mapper/cryptroot /mnt
+		mount -o noatime /dev/mapper/cryptroot /mnt
 	fi
 	#Mount and partition boot drive
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -410,7 +404,7 @@ if [[ "$boot" = efi && "$encrypt" = y ]]; then
 	fatlabel ${storagePartitions[1]} ArchBoot
 	#mount drives
 	mkdir /mnt/boot
-	mount "${storagePartitions[1]}" /mnt/boot
+	mount -o noatime "${storagePartitions[1]}" /mnt/boot
 fi
 if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
@@ -433,10 +427,10 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		#add label to the filesystem
 		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	elif [ "$filesystem" = f2fs ] ; then
+	elif [ "$filesystem" = xfs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "UEFI boot no encryption" \
-		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 	else
 		#BTRFS
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -447,12 +441,12 @@ if [[ "$boot" = efi && "$encrypt" = n ]]; then
 	fatlabel ${storagePartitions[1]} ArchBoot
 	#Mount drive
 	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd "${storagePartitions[2]}" /mnt
+		mount -o compress=zstd,noatime "${storagePartitions[2]}" /mnt
 	else
-		mount "${storagePartitions[2]}" /mnt
+		mount -o noatime "${storagePartitions[2]}" /mnt
 	fi
 	mkdir /mnt/boot
-	mount "${storagePartitions[1]}" /mnt/boot
+	mount -o noatime "${storagePartitions[1]}" /mnt/boot
 fi
 #Begin disk partitioning - Legacy bios
 if [[ "$boot" = bios && "$encrypt" = y ]]; then
@@ -478,10 +472,10 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		#Add filesystem label
 		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	elif [ "$filesystem" = f2fs ] ; then
+	elif [ "$filesystem" = xfs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Legacy BIOS with encryption" \
-		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux -O /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	else
 		#BTRFS
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -490,9 +484,9 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	fi
 	#Mount the BTRFS drive using -o compress=zstd
 	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd /dev/mapper/cryptroot /mnt
+		mount -o compress=zstd,noatime /dev/mapper/cryptroot /mnt
 	else
-		mount /dev/mapper/cryptroot /mnt
+		mount -o noatime /dev/mapper/cryptroot /mnt
 	fi
 	#Mount and partition boot drive
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -520,10 +514,10 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 		#add label to the filesystem
 		tune2fs -L ArchLinux "${storagePartitions[1]}"
-	elif [ "$filesystem" = f2fs ] ; then
+	elif [ "$filesystem" = xfs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Legacy BIOS without encryption" \
-		--prgbox "Formatting dirve" "mkfs.f2fs -l ArchLinux -O extra_attr,inode_checksum,sb_checksum,encrypt ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	else
 		#BTRFS
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -654,7 +648,7 @@ clear
 #install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-extension-privacybadger firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart veracrypt peek firefox-clearurls tldr compsize --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jdk11-openjdk jre11-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu ttf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip lxqt-policykit unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme skeuos-gtk-theme-git ntfs-3g hardinfo memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-extension-privacybadger firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart veracrypt peek firefox-clearurls tldr compsize --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #additional aurmageddon packages
