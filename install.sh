@@ -496,7 +496,7 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	tune2fs -L ArchBoot "${storagePartitions[1]}"
 	#mount drives
 	mkdir /mnt/boot
-	mount "${storagePartitions[1]}" /mnt/boot
+	mount -o noatime "${storagePartitions[1]}" /mnt/boot
 fi
 if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	#wipe drive - "${storagePartitions[1]}" is main partition
@@ -526,9 +526,9 @@ if [[ "$boot" = bios && "$encrypt" = n ]]; then
 	fi
 	#mount drive
 	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd "${storagePartitions[1]}" /mnt
+		mount -o compress=zstd,noatime "${storagePartitions[1]}" /mnt
 	else
-		mount "${storagePartitions[1]}" /mnt
+		mount -o noatime "${storagePartitions[1]}" /mnt
 	fi
 fi
 clear
