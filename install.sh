@@ -475,7 +475,7 @@ if [[ "$boot" = bios && "$encrypt" = y ]]; then
 	elif [ "$filesystem" = xfs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Legacy BIOS with encryption" \
-		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux -O /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 	else
 		#BTRFS
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
