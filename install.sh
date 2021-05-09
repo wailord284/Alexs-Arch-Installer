@@ -356,182 +356,82 @@ elif [ "$bootOverride" = 32 ]; then
 	boot="efi"
 fi
 
-#Begin disk partitioning - UEFI
-if [[ "$boot" = efi && "$encrypt" = y ]]; then
-	#wipe drive - "${storagePartitions[1]}" is boot partition
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "UEFI boot with encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
-	#create fat32 efi partition
-	parted -s "$storage" mklabel gpt
-	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
-	parted -s "$storage" set 1 esp on
-	#create ext4 root partition
-	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100%
-	#Format partitions
-	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
-	echo "$green""Setting up disk encryption. Please wait.""$reset"
-	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2i luksFormat "${storagePartitions[2]}"
-	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
-	#Filesystem creation
-	if [ "$filesystem" = ext4 ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "UEFI boot with encryption" \
-		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
-		#Add filesystem label
-		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	elif [ "$filesystem" = xfs ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "UEFI boot with encryption" \
-		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
-	else
-		#BTRFS
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "UEFI boot with encryption" \
-		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
-	fi
-	#Mount the BTRFS drive using -o compress=zstd
-	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd,noatime /dev/mapper/cryptroot /mnt
-	else
-		mount -o noatime /dev/mapper/cryptroot /mnt
-	fi
-	#Mount and partition boot drive
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "UEFI boot with encryption" \
-	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	#add label to the filesystem
-	fatlabel ${storagePartitions[1]} ArchBoot
-	#mount drives
-	mkdir /mnt/boot
-	mount -o noatime "${storagePartitions[1]}" /mnt/boot
-fi
-if [[ "$boot" = efi && "$encrypt" = n ]]; then
-	#wipe drive - "${storagePartitions[1]}" is boot partition
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "UEFI boot no encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
-	#create fat32 efi partition
-	parted -s "$storage" mklabel gpt
-	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB #551MiB
-	parted -s "$storage" set 1 esp on
-	#create ext4 root partition
-	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100% #551MiB
-	#Filesystem creation
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "UEFI boot no encryption" \
-	--prgbox "Formatting dirve" "mkfs.vfat -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	if [ "$filesystem" = ext4 ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "UEFI boot no encryption" \
-		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-		#add label to the filesystem
-		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	elif [ "$filesystem" = xfs ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "UEFI boot no encryption" \
-		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-	else
-		#BTRFS
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "UEFI boot no encryption" \
-		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-	fi
-	#add label to the filesystem
-	fatlabel ${storagePartitions[1]} ArchBoot
-	#Mount drive
-	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd,noatime "${storagePartitions[2]}" /mnt
-	else
-		mount -o noatime "${storagePartitions[2]}" /mnt
-	fi
-	mkdir /mnt/boot
-	mount -o noatime "${storagePartitions[1]}" /mnt/boot
-fi
-#Begin disk partitioning - Legacy bios
-if [[ "$boot" = bios && "$encrypt" = y ]]; then
+#Begin disk partitioning
+if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Legacy BIOS with encryption" \
 	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
-	#create ext4 boot partition
+	#create fat32 boot partition
 	parted -s "$storage" mklabel msdos #BIOS needs msdos
-	parted -a optimal -s "$storage" mkpart primary ext4 1MiB 512MiB #bios requires ext4
+	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
 	parted -s "$storage" set 1 boot on #mark bootable
 	#create ext4 root partition
 	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100%
-	#Format partitions
-	clear #Run cryptsetup just in terminal, password will be piped in from $encpass
-	echo "$green""Setting up disk encryption. Please wait.""$reset"
-	echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2i luksFormat "${storagePartitions[2]}"
-	echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
-	#Filesystem creation
-	if [ "$filesystem" = ext4 ] ; then 
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Legacy BIOS with encryption" \
-		--prgbox "Formatting dirve" "mkfs.ext4 /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
-		#Add filesystem label
-		tune2fs -L ArchLinux "${storagePartitions[2]}"
-	elif [ "$filesystem" = xfs ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Legacy BIOS with encryption" \
-		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+
+	#Format partitions for encryption
+	if [ "$encrypt" = y ]; then
+		clear #Run cryptsetup just in terminal, password will be piped in from $encpass
+		echo "$green""Setting up disk encryption. Please wait.""$reset"
+		echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2i luksFormat "${storagePartitions[2]}"
+		echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
+		#Filesystem creation
+		if [ "$filesystem" = ext4 ] ; then 
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Legacy BIOS with encryption" \
+			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		elif [ "$filesystem" = xfs ] ; then
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Legacy BIOS with encryption" \
+			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		else
+			#BTRFS
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Legacy BIOS with encryption" \
+			--prgbox "Formatting root partition" "mkfs.btrfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		fi
+
+		#Mount the BTRFS root partition using -o compress=zstd
+		if [ "$filesystem" = btrfs ] ; then
+			mount -o compress=zstd,noatime /dev/mapper/cryptroot /mnt
+		else
+			mount -o noatime /dev/mapper/cryptroot /mnt
+		fi
 	else
-		#BTRFS
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Legacy BIOS with encryption" \
-		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		#Format partitions for no encyption
+		if [ "$filesystem" = ext4 ] ; then
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Legacy BIOS without encryption" \
+			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+		elif [ "$filesystem" = xfs ] ; then
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Legacy BIOS without encryption" \
+			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+		else
+			#BTRFS
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Legacy BIOS without encryption" \
+			--prgbox "Formatting root partition" "mkfs.btrfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+		fi
+
+		#Mount the BTRFS root partition using -o compress=zstd
+		if [ "$filesystem" = btrfs ] ; then
+			mount -o compress=zstd,noatime "${storagePartitions[2]}" /mnt
+		else
+			mount -o noatime "${storagePartitions[2]}" /mnt
+		fi
 	fi
-	#Mount the BTRFS drive using -o compress=zstd
-	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd,noatime /dev/mapper/cryptroot /mnt
-	else
-		mount -o noatime /dev/mapper/cryptroot /mnt
-	fi
-	#Mount and partition boot drive
+
+	#Mount and partition the boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Legacy BIOS with encryption" \
-	--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	#add label to the filesystem
-	tune2fs -L ArchBoot "${storagePartitions[1]}"
+	--title "Legacy BIOS" \
+	--prgbox "Formatting boot partition" "mkfs.vfat -n ArchBoot -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	#mount drives
 	mkdir /mnt/boot
 	mount -o noatime "${storagePartitions[1]}" /mnt/boot
 fi
-if [[ "$boot" = bios && "$encrypt" = n ]]; then
-	#wipe drive - "${storagePartitions[1]}" is main partition
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Legacy BIOS without encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
-	#Setup drive
-	parted -s "$storage" mklabel msdos
-	parted -a optimal -s "$storage" mkpart primary ext4 1MiB 100%
-	parted -s "$storage" set 1 boot on
-	#Format main partition
-	if [ "$filesystem" = ext4 ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Legacy BIOS without encryption" \
-		--prgbox "Formatting dirve" "mkfs.ext4 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-		#add label to the filesystem
-		tune2fs -L ArchLinux "${storagePartitions[1]}"
-	elif [ "$filesystem" = xfs ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Legacy BIOS without encryption" \
-		--prgbox "Formatting dirve" "mkfs.xfs -L ArchLinux ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	else
-		#BTRFS
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Legacy BIOS without encryption" \
-		--prgbox "Formatting dirve" "mkfs.btrfs -L ArchLinux ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	fi
-	#mount drive
-	if [ "$filesystem" = btrfs ] ; then
-		mount -o compress=zstd,noatime "${storagePartitions[1]}" /mnt
-	else
-		mount -o noatime "${storagePartitions[1]}" /mnt
-	fi
-fi
 clear
+
 
 #Install system, grub, mirrors
 #add my repo to pacman.conf to install glxinfo later
