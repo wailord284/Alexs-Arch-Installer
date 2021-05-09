@@ -18,6 +18,7 @@ alias ip='ip -c'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
+alias man='tldr'
 export VISUAL="nano"
 export BROWSER="firefox"
 export EDITOR="nano"
