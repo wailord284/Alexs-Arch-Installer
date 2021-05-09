@@ -636,7 +636,7 @@ SigLevel = Never' >> /mnt/etc/pacman.conf
 #Sign the repo-ck key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing repo-ck key" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver hkp://pool.sks-keyservers.net && pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver hkp://pool.sks-keyservers.net && arch-chroot /mnt pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
 clear
 
 #reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
