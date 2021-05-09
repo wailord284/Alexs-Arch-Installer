@@ -360,8 +360,8 @@ fi
 if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Legacy BIOS with encryption" \
-	--prgbox "Formatting dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
+	--title "Patitioning Disk" \
+	--prgbox "Erasing dirve" "wipefs --all $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 boot partition
 	parted -s "$storage" mklabel msdos #BIOS needs msdos
 	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
@@ -378,16 +378,16 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Filesystem creation
 		if [ "$filesystem" = ext4 ] ; then 
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Legacy BIOS with encryption" \
+			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = xfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Legacy BIOS with encryption" \
+			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Legacy BIOS with encryption" \
+			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.btrfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		fi
 
@@ -401,16 +401,16 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Format partitions for no encyption
 		if [ "$filesystem" = ext4 ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Legacy BIOS without encryption" \
+			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = xfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Legacy BIOS without encryption" \
+			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Legacy BIOS without encryption" \
+			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.btrfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		fi
 
@@ -424,7 +424,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 	#Mount and partition the boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Legacy BIOS" \
+	--title "Patitioning Disk" \
 	--prgbox "Formatting boot partition" "mkfs.vfat -n ArchBoot -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	#mount drives
 	mkdir /mnt/boot
