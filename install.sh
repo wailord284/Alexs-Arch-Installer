@@ -71,12 +71,6 @@ clear
 
 #desktop
 desktop=${desktop:-xfce}
-#hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
-host=$(dialog --title "Hostname" \
-	--backtitle "$dialogBacktitle" \
-	--inputbox "Please enter a hostname. Default linux. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
-host=${host:-linux}
-clear
 
 #Username
 user=$(dialog --title "Username" \
@@ -107,40 +101,11 @@ while : ; do
 done
 clear
 
-#Ask user if they want disk encryption
-dialog --title "Disk Encryption" \
-	--defaultno \
+#hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
+host=$(dialog --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to enable disk encryption? " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
-optionEncrypt=$?
-if [ "$optionEncrypt" = 0 ]; then
-	encrypt="y"
-else
-	encrypt="n"
-fi
-clear
-
-#If user wants disk encryption, prompt them for a password twice
-if [ "$encrypt" = y ]; then
-while : ; do
-	#encpass1
-	encpass1=$(dialog --title "Disk Encryption Password" \
-		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter a password to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
-	encpass1=${encpass1:-pass}
-	#encpass2
-	encpass2=$(dialog --title "Password" \
-		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter your password again to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
-	encpass2=${encpass2:-pass}
-	if [ "$encpass1" = "$encpass2" ]; then
-		encpass="$encpass1"
-		break #exit loop
-	else
-		dialog --msgbox "encass1 and encpass2 do not match. Please try again" "$dialogHeight" "$dialogWidth" && clear
-	fi
-done
-fi
+	--inputbox "Please enter a hostname. Default linux. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+host=${host:-linux}
 clear
 
 #Locale
@@ -241,6 +206,42 @@ if [ "$driveSize" -lt "8589934592" ]; then
 	dialog --msgbox "Your hard drive is smaller than 8GB. Please use a larger drive" "$dialogHeight" "$dialogWidth"
 	exit 1
 fi
+
+#Ask user if they want disk encryption
+dialog --title "Disk Encryption" \
+	--defaultno \
+	--backtitle "$dialogBacktitle" \
+	--yesno "Do you want to enable disk encryption? " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+optionEncrypt=$?
+if [ "$optionEncrypt" = 0 ]; then
+	encrypt="y"
+else
+	encrypt="n"
+fi
+clear
+
+#If user wants disk encryption, prompt them for a password twice
+if [ "$encrypt" = y ]; then
+while : ; do
+	#encpass1
+	encpass1=$(dialog --title "Disk Encryption Password" \
+		--backtitle "$dialogBacktitle" \
+		--passwordbox "Please enter a password to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+	encpass1=${encpass1:-pass}
+	#encpass2
+	encpass2=$(dialog --title "Password" \
+		--backtitle "$dialogBacktitle" \
+		--passwordbox "Please enter your password again to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+	encpass2=${encpass2:-pass}
+	if [ "$encpass1" = "$encpass2" ]; then
+		encpass="$encpass1"
+		break #exit loop
+	else
+		dialog --msgbox "encass1 and encpass2 do not match. Please try again" "$dialogHeight" "$dialogWidth" && clear
+	fi
+done
+fi
+clear
 
 #Filesystem
 unset COUNT MENU_OPTIONS options
