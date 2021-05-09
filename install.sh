@@ -362,9 +362,15 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
-	--prgbox "Erasing dirve" "sfdisk --delete $storage && wipefs --all $storage" "$HEIGHT" "$WIDTH"
+	--prgbox "Erasing dirve" "wipefs --all $storage && mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
+	if [ "$boot" = bios ]; then
+		#BIOS needs msdos
+		parted -s "$storage" mklabel msdos
+	else
+		#UEFI needs GPT
+		parted -s "$storage" mklabel gpt
+	fi
 	#create fat32 boot partition
-	parted -s "$storage" mklabel msdos #BIOS needs msdos
 	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
 	parted -s "$storage" set 1 boot on #mark bootable
 	#create ext4 root partition
@@ -426,7 +432,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#Mount and partition the boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
-	--prgbox "Formatting boot partition" "mkfs.vfat -n ArchBoot -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
+	--prgbox "Formatting boot partition" "mkfs.vfat -n archboot -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	#mount drives
 	mkdir /mnt/boot
 	mount -o noatime "${storagePartitions[1]}" /mnt/boot
