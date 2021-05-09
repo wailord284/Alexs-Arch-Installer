@@ -362,7 +362,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
-	--prgbox "Erasing dirve" "wipefs --all $storage" "$HEIGHT" "$WIDTH"
+	--prgbox "Erasing dirve" "sfdisk --delete $storage && wipefs --all $storage" "$HEIGHT" "$WIDTH"
 	#create fat32 boot partition
 	parted -s "$storage" mklabel msdos #BIOS needs msdos
 	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
