@@ -207,6 +207,20 @@ if [ "$driveSize" -lt "8589934592" ]; then
 	exit 1
 fi
 
+#Filesystem
+unset COUNT MENU_OPTIONS options
+for i in $(echo "ext4 xfs btrfs"); do
+	COUNT=$((COUNT+1))
+	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+done
+sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
+	--title "Select your filesystem" \
+	--scrollbar \
+	--radiolist "Press space to select your filesystem. EXT4 or XFS is the recommended choice." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+options=(${MENU_OPTIONS})
+filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
+clear
+
 #Ask user if they want disk encryption
 dialog --title "Disk Encryption" \
 	--defaultno \
@@ -241,20 +255,6 @@ while : ; do
 	fi
 done
 fi
-clear
-
-#Filesystem
-unset COUNT MENU_OPTIONS options
-for i in $(echo "ext4 xfs btrfs"); do
-	COUNT=$((COUNT+1))
-	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
-done
-sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
-	--title "Select your filesystem" \
-	--scrollbar \
-	--radiolist "Press space to select your filesystem. EXT4 or XFS is the recommended choice." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-options=(${MENU_OPTIONS})
-filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
 
 #disk wipe
@@ -362,7 +362,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
-	--prgbox "Erasing dirve" "wipefs --all $storage && mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
+	--prgbox "Erasing dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
 	if [ "$boot" = bios ]; then
 		#BIOS needs msdos
 		parted -s "$storage" mklabel msdos
@@ -374,7 +374,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
 	parted -s "$storage" set 1 boot on #mark bootable
 	#create ext4 root partition
-	parted -a optimal -s "$storage" mkpart primary ext4 512MiB 100%
+	parted -a optimal -s "$storage" mkpart primary "$filesystem" 512MiB 100%
 
 	#Format partitions for encryption
 	if [ "$encrypt" = y ]; then
@@ -395,7 +395,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.btrfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.btrfs -f -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		fi
 
 		#Mount the BTRFS root partition using -o compress=zstd
@@ -418,7 +418,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.btrfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.btrfs -f -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		fi
 
 		#Mount the BTRFS root partition using -o compress=zstd
