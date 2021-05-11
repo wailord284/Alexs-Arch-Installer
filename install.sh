@@ -400,7 +400,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 		#Mount the BTRFS root partition using -o compress=zstd
 		if [ "$filesystem" = btrfs ] ; then
-			mount -o compress=zstd,noatime /dev/mapper/cryptroot /mnt
+			mount -o compress-force=zstd,noatime /dev/mapper/cryptroot /mnt
 		else
 			mount -o noatime /dev/mapper/cryptroot /mnt
 		fi
@@ -423,7 +423,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 		#Mount the BTRFS root partition using -o compress=zstd
 		if [ "$filesystem" = btrfs ] ; then
-			mount -o compress=zstd,noatime "${storagePartitions[2]}" /mnt
+			mount -o compress-force=zstd,noatime "${storagePartitions[2]}" /mnt
 		else
 			mount -o noatime "${storagePartitions[2]}" /mnt
 		fi
