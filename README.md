@@ -144,4 +144,3 @@ The user will now be prompted to supply basic information such as hostname, user
  - https://wiki.archlinux.org/index.php/systemd-boot#Grml_on_ESP
  - Add linux-zen, linux-hardened, linux-lts and aurmageddon kernels
  - https://github.com/Dr-Noob/cpufetch
- - Rework the disk partition section. It's getting out of hand
