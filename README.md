@@ -25,7 +25,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * BTRFS will use [compress=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression. Edit /etc/fstab to change to LZO or ZLIB
     * BTRFS scrub timer will be enabled for the root directory if selected
     * All filesystems will use the noatime mount option
-- Preconfigured GPU Accelerated terminal [Wezterm](https://wezfurlong.org/wezterm/)
+- Preconfigured GPU Accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
 - Optionally overwrite the drive with random data to [securely erase](https://wiki.archlinux.org/index.php/Securely_wipe_disk#shred) the drive
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
