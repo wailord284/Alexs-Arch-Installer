@@ -100,7 +100,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
     * Packages installed from Aurmageddon include:
-    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-user-agent-switcher zlib-ng```
+    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-user-agent-switcher zlib-ng skeuos-gtk-theme-git```
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
     * Convert to [Bedrock Linux](https://bedrocklinux.org/) (Not reversible)
