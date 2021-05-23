@@ -686,8 +686,11 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 #add sudo changes
 sed "s,\#\ %wheel ALL=(ALL) ALL, %wheel ALL=(ALL) ALL,g" -i /mnt/etc/sudoers
 echo 'Defaults !tty_tickets' >> /mnt/etc/sudoers
+echo 'Defaults passwd_tries=5' >> /mnt/etc/sudoers
 echo 'Defaults passwd_timeout=0' >> /mnt/etc/sudoers
+echo 'Defaults env_reset,pwfeedback' >> /mnt/etc/sudoers
 echo 'Defaults editor=/usr/bin/rnano' >> /mnt/etc/sudoers
+echo 'Defaults  log_host, log_year, logfile="/var/log/sudo.log"' >> /mnt/etc/sudoers
 echo "#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl" >> /mnt/etc/sudoers
 
 

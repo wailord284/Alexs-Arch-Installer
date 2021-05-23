@@ -89,8 +89,11 @@ The user will now be prompted to supply basic information such as hostname, user
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
-    * Commented line to run specific commands [without requiring sudo password](https://github.com/wailord284/Arch-Linux-Installer/blob/master/install.sh#L637)
+    * Commented line to run specific commands without requiring sudo password
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
+    * Log file of elevated commands at /var/log/sudo.log
+    * Five password tries instead of 3
+    * Password displayed with * instead of invisible
 - NetworkManager changes:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
     * [IPv6 privacy extensions](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
