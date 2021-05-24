@@ -748,7 +748,7 @@ mkdir -p /mnt/etc/skel/.config/kitty/
 mkdir -p /mnt/etc/skel/.local/share/xfce4/
 #Move configs files to /etc/skel
 #Move kitty config
-mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel
+mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel/.config/kitty/
 #Create gtk-2.0 disable recents
 mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/etc/skel
 #Create gtk-3.0 disable recents
@@ -1024,7 +1024,7 @@ selection=${selection:- 5 15 18 q}
 
 		1)
 		#bedrock - https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
-		bedrockVersion="0.7.19"
+		bedrockVersion="0.7.20"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
