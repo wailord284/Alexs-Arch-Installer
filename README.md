@@ -36,7 +36,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SSDs and NVME drives
 - Change [mkinitcpio compression to ZSTD](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) (Added in kernel 5.9)
 - Support for [Touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
-- Modified freetype2 and fonts/local.conf to [improve font rendering](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/fonts/local.conf) (default font: Ubuntu)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) found in most file managers
 - LXDM display manager with [Archlinux theme](https://aur.archlinux.org/packages/archlinux-lxdm-theme/)
 - Large amount of [sysctl.d/configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
@@ -55,6 +54,10 @@ The user will now be prompted to supply basic information such as hostname, user
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
     * [Decentral Eyes](https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/) - Local emulation of Content Delivery Networks
+- Polkit chnages:
+    * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) to use libvirt without password (users in the KVM group)
+    * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) to add/remove a network without a password (users in the network group)
+    * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) to allow gparted to run without a password (users in storage group)
 - Bash changes:
     * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
