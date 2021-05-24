@@ -749,6 +749,8 @@ mkdir -p /mnt/etc/skel/.local/share/xfce4/
 #Move configs files to /etc/skel
 #Move kitty config
 mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel/.config/kitty/
+#Move picom config. We don't use picom, but maybe in the future
+mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
 #Create gtk-2.0 disable recents
 mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/etc/skel
 #Create gtk-3.0 disable recents
@@ -772,9 +774,10 @@ TMPFILE=$(mktemp) || exit 1
 trap 'rm -f "$TMPFILE"' EXIT
 #root password and user password and setup stronger password encryption
 arch-chroot /mnt echo -e "$pass\n$pass" | passwd
-sed '/nullok/d' -i /mnt/etc/pam.d/passwd
 #setup more secure passwd by increasing hashes
+sed '/nullok/d' -i /mnt/etc/pam.d/passwd
 echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
+#Create account passwords
 echo "$user":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
 arch-chroot /mnt echo -e "$pass\n$pass" | passwd
@@ -785,23 +788,21 @@ unset pass1 pass2 pass encpass encpass1 encpass2
 #Increase delay between password attempts to 4 seconds
 echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
 
-
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
 sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
-mv -f Arch-Linux-Installer-master/configs/fonts/local.conf /mnt/etc/fonts/local.conf
+#mv -f Arch-Linux-Installer-master/configs/fonts/local.conf /mnt/etc/fonts/local.conf
 
 #Add xorg file that allows the user to press control, alt, backspace to kill xorg (returns to login manager)
 mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 
 #NetworkManager/Network startup scripts
-#interface=$(ip a | grep "state UP" | cut -c4- | sed 's/:.*//')
-#configure mac address spoofing on startup via networkmanager. Only wireless addresses are randomized
 mkdir -p /mnt/etc/NetworkManager/conf.d/
 mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
+#configure mac address spoofing on startup via networkmanager. Only wireless addresses are randomized
 mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
 #IPv6 privacy and managed connection
 echo -e "[connection]\nipv6.ip6-privacy=2\n[ifupdown]\nmanaged=true" >> /mnt/etc/NetworkManager/NetworkManager.conf
@@ -818,7 +819,7 @@ mv Arch-Linux-Installer-master/configs/networkmanager/no-systemd-resolve.conf /m
 mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
 mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
 #Allow user in the network group to add/modify/delete networks without a password
-#mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
+mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
 
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
@@ -827,8 +828,10 @@ mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/
 mv Arch-Linux-Installer-master/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
 
 #Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
-#https://wiki.archlinux.org/index.php/Libvirt#Using_polkit
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
+
+#Add gparted  polkit rule for storage group, allow users to not enter a password
+mv -f Arch-Linux-Installer-master/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
 clear
 
 
