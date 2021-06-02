@@ -463,7 +463,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft --noconfirm" "$HEIGHT" "$WIDTH"
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
-sed "s,\#\TotalDownload,TotalDownload,g" -i /mnt/etc/pacman.conf
+sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 clear
 
@@ -702,6 +702,7 @@ sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/sys
 #setup makepkg configure and determine core count
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
 sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
+sed "s,\!lto,lto,g" -i /mnt/etc/makepkg.conf
 sed "s,\#\RUSTFLAGS=\"-C opt-level=2\",RUSTFLAGS=\"-C opt-level=2 -C target-cpu=native\",g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makepkg.conf

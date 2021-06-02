@@ -54,7 +54,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
     * [Decentral Eyes](https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/) - Local emulation of Content Delivery Networks
-- Polkit chnages:
+- Polkit changes:
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) to use libvirt without password (users in the KVM group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) to add/remove a network without a password (users in the network group)
     * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) to allow gparted to run without a password (users in storage group)
@@ -81,6 +81,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (No compression) when building AUR packages
     * Add [multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
     * Enable max compression when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
+    * LTO optimizations enabled
 - Systemd changes:
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
