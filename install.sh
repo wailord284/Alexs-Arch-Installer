@@ -546,10 +546,16 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver hkp://pool.sks-keyservers.net && arch-chroot /mnt pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
 clear
 
+#Sign the chaotic-aur key
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing Chaotic-aur key" \
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --recv-key 3056513887B78AEB && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
+clear
+
 #reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring chaotic-keyring chaotic-mirrorlist --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #install desktop and software
