@@ -1,0 +1,8 @@
+/* Allow users in storage group to run GParted without authentication */
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.archlinux.pkexec.gparted" &&
+        subject.isInGroup("storage")) {
+        return polkit.Result.YES;
+    }
+});
+
