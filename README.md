@@ -141,6 +141,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Spectre and Meltdown mitigations are disabled!
     * noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
 - AUR Support is enabled with yay package manager
+- GParted and network manager can be edited by users in the storage and network group (the default user is in both)
 - Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 - Autodetects hardware. This can detect and install for the wrong hardware if incorrectly detected
