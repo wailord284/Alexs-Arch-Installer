@@ -541,7 +541,7 @@ Server = https://wailord284.club/repo/$repo/$arch
 SigLevel = Never' >> /mnt/etc/pacman.conf
 
 #Add the ubuntu keyserver to gpg
-echo "keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
+echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 
 #Sign the repo-ck key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
