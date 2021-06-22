@@ -540,16 +540,19 @@ Server = https://wailord284.club/repo/$repo/$arch
 Server = https://wailord284.club/repo/$repo/$arch
 SigLevel = Never' >> /mnt/etc/pacman.conf
 
+#Add the ubuntu keyserver to gpg
+echo "keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
+
 #Sign the repo-ck key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing repo-ck key" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver hkp://pool.sks-keyservers.net && arch-chroot /mnt pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
 clear
 
 #Sign the chaotic-aur key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing Chaotic-aur key" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --recv-key 3056513887B78AEB && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --keyserver keyserver.ubuntu.com --recv-key 3056513887B78AEB && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
