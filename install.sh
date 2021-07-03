@@ -212,7 +212,7 @@ clear
 #8589934592 / 1048576 = 8192MB (8GB)
 driveSize=$(fdisk -l "$storage" | grep -m1 Disk | cut -d ":" -f 2 | cut -d "," -f 2 | sed -e 's/[^0-9]/ /g' -e 's/ //g')
 if [ "$driveSize" -lt "8589934592" ]; then
-	dialog --msgbox "Your hard drive is smaller than 8GB. Please use a larger drive" "$dialogHeight" "$dialogWidth"
+	dialog --msgbox "Your hard drive is smaller than 8GB. Please use a larger drive." "$dialogHeight" "$dialogWidth"
 	exit 1
 fi
 
