@@ -74,7 +74,7 @@ desktop=${desktop:-xfce}
 
 #Username - loop until the username passes the regex check
 #Username must only be lowercase with numbers. Anything else fails
-usernameCharacters="[0-9a-z]"
+usernameCharacters="[0-9a-z]*"
 while : ; do
 	user=$(dialog --no-cancel --title "Username" \
 		--backtitle "$dialogBacktitle" \
