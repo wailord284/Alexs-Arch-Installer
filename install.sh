@@ -74,13 +74,14 @@ desktop=${desktop:-xfce}
 
 #Username - loop until the username passes the regex check
 #Username must only be lowercase with numbers. Anything else fails
-usernameCharacters="[0-9a-z]*"
+usernameCharacters="^[0-9a-z]+$"
+#Loop until the username passes the regex check
 while : ; do
 	user=$(dialog --no-cancel --title "Username" \
 		--backtitle "$dialogBacktitle" \
 		--inputbox "Please enter a username. Default arch. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	user=${user:-arch}
-	if [[ $user == $usernameCharacters ]]; then
+	if [[ $user =~ $usernameCharacters ]]; then
 		break #exit loop
 	else
 		dialog --msgbox "Username does not contain valid characters. Please try again with lowercase or numbers only." "$dialogHeight" "$dialogWidth" && clear
