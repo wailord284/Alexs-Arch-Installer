@@ -93,12 +93,12 @@ clear
 #for some reason 2>&1 needs to be first or else password gets leaked in the text field for a second when you press enter
 while : ; do
 	#pass1
-	pass1=$(dialog --title "Password" \
+	pass1=$(dialog --no-cancel --title "Password" \
 		--backtitle "$dialogBacktitle" \
 		--passwordbox "Please enter a password (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	pass1=${pass1:-pass}
 	#pass2
-	pass2=$(dialog --title "Password" \
+	pass2=$(dialog --no-cancel --title "Password" \
 		--backtitle "$dialogBacktitle" \
 		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	pass2=${pass2:-pass}
@@ -112,7 +112,7 @@ done
 clear
 
 #hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
-host=$(dialog --title "Hostname" \
+host=$(dialog --no-cancel --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
 	--inputbox "Please enter a hostname. Default linux. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 host=${host:-linux}
@@ -248,12 +248,12 @@ clear
 if [ "$encrypt" = y ]; then
 while : ; do
 	#encpass1
-	encpass1=$(dialog --title "Disk Encryption Password" \
+	encpass1=$(dialog --no-cancel --title "Disk Encryption Password" \
 		--backtitle "$dialogBacktitle" \
 		--passwordbox "Please enter a password to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	encpass1=${encpass1:-pass}
 	#encpass2
-	encpass2=$(dialog --title "Password" \
+	encpass2=$(dialog --no-cancel --title "Password" \
 		--backtitle "$dialogBacktitle" \
 		--passwordbox "Please enter your password again to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	encpass2=${encpass2:-pass}
