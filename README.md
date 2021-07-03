@@ -54,7 +54,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
-    * [Decentral Eyes](https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/) - Local emulation of Content Delivery Networks
+    * [LocalCDN](https://addons.mozilla.org/en-US/firefox/addon/localcdn-fork-of-decentraleyes/) - Local emulation of Content Delivery Networks
 - Polkit changes:
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) to use libvirt without password (users in the KVM group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) to add/remove a network without a password (users in the network group)
