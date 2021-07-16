@@ -120,8 +120,8 @@ The user will now be prompted to supply basic information such as hostname, user
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 
 # Todos
- - Change logrotate to compress + move logs
  - https://wiki.archlinux.org/index.php/systemd-boot#Grml_on_ESP
  - Add linux-zen, linux-hardened, linux-lts and aurmageddon kernels
  - https://github.com/Dr-Noob/cpufetch
  - fix TTY ip address
+ - investigate dialog functions and rename height/width variables

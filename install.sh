@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 #Automated Arch Linux installation script by Alex "wailord284" Gaudino.
-###HOW TO USE###
-#To use this, burn the Arch Linux ISO to a usb drive and boot it. Once botted download this file.
-#If you're on wifi, run wifi-menu(rip) first to connect to the internet or put this script on a second drive to be prompted.
-#1) wget wailord284.club/repo/install.sh 2) chmod +x install.sh 3) ./install.sh
 ###ABOUT###
 #This script will autodetect a large range of hardware and should automatically configure many systems out of the box.
 #This script will install Arch with mainly vanilla settings plus some programs and features I personally use.
@@ -45,9 +41,11 @@ SigLevel = Never
 ' >> /etc/pacman.conf
 
 #Set time before init
-#This is useful if you installed coreboot. The clock will have no time set by default and this will update it.
+#This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it.
 echo "$yellow""Please wait while the system clock and keyring are set""$reset"
 timedatectl set-ntp true
+#Stop the reflector.service as it always fails half way in
+systemctl stop reflector.service
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
 pacman -S archlinux-keyring ntp wget dialog --noconfirm
@@ -56,8 +54,6 @@ hwclock --systohc
 gpg --refresh-keys
 pacman-key --init
 pacman-key --populate
-#Stop the reflector.service as it always fails half way in
-systemctl stop reflector.service
 clear
 
 #Welcome messages
