@@ -104,27 +104,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * Automatic hardware clock updates using [NTP](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/networkmanager/hwclock.conf) (Updates everytime device connects to internet)
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
-- Post Install Options (All optional)
-    * Once the installation is complete the user will be prompted with optional settings/configs
-    * Convert to [Bedrock Linux](https://bedrocklinux.org/) (Not reversible)
-    * [X2Go](https://wiki.archlinux.org/index.php/X2Go#Server_side) remote management server
-    * Enable [SSHD](https://wiki.archlinux.org/index.php/OpenSSH#Server_usage)
-    * Route all network traffic over [Tor](https://wiki.archlinux.org/index.php/Tor) (Not reversible)
-    * Sort mirrors with [Reflector](https://wiki.archlinux.org/index.php/Reflector) (Recommended)
-    * Enable and install the [UFW firewall](https://wiki.archlinux.org/index.php/Uncomplicated_Firewall)
-    * Use the [IWD wifi backend](https://wiki.archlinux.org/index.php/NetworkManager#Using_iwd_as_the_Wi-Fi_backend) instead of wpa_supplicant for NetworkManager
-    * Restore [traditional network interface names](https://wiki.archlinux.org/index.php/Network_configuration#Revert_to_traditional_interface_names) (eth0, wlan0...)
-    * Disable/Blacklist bluetooth and webcam
-    * Enable [Firejail](https://wiki.archlinux.org/index.php/Firejail) for all supported applications
-    * Enable [VNstat webui](https://www.tecmint.com/vnstat-php-frontend-for-monitoring-network-bandwidth/) traffic monitor
-    * Enable local [Searx](https://github.com/searx/searx) search engine
-    * Install [PlatformIO](https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules) Udev rules for Arduino Communication
-    * Enable [AMD Freesync](https://wiki.archlinux.org/index.php/Variable_refresh_rate)
-    * Enable [automatic desktop login](https://wiki.archlinux.org/index.php/LXDM#Autologin) with LXDM (Recommended)
-    * Enable daily [rootkit detection scan with rkhunter](https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/)
-    * Enable [Ananicy](https://github.com/Nefelim4ag/Ananicy) - Daemon for setting CPU priority and scheduling
-    * [Block ads](https://github.com/hectorm/hblock) system wide using Hblock to modify the hosts file (Recommended)
-    * [Encrypt and cache DNS requests](https://wiki.archlinux.org/index.php/Dnscrypt-proxy) - Enables DNSCrypt and DNSMasq
 
 # Things to consider when using this installer
 - NO Automatic updates. You are expected to update the system regularly!
