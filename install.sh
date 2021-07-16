@@ -909,10 +909,6 @@ mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/jo
 #Set journal to only keep 512M of logs
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 
-#Setup sysctl tweaks - Arch stores some defaults in /usr/lib/sysctl.d/
-#fix usb speeds - currently disabled due to system lockups when copying files
-#mv Arch-Linux-Installer-master/configs/sysctl/00-usb-speed-fix.conf /mnt/etc/sysctl.d/
-
 #Low-level console messages
 mv Arch-Linux-Installer-master/configs/sysctl/00-console-messages.conf /mnt/etc/sysctl.d/
 
