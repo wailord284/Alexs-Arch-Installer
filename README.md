@@ -107,8 +107,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * Automatic hardware clock updates using [NTP](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/networkmanager/hwclock.conf) (Updates everytime device connects to internet)
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
-    * Packages installed from Aurmageddon include:
-    * ```surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager kernel-modules-hook matcha-gtk-theme nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-user-agent-switcher zlib-ng skeuos-gtk-theme-git```
 - Post Install Options (All optional)
     * Once the installation is complete the user will be prompted with optional settings/configs
     * Convert to [Bedrock Linux](https://bedrocklinux.org/) (Not reversible)
@@ -142,14 +140,12 @@ The user will now be prompted to supply basic information such as hostname, user
 - Spectre and Meltdown mitigations are disabled!
     * noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
 - AUR Support is enabled with yay package manager
-- GParted and network manager can be edited by users in the storage and network group (the default user is in both)
 - Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
-- Autodetects hardware. This can detect and install for the wrong hardware if incorrectly detected
 
 # Todos
- - Fix cancel option in dialog
  - Change logrotate to compress + move logs
  - https://wiki.archlinux.org/index.php/systemd-boot#Grml_on_ESP
  - Add linux-zen, linux-hardened, linux-lts and aurmageddon kernels
  - https://github.com/Dr-Noob/cpufetch
+ - fix TTY ip address
