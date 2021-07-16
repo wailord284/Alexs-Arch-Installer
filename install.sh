@@ -1025,23 +1025,16 @@ echo "$green""4$reset - Route all traffic over Tor"
 echo "$green""5$reset - Sort mirrors with Reflector for new install $green(recommended)"
 echo "$green""6$reset - Enable and install the UFW firewall"
 echo "$green""7$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager"
-echo "$green""8$reset - Restore old network interface names (eth0, wlan0...)"
-echo "$green""9$reset - Disable/blacklist bluetooth and webcam"
-echo "$green""10$reset - Enable Firejail for all supported applications"
-echo "$green""11$reset - Enable vnstat webui traffic monitor"
-echo "$green""12$reset - Enable local Searx search engine"
-echo "$green""13$reset - Install PlatformIO Udev rules for Arduino Communication"
-echo "$green""14$reset - Enable AMD Freesync - Might break Xorg"
-echo "$green""15$reset - Enable automatic desktop login in lxdm $green(recommended)"
-echo "$green""16$reset - Enable daily rootkit detection scan"
-echo "$green""17$reset - Enable Ananicy - Daemon for setting CPU priority and scheduling. May increase performance"
-echo "$green""18$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
-echo "$green""19$reset - Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq"
+echo "$green""8$reset - Disable/blacklist bluetooth and webcam"
+echo "$green""9$reset - Enable automatic desktop login in lxdm $green(recommended)"
+echo "$green""10$reset - Enable daily rootkit detection scan"
+echo "$green""11$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
+echo "$green""12$reset - Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq"
 
-echo "$reset""Default options are:$green 5 15 18$red q""$reset"
+echo "$reset""Default options are:$green 5 9 11$red q""$reset"
 echo "Enter$green 1-19$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
-selection=${selection:- 5 15 18 q}
+selection=${selection:- 5 9 11 q}
 	for entry in $selection ;do
 
 	case "${entry[@]}" in
@@ -1122,12 +1115,6 @@ selection=${selection:- 5 15 18 q}
 		;;
 
 		8)
-		echo "$green""Restoring traditional network interface names""$reset"
-		arch-chroot /mnt ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
-		sleep 3s
-		;;
-
-		9)
 		echo "$green""Blacklisting bluetooth and webcam""$reset"
 		#bluetooth
 		arch-chroot /mnt systemctl enable rfkill-block@bluetooth
@@ -1137,66 +1124,13 @@ selection=${selection:- 5 15 18 q}
 		sleep 3s
 		;;
 
-		10)
-		#https://wiki.archlinux.org/index.php/Firejail
-		echo "$green""Setting up Firejail and pacman hook - will not sandbox Brave browser""$reset"
-		arch-chroot /mnt pacman -S firejail firetools --noconfirm
-		arch-chroot /mnt firecfg
-		mkdir -p /mnt/etc/pacman.d/hooks
-		mv Arch-Linux-Installer-master/configs/firejail/firejail.hook /mnt/etc/pacman.d/hooks/
-
-		echo -e "noblacklist ${HOME}/Desktop\nwhitelist ${HOME}/Desktop" >> /mnt/etc/firejail/brave.profile
-		arch-chroot /mnt unlink /usr/local/bin/brave
-		sleep 3s
-		;;
-
-		11)
-		echo "$green""Enabling and install vnstat/vnstatui - will be viewable at 127.0.0.1:7000""$reset"
-		arch-chroot /mnt pacman -S gd vnstat vnstatui --noconfirm #installed from Aurmageddon
-		echo -e "[Unit]
-Description = WebUI traffic monitor vnstatui
-After = network.target
-After = vnstat.service
-[Service]
-ExecStart = vnstatui -i $(ip a | grep "state UP" | cut -c4- | sed 's/:.*//')
-[Install]
-WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.service
-
-		arch-chroot /mnt systemctl enable vnstat
-		arch-chroot /mnt systemctl enable vnstatuiinterface.service
-		sleep 3s
-		;;
-
-		12)
-		echo "$green""Enabling searx search engine - will be viewable at 127.0.0.1:8888""$reset"
-		arch-chroot /mnt pacman -S searx --noconfirm #installed from Aurmageddon
-		mv Arch-Linux-Installer-master/configs/searx/searx.service /mnt/etc/systemd/system/
-		arch-chroot /mnt systemctl enable searx.service
-		sleep 3s
-		;;
-
-		13)
-		#Udev PlatformIO needed for arduino uploading - https://docs.platformio.org/en/latest/faq.html#platformio-udev-rules
-		echo "$green""Installing PlatformIO udev rules for Arduino communication""$reset"
-		arch-chroot /mnt wget https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules -P /etc/udev/rules.d/
-		sleep 3s
-		;;
-
-		14)
-		#https://www.phoronix.com/scan.php?page=news_item&px=AMD-FreeSync-Linux-5.0-Enable
-		echo "$green""Configuring AMD Freesync. If Xorg fails to start delete /etc/X11/xorg.conf.d/freesync.conf""$reset"
-		mv Arch-Linux-Installer-master/configs/xorg/50-freesync.conf /mnt/etc/X11/xorg.conf.d/
-
-		sleep 10s
-		;;
-
-		15)
+		9)
 		echo "$green""Enabling automatic desktop login""$reset"
 		sed "s,\#\ autologin=dgod,\ autologin=$user,g" -i /mnt/etc/lxdm/lxdm.conf
 		sleep 3s
 		;;
 
-		16)
+		10)
 		#https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/
 		echo "$green""Creating and enabling daily rkhunter systemd service""$reset"
 		arch-chroot /mnt pacman -S rkhunter --noconfirm
@@ -1206,26 +1140,18 @@ WantedBy = multi-user.target" > /mnt/etc/systemd/system/vnstatuiinterface.servic
 		sleep 3s
 		;;
 
-		17)
-		#https://github.com/Nefelim4ag/Ananicy
-		echo "$green""Enabling the Ananicy daemon""$reset"
-		arch-chroot /mnt pacman -S ananicy-git --noconfirm #installed from Aurmageddon
-		arch-chroot /mnt systemctl enable ananicy.service
-		sleep 3s
-		;;
-
-		18)
+		11)
 		#run hblock to prevent ads
 		echo "$green""Running hblock and enabling hblock.timer - hosts file will be modified""$reset"
 		arch-chroot /mnt pacman -S hblock --noconfirm #installed from Aurmageddon
-		arch-chroot /mnt hblock -l -r
+		arch-chroot /mnt hblock
 		arch-chroot /mnt systemctl enable hblock.timer
 		#Make sure to replace the hostname from archiso
 		sed -i "s/archiso/$host/g" /mnt/etc/hosts
 		sleep 3s
 		;;
 
-		19)
+		12)
 		#https://wiki.archlinux.org/index.php/Dnsmasq
 		#https://wiki.archlinux.org/index.php/NetworkManager#/etc/resolv.conf
 		#https://wiki.archlinux.org/index.php/Dnscrypt-proxy
