@@ -961,28 +961,6 @@ clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
 --prgbox "Downloading grub utilities" "pacman -S p7zip --noconfirm" "$HEIGHT" "$WIDTH"
-###TOOLS###
-#declare -a grubLinks
-#grubLinks=(https://github.com/a1ive/grub2-filemanager/releases/latest/download/grubfm-en_US.7z)
-
-#dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-#--title "Configuring grub" \
-#--prgbox "Downloading grub utilities" "wget ${grubLinks[*]}" "$HEIGHT" "$WIDTH"
-
-#Memtest86 - UEFI. Legacy BIOS handled by memtest86+ package
-#mount the img file on the target install to not run out of disk space
-#once mounted, we extract the UEFI bootable files
-#dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-#--title "Configuring grub" \
-#--prgbox "Downloading grub utilities" "wget https://www.memtest86.com/downloads/memtest86-usb.zip -P /mnt/memtest && unzip /mnt/memtest/memtest86-usb.zip -d /mnt/memtest/" "$HEIGHT" "$WIDTH"
-#mkdir -p /mnt/memtest/memimg
-#offset = 512*2048
-#mount -o loop,offset=1048576 /mnt/memtest/memtest86-usb.img /mnt/memtest/memimg
-#mv /mnt/memtest/memimg/EFI/BOOT/BOOTX64.efi /mnt/boot/EFI/tools/memtestx64.efi
-#umount /mnt/memtest/memimg
-#rm -r /mnt/memtest
-
-##Changed memtest to download from github
 #Move grub boot items
 mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
