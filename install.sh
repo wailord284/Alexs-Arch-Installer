@@ -883,9 +883,6 @@ if [ "$chassisType" = laptop ]; then
 fi
 clear
 
-#Blacklist uncommon modules/protocols
-#DISABLED - this will break bridge-utils
-#mv Arch-Linux-Installer-master/configs/modprobe/blacklist-uncommon-network-protocols.conf /mnt/etc/modprobe.d/
 #load the tcp_bbr module for better network stuffs
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
@@ -906,6 +903,7 @@ mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/sys
 #Set journal to output log contents to TTY12
 mkdir /mnt/etc/systemd/journald.conf.d
 mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
+
 #Set journal to only keep 512M of logs
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 
