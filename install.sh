@@ -552,20 +552,20 @@ echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 
 #Sign the repo-ck key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing repo-ck key" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
+--title "Installing keys" \
+--prgbox "Installing repo-ck key" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
 clear
 
 #Sign the chaotic-aur key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing Chaotic-aur key" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --keyserver keyserver.ubuntu.com --recv-key 3056513887B78AEB && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
+--title "Installing keys" \
+--prgbox "Installing Chaotic-aur keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --keyserver keyserver.ubuntu.com --recv-key 3056513887B78AEB && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing Archlinuxcn keyring" \
---prgbox "Reinstalling the keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
+--title "Installing keys" \
+--prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #install desktop and software
