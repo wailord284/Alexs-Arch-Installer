@@ -215,7 +215,7 @@ fi
 
 #Filesystem
 unset COUNT MENU_OPTIONS options
-for i in $(echo "ext4 xfs btrfs"); do
+for i in $(echo "ext4 xfs jfs nilfs btrfs"); do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -397,6 +397,14 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		elif [ "$filesystem" = jfs ] ; then
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Patitioning Disk" \
+			--prgbox "Formatting root partition" "mkfs.jfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+		elif [ "$filesystem" = nilfs ] ; then
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Patitioning Disk" \
+			--prgbox "Formatting root partition" "mkfs.nilfs2 -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -420,6 +428,14 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
 			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+		elif [ "$filesystem" = jfs ] ; then
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Patitioning Disk" \
+			--prgbox "Formatting root partition" "mkfs.jfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+		elif [ "$filesystem" = nilfs ] ; then
+			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+			--title "Patitioning Disk" \
+			--prgbox "Formatting root partition" "mkfs.nilfs2 -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -466,7 +482,7 @@ sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft jfsutils nilfs-utils --noconfirm" "$HEIGHT" "$WIDTH"
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
