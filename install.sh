@@ -48,7 +48,7 @@ timedatectl set-ntp true
 systemctl stop reflector.service
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring ntp wget dialog --noconfirm
+pacman -S archlinux-keyring ntp wget dialog htop iotop --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -400,11 +400,11 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		elif [ "$filesystem" = jfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.jfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = nilfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.nilfs2 -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -431,11 +431,11 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		elif [ "$filesystem" = jfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.jfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = nilfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.nilfs2 -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1014,7 +1014,7 @@ echo "$green""11$reset - Block ads system wide using hblock to modify the hosts 
 echo "$green""12$reset - Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq"
 
 echo "$reset""Default options are:$green 5 9 11$red q""$reset"
-echo "Enter$green 1-19$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
+echo "Enter$green 1-12$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
 selection=${selection:- 5 9 11 q}
 	for entry in $selection ;do
