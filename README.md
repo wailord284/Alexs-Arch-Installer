@@ -18,7 +18,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Custom nanorc file to include syntax highlighting
 - Optionally install custom kernels (linux-ck or linux-tkg) with GCC CPU optimizations from repo-ck and chaotic-aur
 - Display all network interfaces IP Addresses on TTY logins
-- Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [JFS](https://wiki.archlinux.org/title/JFS), [NILFS2](https://en.wikipedia.org/wiki/NILFS), or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
+- Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [JFS](https://wiki.archlinux.org/title/JFS), [NILFS2](https://en.wikipedia.org/wiki/NILFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
     * BTRFS will use [compress=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression. Edit /etc/fstab to change to LZO or ZLIB
     * BTRFS scrub timer will be enabled for the root directory if selected
     * All filesystems will use the noatime mount option
@@ -120,8 +120,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 
 # Todos
- - https://wiki.archlinux.org/index.php/systemd-boot#Grml_on_ESP
- - https://github.com/Dr-Noob/cpufetch
+ - Combine filesystem setup
  - fix TTY ip address
  - investigate dialog functions and rename height/width variables
  - optionally allow people to upload hw-probe
