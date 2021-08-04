@@ -40,6 +40,10 @@ Server = https://random-mirror.chaotic.cx/$repo/$arch
 SigLevel = Never
 ' >> /etc/pacman.conf
 
+#Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?)
+echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+echo 'Server = https://archmirror1.octyl.net/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+
 #Set time before init
 #This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it.
 echo "$yellow""Please wait while the system clock and keyring are set""$reset"
