@@ -706,6 +706,14 @@ fi
 clear
 
 
+#Detect b43 firmware wifi cards and install b43-firmware
+if dmesg | grep -q 'b43-phy0 ERROR'; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting hardware" \
+	--prgbox "Found B43 Broadcom Wireless card" "arch-chroot /mnt pacman -S b43-firmware --noconfirm" "$HEIGHT" "$WIDTH"
+fi
+
+
 #Find all network interfaces, and add them to /etc/issue to display IP address
 #for interface in $(netstat -i | cut -d" " -f 1 | sed -e 's/Kernel//g' -e 's/Iface//g' -e '/^$/d' | sort -u) ; do
 #	echo "IP Address for $interface: \4{$interface}" >> /mnt/etc/issue
