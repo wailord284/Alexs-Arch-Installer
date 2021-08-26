@@ -271,7 +271,7 @@ clear
 dialog --title "Secure Disk Erase" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive. This is also NOT recommended on any solid state media as it can shorten the devices life." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionWipe=$?
 if [ "$optionWipe" = 0 ]; then
 	wipe="y"
@@ -530,6 +530,7 @@ clear
 
 #Enable encryption mkinitcpio hooks if needed and set zstd compression
 #ZSTD compression: https://kernelnewbies.org/Linux_5.9#Support_for_ZSTD_compressed_kernel.2C_ramdisk_and_initramfs
+###Arch has now made ZSTD the default (over gzip), but uncommenting zstd doesnt hurt anything. LZ4 is slightly faster but uses more disk space.
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
@@ -684,7 +685,6 @@ clear
 
 
 #Determine installed GPU - by default we now install the stuff required for AMD/Intel since those just autoload drivers
-#Nvidia will still auto detect so we can install the proprietary driver
 #The below stuff is now set to install vulkan drivers and hardware decoding for correct hardware
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting hardware" \
@@ -761,15 +761,21 @@ sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/s
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
 
 
-#setup makepkg configure and determine core count
+#setup makepkg config
+#Change default -j count to use all cores
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
+#Build all pkgs with native optimizations
 sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
+#Enable link time optimizations
 sed "s,\!lto,lto,g" -i /mnt/etc/makepkg.conf
+##Build all rust pkgs with native optimizations
 sed "s,\#\RUSTFLAGS=\"-C opt-level=2\",RUSTFLAGS=\"-C opt-level=2 -C target-cpu=native\",g" -i /mnt/etc/makepkg.conf
+#Enable multithreaded compression support
 sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSXZ=(xz -c -z -),COMPRESSXZ=(xz -e -9 -c -z --threads=0 -),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=0 -),g" -i /mnt/etc/makepkg.conf
+#Change default pkg extension to just tar (uncompressed)
 sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 
 
@@ -801,6 +807,7 @@ fi
 clear
 
 
+#Download config files from github
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "pacman -S unzip wget --noconfirm && wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
@@ -858,13 +865,13 @@ arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/con
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
 sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
 
-#Add xorg file that allows the user to press control, alt, backspace to kill xorg (returns to login manager)
+#Add xorg file that allows the user to press control + alt + backspace to kill xorg (returns to login manager)
 mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 
 #NetworkManager/Network startup scripts
 mkdir -p /mnt/etc/NetworkManager/conf.d/
 mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
-#configure mac address spoofing on startup via networkmanager. Only wireless addresses are randomized
+#configure mac address spoofing on startup via networkmanager. Only wireless interfaces are randomized
 mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
 #IPv6 privacy and managed connection
 echo -e "[connection]\nipv6.ip6-privacy=2\n[ifupdown]\nmanaged=true" >> /mnt/etc/NetworkManager/NetworkManager.conf
@@ -915,7 +922,7 @@ if [ "$chassisType" = laptop ]; then
 	echo 'ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"' > /mnt/etc/udev/rules.d/50-usb_power_save.rules
 	echo "options usbcore autosuspend=5" > /mnt/etc/modprobe.d/usb-autosuspend.conf
 	#HDD power save
-	echo 'ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/50-hd_power_save.rules
+	echo '#ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/50-hd_power_save.rules
 	#Laptop mode to save power with spinning drives
 	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
 	#Disable watchdog - may help with power
@@ -944,7 +951,7 @@ mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/sys
 mkdir /mnt/etc/systemd/journald.conf.d
 mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
 
-#Set journal to only keep 512M of logs
+#Set journal to only keep 512MB of logs
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 
 #Low-level console messages
@@ -989,9 +996,6 @@ clear
 
 #add custom menus to grub
 #https://wiki.archlinux.org/index.php/GRUB#EFI_binaries
-####ADD - BIOS FLASH/AMDVbflash
-#Custom grub binaries - gdisk, uefi shell, flappybird and tetris
-#add gdisk menu - https://wiki.archlinux.org/index.php/GPT_fdisk#gdisk_EFI_application
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
 --prgbox "Downloading grub utilities" "pacman -S p7zip --noconfirm" "$HEIGHT" "$WIDTH"

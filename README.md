@@ -108,15 +108,11 @@ The user will now be prompted to supply basic information such as hostname, user
 
 # Things to consider when using this installer
 - NO Automatic updates. You are expected to update the system regularly!
-- NO Man pages installed (tldr is installed instead)
 - NO manual partitioning (you can only select the drive)
-- NO support from Arch communities (due to not being installed the "Arch way" from/by the wiki)
-- NO guarantee of common or well-known utilities such as CUPS for printing being installed
 - NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)
 - NO Snapshots or backup system enabled even if BTRFS is selected
 - Spectre and Meltdown mitigations are disabled!
     * noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
-- AUR Support is enabled with yay package manager
 - Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 
