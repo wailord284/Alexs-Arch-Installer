@@ -87,7 +87,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Keep only [512MB of journald logs](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) (/var/log/journal)
     * Systemd service timeout changed from 90 seconds to 45 seconds
 - Password changes (How the password is stored):
-    * Increase hashing rounds and change hash to [SHA512](https://wiki.archlinux.org/index.php/Security#User_setup)
+    * Increase hashing rounds and change hash to [SHA512](https://wiki.archlinux.org/title/SHA_password_hashes)
     * 4 second delay between password attempts
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
