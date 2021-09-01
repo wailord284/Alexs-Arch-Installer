@@ -48,7 +48,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
-    * [Privacy Badger](https://privacybadger.org/) - Tracker blocker
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
@@ -100,7 +99,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - NetworkManager changes:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
     * [IPv6 privacy extensions](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
-    * [DNS cacheing](https://wiki.archlinux.org/index.php/NetworkManager#DNS_caching_and_conditional_forwarding) with dnsmasq (currently disabled)
+    * [DNS caching](https://wiki.archlinux.org/index.php/NetworkManager#DNS_caching_and_conditional_forwarding) with dnsmasq (currently disabled)
     * [Secure DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1, 9.9.9.9) (replaced by dnscrypt and dnsmasq if selected)
     * Automatic hardware clock updates using [NTP](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/networkmanager/hwclock.conf) (Updates everytime device connects to internet)
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
