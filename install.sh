@@ -838,8 +838,7 @@ mv Arch-Linux-Installer-master/configs/bash/.screenrc /mnt/etc/skel/
 
 
 #Add user here to get /etc/skel configs
-arch-chroot /mnt groupadd -r autologin
-arch-chroot /mnt useradd -m -G network,autologin,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
+arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
 #create a temp file to store the password in and delete it when the script finishes using a trap
 #https://www.pixelstech.net/article/1577768087-Create-temp-file-in-Bash-using-mktemp-and-trap
 TMPFILE=$(mktemp) || exit 1
