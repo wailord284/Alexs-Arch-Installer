@@ -900,7 +900,7 @@ mv Arch-Linux-Installer-master/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.
 #Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
 
-#Add gparted  polkit rule for storage group, allow users to not enter a password
+#Add gparted polkit rule for storage group, allow users to not enter a password
 mv -f Arch-Linux-Installer-master/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
 clear
 
@@ -920,8 +920,8 @@ if [ "$chassisType" = laptop ]; then
 	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
 	mv Arch-Linux-Installer-master/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#USB autosuspend
-	echo 'ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"' > /mnt/etc/udev/rules.d/50-usb_power_save.rules
-	echo "options usbcore autosuspend=5" > /mnt/etc/modprobe.d/usb-autosuspend.conf
+	echo '#ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"' > /mnt/etc/udev/rules.d/50-usb_power_save.rules
+	echo "#options usbcore autosuspend=5" > /mnt/etc/modprobe.d/usb-autosuspend.conf
 	#HDD power save
 	echo '#ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"' > /mnt/etc/udev/rules.d/50-hd_power_save.rules
 	#Laptop mode to save power with spinning drives
