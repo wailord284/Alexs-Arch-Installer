@@ -726,14 +726,16 @@ fi
 sed "s,\#\ set linenumbers, set linenumbers,g" -i /mnt/etc/nanorc
 sed "s,\#\ set positionlog, set positionlog,g" -i /mnt/etc/nanorc
 sed "s,\#\ set constantshow, set constantshow,g" -i /mnt/etc/nanorc
-sed "s,\#\ set titlecolor brightwhite\,magenta, set titlecolor brightwhite\,magenta,g" -i /mnt/etc/nanorc
-sed "s,\#\ set statuscolor brightwhite\,magenta, set statuscolor brightwhite\,magenta,g" -i /mnt/etc/nanorc
-sed "s,\#\ set errorcolor brightwhite\,red, set errorcolor brightwhite\,red,g" -i /mnt/etc/nanorc
-sed "s,\#\ set selectedcolor brightwhite\,cyan, set selectedcolor brightwhite\,cyan,g" -i /mnt/etc/nanorc
-sed "s,\#\ set stripecolor \,yellow, set stripecolor yellow,g" -i /mnt/etc/nanorc
-sed "s,\#\ set numbercolor magenta, set numbercolor magenta,g" -i /mnt/etc/nanorc
-sed "s,\#\ set keycolor brightmagenta, set keycolor brightmagenta,g" -i /mnt/etc/nanorc
-sed "s,\#\ set functioncolor magenta, set functioncolor magenta,g" -i /mnt/etc/nanorc
+sed "s,\#\ set titlecolor bold\,lightwhite\,blue, set titlecolor bold\,lightwhite,g" -i /mnt/etc/nanorc
+sed "s,\#\ set promptcolor lightwhite\,lightblack, set promptcolor lightwhite\,lightblack,g" -i /mnt/etc/nanorc
+sed "s,\#\ set errorcolor bold\,lightwhite\,red, set errorcolor bold\,lightwhite\,red,g" -i /mnt/etc/nanorc
+sed "s,\#\ set spotlightcolor black\,lime, set spotlightcolor black\,lime,g" -i /mnt/etc/nanorc
+sed "s,\#\ set selectedcolor lightwhite\,magenta, set selectedcolor lightwhite\,magenta,g" -i /mnt/etc/nanorc
+sed "s,\#\ set stripecolor yellow, set stripecolor yellow,g" -i /mnt/etc/nanorc
+sed "s,\#\ set scrollercolor cyan, set scrollercolor cyan,g" -i /mnt/etc/nanorc
+sed "s,\#\ set numbercolor cyan, set numbercolor magenta,g" -i /mnt/etc/nanorc
+sed "s,\#\ set keycolor cyan, set keycolor cyan,g" -i /mnt/etc/nanorc
+sed "s,\#\ set functioncolor green, set functioncolor green,g" -i /mnt/etc/nanorc
 sed "s,\#\ include \"/usr/share/nano/\*.nanorc\", include \"/usr/share/nano/\*.nanorc\",g" -i /mnt/etc/nanorc
 echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
 
