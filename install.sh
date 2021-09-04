@@ -425,7 +425,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 			mount -o compress-force=zstd,noatime /dev/mapper/cryptroot /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
-			mount -o compress_algorithm=zstd,noatime /dev/mapper/cryptroot /mnt
+			mount -o compress_algorithm=zstd /dev/mapper/cryptroot /mnt
 		#Standard mount for everything else
 		else
 			mount -o noatime /dev/mapper/cryptroot /mnt
@@ -464,7 +464,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 			mount -o compress-force=zstd,noatime "${storagePartitions[2]}" /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
-			mount -o compress_algorithm=zstd,noatime "${storagePartitions[2]}" /mnt
+			mount -o compress_algorithm=zstd "${storagePartitions[2]}" /mnt
 		#Standard mount for everything else
 		else
 			mount -o noatime "${storagePartitions[2]}" /mnt
