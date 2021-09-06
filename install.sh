@@ -422,7 +422,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 		#Mount the BTRFS root partition using -o compress=zstd
 		if [ "$filesystem" = btrfs ] ; then
-			mount -o compress-force=zstd,noatime /dev/mapper/cryptroot /mnt
+			mount -o autodefrag,compress-force=zstd,noatime /dev/mapper/cryptroot /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
 			mount -o compress_algorithm=zstd /dev/mapper/cryptroot /mnt
@@ -461,7 +461,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 		#Mount the BTRFS root partition using -o compress=zstd
 		if [ "$filesystem" = btrfs ] ; then
-			mount -o compress-force=zstd,noatime "${storagePartitions[2]}" /mnt
+			mount -o autodefrag,compress-force=zstd,noatime "${storagePartitions[2]}" /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
 			mount -o compress_algorithm=zstd "${storagePartitions[2]}" /mnt
@@ -941,7 +941,7 @@ sed "s,gtk_theme=Adwaita,gtk_theme=Arc-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
 
 #Netfilter connection tracker
 echo "options nf_conntrack nf_conntrack_helper=0" > /mnt/etc/modprobe.d/no-conntrack-helper.conf
-#Set wifi region
+#Set wifi region - requires crda which was installed earlier
 sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wireless-regdom
 
 #Systemd services
