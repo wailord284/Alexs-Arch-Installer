@@ -16,7 +16,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Custom nanorc file to include syntax highlighting
-- Optionally install custom kernels (linux-ck or linux-tkg) with GCC CPU optimizations from repo-ck and chaotic-aur
+- Optionally install custom kernels (linux-ck or linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Display all network interfaces IP Addresses on TTY logins
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [JFS](https://wiki.archlinux.org/title/JFS), [NILFS2](https://en.wikipedia.org/wiki/NILFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
     * BTRFS will use [compress=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression. Edit /etc/fstab to change to LZO or ZLIB
@@ -112,7 +112,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - NO Snapshots or backup system enabled even if BTRFS is selected
 - Spectre and Meltdown mitigations are disabled!
     * noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
-- Third party repositories enabled by default (repo-ck, archlinuxcn, chaotic-aur, aurmageddon)
+- Third party repositories enabled by default (archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 
 # Todos

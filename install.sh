@@ -29,13 +29,8 @@ dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
 
-#Add repo-ck and chaotic-aur to live ISO pacman config in case user wants custom kernel.
-echo '#Repo-ck containing kernels with ck patch
-[repo-ck]
-Server = https://mirror.lesviallon.fr/$repo/os/$arch
-Server = http://repo-ck.com/$arch
-SigLevel = Never
-[chaotic-aur]
+#Add chaotic-aur to live ISO pacman config in case user wants custom kernel.
+echo '[chaotic-aur]
 Server = https://random-mirror.chaotic.cx/$repo/$arch
 SigLevel = Never
 ' >> /etc/pacman.conf
@@ -293,13 +288,13 @@ else
 	kernel="n"
 fi
 clear
-#If user wants a custom kernel, prompt with linux-ck (repo-ck) and linux-tkg (chaotic-aur) kernels.
+#If user wants a custom kernel, linux-tkg (chaotic-aur) kernels.
 #Installation of the kernel will happen at the end
 if [ "$kernel" = y ]; then
 	unset COUNT MENU_OPTIONS options
 	COUNT=-1
-	mapfile -t dialogRepoCKKernel < <(pacman -Sl repo-ck | grep linux-ck | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' && pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' )
-	for i in $(pacman -Sl repo-ck | grep linux-ck | cut -d" " -f2 | sed '/-headers/d' && pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d') ; do
+	mapfile -t dialogRepoCKKernel < <(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' )
+	for i in $(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d') ; do
 		COUNT=$((COUNT+1))
 		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogRepoCKKernel[$COUNT]} off"
 	done
@@ -563,7 +558,7 @@ echo "127.0.0.1	localhost
 clear
 
 
-#Install repos - multilib, aurmageddon, archlinuxcn, archstrike and repo-ck
+#Install repos - multilib, aurmageddon, archlinuxcn
 echo '[multilib]
 Include = /etc/pacman.d/mirrorlist
 
@@ -586,14 +581,6 @@ SigLevel = Never' >> /mnt/etc/pacman.conf
 #Add the ubuntu keyserver to gpg
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
-
-#Sign the repo-ck key only if a custom kernel is requested
-if [ "$kernel" = y ]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Installing keys" \
-	--prgbox "Installing repo-ck key" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key -r 5EE46C4C --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key 5EE46C4C " "$HEIGHT" "$WIDTH"
-fi
-clear
 
 #Sign the chaotic-aur key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -619,19 +606,11 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme-git pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-localcdn firefox-extension-user-agent-switcher skeuos-gtk-theme-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
-#add chaotic-aur and rpeo-ck repo to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
+#add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
 echo '#Chaotic-aur repo with many packages
 [chaotic-aur]
 Server = https://us-ca-mirror.chaotic.cx/$repo/$arch
 Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
-
-if [ "$kernel" = y ]; then
-	echo '#Repo containing custom compiled kernels with linux-ck
-[repo-ck]
-Server = https://mirror.lesviallon.fr/$repo/os/$arch
-Server = http://repo-ck.com/$arch
-Server = http://repo-ck.com/$arch' >> /mnt/etc/pacman.conf
-fi
 
 #Update repos
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
