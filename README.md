@@ -16,7 +16,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Custom nanorc file to include syntax highlighting
-- Optionally install custom kernels (linux-ck or linux-tkg) with GCC CPU optimizations from chaotic-aur
+- Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Display all network interfaces IP Addresses on TTY logins
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [JFS](https://wiki.archlinux.org/title/JFS), [NILFS2](https://en.wikipedia.org/wiki/NILFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
     * BTRFS will use [compress=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression. Edit /etc/fstab to change to LZO or ZLIB
@@ -63,7 +63,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Custom aliases for yay/pacman and other system tasks
 - Laptop changes (If detected):
     * Modified [trackpad behavior](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) to be more comfortable
-    * Implement USB and hard drive [power saving features](https://wiki.archlinux.org/index.php/Power_management#Power_saving) like TLP
+    * [TLP](https://wiki.archlinux.org/title/TLP) and power-profiles-daemon
 - Grub changes:
     * [Disabled spectre/meltdown patches](https://make-linux-fast-again.com/) (Increase performance. Edit /etc/defult/grub to remove)
     * Reboot, shutdown, [File Manager](https://github.com/a1ive/grub2-filemanager) option for both UEFI/BIOS
