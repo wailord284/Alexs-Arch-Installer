@@ -107,7 +107,7 @@ BGreen='\033[1;32m'       # Green
 BYellow='\033[1;33m'      # Yellow
 BBlue='\033[1;34m'        # Blue
 BPurple='\033[1;35m'      # Purple
-PROMPT_COMMAND=exitstatus
+PROMPT_COMMAND='exitstatus && echo -ne "\033]0;${USER}@${HOSTNAME}\007"' 
 exitstatus() {
 if [ "$?" -eq "0" ]; then
 	SC="${BGREEN}:)"
