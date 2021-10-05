@@ -63,7 +63,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Custom aliases for yay/pacman and other system tasks
 - Laptop changes (If detected):
     * Modified [trackpad behavior](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) to be more comfortable
-    * [TLP](https://wiki.archlinux.org/title/TLP) and power-profiles-daemon
+    * [TLP](https://wiki.archlinux.org/title/TLP) and [powertop](https://wiki.archlinux.org/title/Powertop)
 - Grub changes:
     * [Disabled spectre/meltdown patches](https://make-linux-fast-again.com/) (Increase performance. Edit /etc/defult/grub to remove)
     * Reboot, shutdown, [File Manager](https://github.com/a1ive/grub2-filemanager) option for both UEFI/BIOS

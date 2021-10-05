@@ -894,9 +894,13 @@ fi
 #Changing autodetect for laptops to check chasis type in hostnamectl
 chassisType=$(hostnamectl | grep -Eo "Chassis:.{0,10}" | cut -d" " -f2)
 if [ "$chassisType" = laptop ]; then
+	#Move the powertop config so it can be enabled
+	mv Arch-Linux-Installer-master/configs/systemd/powertop.service /mnt/etc/systemd/system/
+	#Install power saving tools and enable tlp + powertop
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
-	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S power-profiles-daemon x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service power-profiles-daemon.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S powertop x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
+	#Add touchpad config
 	mv Arch-Linux-Installer-master/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#Laptop mode
 	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
