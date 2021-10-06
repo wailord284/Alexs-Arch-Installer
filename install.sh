@@ -890,9 +890,9 @@ if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
 
-#Check and setup touchpad
-#Changing autodetect for laptops to check chasis type in hostnamectl
-chassisType=$(hostnamectl | grep -Eo "Chassis:.{0,10}" | cut -d" " -f2)
+#Check and setup laptop features
+#Use hostnamectl to check the chassis type for laptop
+chassisType=$(hostnamectl chassis)
 if [ "$chassisType" = laptop ]; then
 	#Move the powertop config so it can be enabled
 	mv Arch-Linux-Installer-master/configs/systemd/powertop.service /mnt/etc/systemd/system/
