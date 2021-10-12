@@ -42,6 +42,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [DBus-Broker](https://wiki.archlinux.org/index.php/D-Bus#dbus-broker) over traditional D-Bus for higher performance and reliability
 - [Realtime priority](https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level) in Pulseaudio
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
+- Automatic log rotation with [logrotate](https://wiki.archlinux.org/title/Logrotate)
 - [Zlib-ng](https://github.com/zlib-ng/zlib-ng) with modern features and optimizations compared to zlib
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
 - [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
