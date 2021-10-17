@@ -36,8 +36,12 @@ SigLevel = Never
 ' >> /etc/pacman.conf
 
 #Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?)
-echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-echo 'Server = https://archmirror1.octyl.net/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+echo 'Server = https://mirror.sfo12.us.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+echo 'Server = https://mirror.arizona.edu/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+echo 'Server = https://arch.hu.fo/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+echo 'Server = https://mirrors.radwebhosting.com/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+echo 'Server = https://mirror.lty.me/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+echo 'Server = https://mirror.phx1.us.spryservers.net/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
 
 #Set time before init
 #This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it.
@@ -487,7 +491,7 @@ SigLevel = Never' >> /etc/pacman.conf
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --verbose -f 10 --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --verbose -f 10 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
@@ -564,7 +568,7 @@ Include = /etc/pacman.d/mirrorlist
 
 #Chia archlinux repo with many aur packages
 [archlinuxcn]
-Server = https://mirror.xtom.com/archlinuxcn/$arch
+#Server = https://mirror.xtom.com/archlinuxcn/$arch
 Server = http://repo.archlinuxcn.org/$arch
 Server = https://cdn.repo.archlinuxcn.org/$arch
 #Optional mirrorlists - requires archlinuxcn-mirrorlist-git
