@@ -491,7 +491,7 @@ SigLevel = Never' >> /etc/pacman.conf
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --verbose -f 10 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S reflector --noconfirm && reflector --verbose -f 15 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
@@ -613,6 +613,7 @@ clear
 #add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
 echo '#Chaotic-aur repo with many packages
 [chaotic-aur]
+SigLevel = PackageOptional
 Server = https://us-ca-mirror.chaotic.cx/$repo/$arch
 Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
 
@@ -626,7 +627,7 @@ clear
 if [ "$kernel" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Custom kernel" \
-	--prgbox "Install custom kernel and headers" "arch-chroot /mnt pacman -S $(echo $installKernel $installKernelHeaders) --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Installing custom kernel and headers" "arch-chroot /mnt pacman -S $(echo $installKernel $installKernelHeaders) --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 
 #Enable services
@@ -1089,9 +1090,7 @@ selection=${selection:- 5 9 11 q}
 		5)
 		echo "$green""Sorting mirrors""$reset"
 		arch-chroot /mnt pacman -S reflector --noconfirm
-		arch-chroot /mnt reflector -f 10 --verbose --latest 20 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
-		sed '/mirror.lty.me/d' -i /mnt/etc/pacman.d/mirrorlist
-		sed '/mirrors.kernel.org/d' -i /mnt/etc/pacman.d/mirrorlist
+		arch-chroot /mnt reflector -f 15 --verbose --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
 		sleep 3s
 		;;
 
