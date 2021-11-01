@@ -5,7 +5,7 @@
 #This script will install Arch with mainly vanilla settings plus some programs and features I personally use.
 #To install applications I like, I've created a custom software repository known as "Aurmageddon"
 ##Aurmageddon has 1500+ packages that recieve updates every 6 hours. Some software used in this install comes from this repo.
-##To view this repo, go to http://wailord284.club/repo/aurmageddon/x86_64/
+##To view this repo, go to https://wailord284.club/repo/aurmageddon/x86_64/
 ##This repo is unsigned but personally maintained by me. Package requests go to wailord284 on gmail.
 #Please be aware that some of the changes this script will make are focused on settings I enjoy.
 #All the post install options are optional but may improve your experience. Some options are selected by default.
@@ -284,7 +284,7 @@ clear
 dialog --title "Custom Kernels" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-ck and Linux-tkg" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg. The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionKernel=$?
 if [ "$optionKernel" = 0 ]; then
 	kernel="y"
@@ -485,7 +485,7 @@ clear
 #add my repo to pacman.conf to install glxinfo later
 echo '#wailord284 custom repo with many aur packages
 [aurmageddon]
-Server = http://wailord284.club/repo/$repo/$arch
+Server = https://wailord284.club/repo/$repo/$arch
 SigLevel = Never' >> /etc/pacman.conf
 
 #Sort mirrors
@@ -601,7 +601,7 @@ clear
 #install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek firefox-clearurls tldr compsize kitty iwd vnstat kernel-modules-hook mlocate gtk-engine-murrine fsearch-git --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek firefox-clearurls tldr compsize kitty iwd vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine fsearch-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #additional aurmageddon packages
