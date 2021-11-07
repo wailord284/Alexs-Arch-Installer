@@ -512,7 +512,7 @@ clear
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools crda --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
 vendor=$(cat /proc/cpuinfo | grep -m 1 "vendor" | grep -o "Intel")
 if [ "$vendor" = Intel ]; then
@@ -927,8 +927,7 @@ sed "s,gtk_theme=Adwaita,gtk_theme=Arc-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
 
 #Netfilter connection tracker
 echo "options nf_conntrack nf_conntrack_helper=0" > /mnt/etc/modprobe.d/no-conntrack-helper.conf
-#Set wifi region - requires crda which was installed earlier
-sed "s,\#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wireless-regdom
+
 
 #Systemd services
 #https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode - packet sniffing/monitoring
