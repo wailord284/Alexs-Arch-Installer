@@ -51,7 +51,7 @@ timedatectl set-ntp true
 systemctl stop reflector.service
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring ntp ncurses wget dialog htop iotop --noconfirm
+pacman -S archlinux-keyring ntp ncurses unzip wget dialog htop iotop --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -796,7 +796,7 @@ clear
 #Download config files from github
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
---prgbox "Downloading config files" "pacman -S unzip wget --noconfirm && wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
+--prgbox "Downloading config files" "wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 
 #Create /etc/skel dirs for configs to be applied to our new user
 mkdir -p /mnt/etc/skel/.config/gtk-3.0/
