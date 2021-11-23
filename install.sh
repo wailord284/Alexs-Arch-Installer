@@ -982,9 +982,6 @@ clear
 
 #add custom menus to grub
 #https://wiki.archlinux.org/index.php/GRUB#EFI_binaries
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Configuring grub" \
---prgbox "Downloading grub utilities" "pacman -S p7zip --noconfirm" "$HEIGHT" "$WIDTH"
 #Move grub boot items
 mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
