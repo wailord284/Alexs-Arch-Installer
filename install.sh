@@ -68,9 +68,6 @@ dialog --title "Welcome!" \
 "$dialogHeight" "$dialogWidth"
 clear
 
-#desktop
-desktop=${desktop:-xfce}
-
 #Username - loop until the username passes the regex check
 #Username must only be lowercase with numbers. Anything else fails
 #usernameCharacters="^[0-9a-z]+$"
@@ -131,7 +128,6 @@ syslocale=(dialog --backtitle "$dialogBacktitle" \
 
 options=(${MENU_OPTIONS})
 locale=$("${syslocale[@]}" "${options[@]}" 2>&1 >/dev/tty)
-#locale=$(echo "$locale" | sed -e 's,+, ,g')
 locale=$(echo "${locale//+/ }")
 clear
 
@@ -1040,7 +1036,7 @@ selection=${selection:- 5 9 11 q}
 
 		1)
 		#bedrock - https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
-		bedrockVersion="0.7.23"
+		bedrockVersion="0.7.24"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
