@@ -1,5 +1,5 @@
 # Alex's Arch Linux Installer
-A simple script to automatically install a highly tuned (under the hood) Arch Linux with the XFCE desktop, custom repositories, better performance and many post install options.
+A simple script to automatically install a highly tuned (under the hood) Arch Linux with the XFCE desktop, custom repositories, better performance and many post install options. Add me on Discord for any thoughts/comments/concerns/issues: wailord284#3794
 
 # How to use
 To use this script, you first need to [create a bootable USB](https://www.howtogeek.com/howto/linux/create-a-bootable-ubuntu-usb-flash-drive-the-easy-way/) with the [Arch Linux ISO.](https://archlinux.org/download/) It is recommended to use the latest availible version of the ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date. Make sure you run the script using bash, otherwise zsh will interpret the script and error.
@@ -65,7 +65,8 @@ The user will now be prompted to supply basic information such as hostname, user
     * Custom aliases for yay/pacman and other system tasks
 - Laptop changes (If detected):
     * Modified [trackpad behavior](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) to be more comfortable
-    * [TLP](https://wiki.archlinux.org/title/TLP) and [powertop](https://wiki.archlinux.org/title/Powertop)
+    * [TLP](https://wiki.archlinux.org/title/TLP)
+    * [Powertop](https://wiki.archlinux.org/title/Powertop)
 - Grub changes:
     * [Disabled spectre/meltdown patches](https://make-linux-fast-again.com/) (Increase performance. Edit /etc/defult/grub to remove)
     * Reboot, shutdown, [File Manager](https://github.com/a1ive/grub2-filemanager) option for both UEFI/BIOS
