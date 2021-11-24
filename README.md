@@ -57,6 +57,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) to use libvirt without password (users in the KVM group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) to add/remove a network without a password (users in the network group)
     * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) to allow gparted to run without a password (users in storage group)
+    * [Gsmartcontrol](https://gsmartcontrol.sourceforge.io/home/) rule allowing gsmartcontrol to run without a password (users in storage group)
 - Bash changes:
     * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
