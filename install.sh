@@ -180,12 +180,12 @@ while : ; do
 	targetDisk=(dialog --backtitle "$dialogBacktitle" \
 		--scrollbar \
 		--title "Select the drive to install Arch on" \
-		--radiolist "Press space to select your drive" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+		--radiolist "Press space to select your drive. No data will be written at this point." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 	options=(${MENU_OPTIONS})
 	installDisk=$("${targetDisk[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	#remove '|'
 	storage=$(echo "$installDisk" | sed 's/|.*//')
-	#determine storage type for partitions - nvme0n1p1, sda1 or mmcblk0p1 - $storagePartitions
+	#determine storage type for partitions - nvme0n1p1, sda1, vda1 or mmcblk0p1 - $storagePartitions
 	if [[ "$storage" = /dev/nvme* ]]; then
 		echo "$green""NVME Storage Device""$reset"
 		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
@@ -194,12 +194,16 @@ while : ; do
 		echo "$green""eMMC Storage Device""$reset"
 		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
 		break
+	elif [[ "$storage" = /dev/vd* ]]; then
+		echo "$green""Virtual Storage Device""$reset"
+		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
+		break
 	elif [[ "$storage" = /dev/sd* ]]; then
 		echo "$green""SATA Storage Device""$reset"
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	else
-		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sda, /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && exit 1
+		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sda, /dev/vda, /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && exit 1
 	fi
 done
 clear
@@ -208,7 +212,7 @@ clear
 #8589934592 / 1048576 = 8192MB (8GB)
 driveSize=$(fdisk -l "$storage" | grep -m1 Disk | cut -d ":" -f 2 | cut -d "," -f 2 | sed -e 's/[^0-9]/ /g' -e 's/ //g')
 if [ "$driveSize" -lt "8589934592" ]; then
-	dialog --msgbox "Your hard drive is smaller than 8GB. Please use a larger drive." "$dialogHeight" "$dialogWidth"
+	dialog --msgbox "Your target drive is smaller than 8GB. Please use a larger drive." "$dialogHeight" "$dialogWidth"
 	exit 1
 fi
 
@@ -221,7 +225,7 @@ done
 sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
 	--title "Select your filesystem" \
 	--scrollbar \
-	--radiolist "Press space to select your filesystem. EXT4 or XFS is the recommended choice." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your filesystem. EXT4 is the recommended choice is you are unsure." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
 filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
@@ -230,7 +234,7 @@ clear
 dialog --title "Disk Encryption" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to enable disk encryption? " "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "Do you want to enable disk encryption for the root partition? If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionEncrypt=$?
 if [ "$optionEncrypt" = 0 ]; then
 	encrypt="y"
@@ -266,7 +270,7 @@ clear
 dialog --title "Secure Disk Erase" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive. This is also NOT recommended on any solid state media as it can shorten the devices life." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive. This is also NOT recommended on any solid state media as it can shorten the devices life. If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionWipe=$?
 if [ "$optionWipe" = 0 ]; then
 	wipe="y"
@@ -280,7 +284,7 @@ clear
 dialog --title "Custom Kernels" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg. The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg. The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware. If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionKernel=$?
 if [ "$optionKernel" = 0 ]; then
 	kernel="y"
