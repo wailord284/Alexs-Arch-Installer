@@ -51,7 +51,7 @@ timedatectl set-ntp true
 systemctl stop reflector.service
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring ntp ncurses unzip wget dialog htop iotop --noconfirm
+pacman -S archlinux-keyring ntp ncurses unzip shred wget dialog htop iotop --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -305,7 +305,7 @@ if [ "$kernel" = y ]; then
 	targetKernel=(dialog --backtitle "$dialogBacktitle" \
 	--scrollbar \
 	--title "Select a kernel you would like to install" \
-	--radiolist "Press space to select your Kernel. If unsure, select linux-ck." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your Kernel." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 	options=(${MENU_OPTIONS})
 	installKernel=$("${targetKernel[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	installKernelHeaders=$(echo "$installKernel" | sed 's/$/-headers/')
@@ -314,18 +314,18 @@ fi
 #Ask the user if they want to continue with the current options
 #https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
 dialog --backtitle "$dialogBacktitle" \
---title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Hostname: $host" "User: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $kernel" "Filesystem: $filesystem")" "$HEIGHT" "$WIDTH"
+--title "Do you want to install with the following options? Data will be overwritten if you select yes" \
+--yesno "$(printf %"s\n" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Filesystem: $filesystem")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
 	--title "Install starting!" \
-	--timeout 5 --msgbox "Starting install in 5 seconds" "$dialogHeight" "$dialogWidth"
+	--timeout 5 --msgbox "Starting install in 5 seconds!" "$dialogHeight" "$dialogWidth"
 	clear
 else
 	dialog --backtitle "$dialogBacktitle" \
 	--title "Install canceled" \
-	--msgbox "Press enter to quit" "$dialogHeight" "$dialogWidth"
+	--msgbox "Press enter to quit." "$dialogHeight" "$dialogWidth"
 	exit 1
 fi
 
