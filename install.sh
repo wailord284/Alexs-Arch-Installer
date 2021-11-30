@@ -252,7 +252,7 @@ while : ; do
 		--passwordbox "Please enter a password to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	encpass1=${encpass1:-pass}
 	#encpass2
-	encpass2=$(dialog --no-cancel --title "Password" \
+	encpass2=$(dialog --no-cancel --title "Disk Encryption Password" \
 		--backtitle "$dialogBacktitle" \
 		--passwordbox "Please enter your password again to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	encpass2=${encpass2:-pass}
@@ -260,7 +260,7 @@ while : ; do
 		encpass="$encpass1"
 		break #exit loop
 	else
-		dialog --msgbox "encass1 and encpass2 do not match. Please try again" "$dialogHeight" "$dialogWidth" && clear
+		dialog --msgbox "The passwords you entered do not match. Please try again." "$dialogHeight" "$dialogWidth" && clear
 	fi
 done
 fi
