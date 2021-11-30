@@ -954,6 +954,8 @@ mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysc
 #network tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 
+#RAM and storage tweaks
+mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
 
 #grub install - support uefi 64 and 32
 if [ "$boot" = efi ]; then
