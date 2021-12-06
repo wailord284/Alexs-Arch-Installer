@@ -51,7 +51,7 @@ timedatectl set-ntp true
 systemctl stop reflector.service
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring ntp ncurses unzip shred wget dialog htop iotop --noconfirm
+pacman -S archlinux-keyring ntp ncurses unzip wget dialog htop iotop --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -70,7 +70,7 @@ clear
 
 #Username - loop until the username passes the regex check
 #Username must only be lowercase with numbers. Anything else fails
-#usernameCharacters="^[0-9a-z]+$"
+usernameCharacters="^[0-9a-z]+$"
 #Loop until the username passes the regex check
 while : ; do
 	user=$(dialog --no-cancel --title "Username" \
