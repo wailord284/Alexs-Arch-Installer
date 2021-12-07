@@ -995,11 +995,11 @@ mv Arch-Linux-Installer-master/configs/grub/tools/* /mnt/boot/EFI/tools/
 mv Arch-Linux-Installer-master/configs/grub/games/*.efi /mnt/boot/EFI/games/
 mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
-
+#Grub config setup/generate
 #Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
-#grub config and unmount - https://make-linux-fast-again.com/ - nowatchdog pci=nommconf intel_pstate=disable acpi-cpufreq
-#Generate grubcfg with root UUID if encrypt=y
+#https://make-linux-fast-again.com/
 #Use CPU Random generation: https://security.stackexchange.com/questions/42164/rdrand-from-dev-random
+#Generate grubcfg with root UUID if encrypt=y
 mitigations=$(curl -s https://make-linux-fast-again.com/)
 if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
