@@ -47,6 +47,10 @@ The user will now be prompted to supply basic information such as hostname, user
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
 - [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
 - [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
+- [Ananicy-cpp](https://gitlab.com/ananicy-cpp/ananicy-cpp) daemon to automatically set the NICe value of programs if system ram is detected over 2GB
+    * [Ananicy rules](https://aur.archlinux.org/packages/ananicy-rules-git/) are also installed for extra program support
+    * Ananicy-cpp was chosen for its better performance and lower RAM usage over the original ananicy
+    * Check frequency was also changed from 5 to 15 seconds
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
@@ -65,8 +69,8 @@ The user will now be prompted to supply basic information such as hostname, user
     * Custom aliases for yay/pacman and other system tasks
 - Laptop changes (If detected):
     * Modified [trackpad behavior](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) to be more comfortable
-    * [TLP](https://wiki.archlinux.org/title/TLP)
-    * [Powertop](https://wiki.archlinux.org/title/Powertop)
+    * [TLP](https://wiki.archlinux.org/title/TLP) with default settings
+    * [Powertop](https://wiki.archlinux.org/title/Powertop) with --auto-tune enabled
 - Grub changes:
     * [Disabled spectre/meltdown patches](https://make-linux-fast-again.com/) (Increase performance. Edit /etc/defult/grub to remove)
     * Reboot, shutdown, [File Manager](https://github.com/a1ive/grub2-filemanager) option for both UEFI/BIOS
@@ -123,3 +127,4 @@ The user will now be prompted to supply basic information such as hostname, user
  - fix TTY ip address
  - investigate dialog functions and rename height/width variables
  - optionally allow people to upload hw-probe
+ - optionally allow people to upload pkgstats

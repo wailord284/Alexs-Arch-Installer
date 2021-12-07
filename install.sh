@@ -607,7 +607,7 @@ clear
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional packages" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-localcdn firefox-extension-user-agent-switcher skeuos-gtk --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-localcdn firefox-extension-user-agent-switcher skeuos-gtk ananicy-cpp ananicy-rules-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
@@ -651,12 +651,12 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 fi
 clear
 
-#Enable prelockd and preload daemon if ram is over ~2GB - https://github.com/hakavlad/prelockd https://wiki.archlinux.org/index.php/Preload
+#Enable prelockd, ananicy-cpp preload daemon if ram is over ~2GB - https://github.com/hakavlad/prelockd https://wiki.archlinux.org/index.php/Preload
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Services" \
-	--prgbox "Enabling prelock and preload daemon" "arch-chroot /mnt systemctl enable prelockd.service preload.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling prelock and preload daemon" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 
@@ -704,6 +704,10 @@ fi
 #for interface in $(netstat -i | cut -d" " -f 1 | sed -e 's/Kernel//g' -e 's/Iface//g' -e '/^$/d' | sort -u) ; do
 #	echo "IP Address for $interface: \4{$interface}" >> /mnt/etc/issue
 #done
+
+
+#Change the default frequency ananicy checks system programs from 5 to 15 seconds
+sed "s,check_freq=5,check_freq=15,g" -i /mnt/etc/ananicy.d/ananicy.conf
 
 
 #setup nano config
