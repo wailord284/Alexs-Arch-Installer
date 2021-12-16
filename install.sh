@@ -633,12 +633,12 @@ fi
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged irqbalance logrotate.timer" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged irqbalance logrotate.timer" "$HEIGHT" "$WIDTH"
 
 #If the user is using BTRFS, enable BTRFS-scrub service
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Enabling Services" \
+	--title "Enabling monthly BTRFS Scrub timer" \
 	--prgbox "Enabling BTRFS Scrub" "arch-chroot /mnt systemctl enable btrfs-scrub@-.timer" "$HEIGHT" "$WIDTH"
 fi
 
@@ -646,7 +646,7 @@ fi
 #This works however, if you install via usb itll detect the usb drive as nonrotational and enable fstrim
 if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Enabling Services" \
+	--title "Enabling FSTrim timer" \
 	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
 fi
 clear
@@ -664,7 +664,7 @@ clear
 #https://wiki.archlinux.org/index.php/D-Bus#Alternative_Implementations
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core systemd services" "arch-chroot /mnt systemctl disable dbus.service && arch-chroot /mnt systemctl enable dbus-broker.service && arch-chroot /mnt systemctl --global enable dbus-broker.service" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling dbus-broker" "arch-chroot /mnt systemctl disable dbus.service && arch-chroot /mnt systemctl enable dbus-broker.service && arch-chroot /mnt systemctl --global enable dbus-broker.service" "$HEIGHT" "$WIDTH"
 clear
 
 
