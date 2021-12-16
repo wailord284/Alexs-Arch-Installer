@@ -203,7 +203,7 @@ while : ; do
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	else
-		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sda, /dev/vda, /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && exit 1
+		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sd[a-z], /dev/vd[a-z], /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && exit 1
 	fi
 done
 clear
@@ -284,7 +284,7 @@ clear
 dialog --title "Custom Kernels" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg. The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware. If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg, a kernel focused on gaming and desktop performance. The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware. This option is only recommended for advanced users. If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionKernel=$?
 if [ "$optionKernel" = 0 ]; then
 	kernel="y"
@@ -297,10 +297,10 @@ clear
 if [ "$kernel" = y ]; then
 	unset COUNT MENU_OPTIONS options
 	COUNT=-1
-	mapfile -t dialogRepoCKKernel < <(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' )
+	mapfile -t dialogChaoticKernel < <(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' )
 	for i in $(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d') ; do
 		COUNT=$((COUNT+1))
-		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogRepoCKKernel[$COUNT]} off"
+		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogChaoticKernel[$COUNT]} off"
 	done
 	targetKernel=(dialog --backtitle "$dialogBacktitle" \
 	--scrollbar \
@@ -482,7 +482,7 @@ clear
 
 
 #Install system, grub, mirrors
-#add my repo to pacman.conf to install glxinfo later
+#add my repo to pacman.conf
 echo '#wailord284 custom repo with many aur packages
 [aurmageddon]
 Server = https://wailord284.club/repo/$repo/$arch
@@ -502,6 +502,7 @@ clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
 --prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft jfsutils nilfs-utils --noconfirm" "$HEIGHT" "$WIDTH"
+
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
@@ -882,7 +883,7 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/networkmanager.rules /mnt/etc
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
 
-#HDParm rule to spin down drives
+#HDParm rule to spin down drives after 20 idle minutes
 mv Arch-Linux-Installer-master/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
 
 #Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
@@ -921,7 +922,7 @@ if [ "$chassisType" = laptop ]; then
 fi
 clear
 
-#load the tcp_bbr module for better network stuffs
+#load the tcp_bbr module for better network stuffs. This is utilized in the network sysctl config.
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 #set LXDM theme and session
