@@ -656,7 +656,7 @@ ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Services" \
-	--prgbox "Enabling prelock and preload daemon" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling ananicy, prelock and preload daemon" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 
