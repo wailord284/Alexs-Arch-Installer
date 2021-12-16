@@ -196,7 +196,7 @@ while : ; do
 		break
 	elif [[ "$storage" = /dev/vd* ]]; then
 		echo "$green""Virtual Storage Device""$reset"
-		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
+		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	elif [[ "$storage" = /dev/sd* ]]; then
 		echo "$green""SATA Storage Device""$reset"
