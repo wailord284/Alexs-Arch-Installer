@@ -62,9 +62,9 @@ clear
 #Welcome messages
 dialog --title "Welcome!" \
 --backtitle "$dialogBacktitle" \
---timeout 10 \
+--timeout 20 \
 --ok-label "Begin" \
---msgbox "$(printf %"s\n" "Welcome to Alex's automatic install script!" "To use the default values in the script, press enter.")" \
+--msgbox "$(printf %"s\n\n" "Welcome to Alex's Automatic Arch Linux install script!" "Please note, no changes will be made to the system until the final confirmation prompt at the end." "Press control + C to cancel at any time and return to the archiso.")" \
 "$dialogHeight" "$dialogWidth"
 clear
 
@@ -75,7 +75,7 @@ usernameCharacters="^[0-9a-z]+$"
 while : ; do
 	user=$(dialog --no-cancel --title "Username" \
 		--backtitle "$dialogBacktitle" \
-		--inputbox "Please enter a username. Default arch. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+		--inputbox "Please enter a username. Must be lowercase only." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	user=${user:-arch}
 	if [[ $user =~ $usernameCharacters ]]; then
 		break #exit loop
@@ -91,18 +91,18 @@ while : ; do
 	#pass1
 	pass1=$(dialog --no-cancel --title "Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter a password (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+		--passwordbox "Please enter a password for user $user (Hidden)." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	pass1=${pass1:-pass}
 	#pass2
 	pass2=$(dialog --no-cancel --title "Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter your password again (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+		--passwordbox "Please enter the same password again for user $user (Hidden)." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	pass2=${pass2:-pass}
 	if [ "$pass1" = "$pass2" ]; then
 		pass="$pass1"
 		break #exit loop
 	else
-		dialog --msgbox "Passwords do not match. Please try again." "$dialogHeight" "$dialogWidth" && clear
+		dialog --msgbox "The provided passwords do not match. Please try again." "$dialogHeight" "$dialogWidth" && clear
 	fi
 done
 clear
@@ -110,7 +110,7 @@ clear
 #hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
 host=$(dialog --no-cancel --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
-	--inputbox "Please enter a hostname. Default linux. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+	--inputbox "Please enter a hostname." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 host=${host:-linux}
 clear
 
@@ -122,9 +122,9 @@ for i in $(cat /etc/locale.gen | tail -n+24 | sed -e 's/  $//' -e 's, ,+,g' -e '
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
 syslocale=(dialog --backtitle "$dialogBacktitle" \
-	--title "Select your locale" \
+	--title "Locale" \
 	--scrollbar \
-	--radiolist "Press space to select your locale" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your locale." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 
 options=(${MENU_OPTIONS})
 locale=$("${syslocale[@]}" "${options[@]}" 2>&1 >/dev/tty)
@@ -141,9 +141,9 @@ for i in /usr/share/zoneinfo/* ; do
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
 systimezone=(dialog --backtitle "$dialogBacktitle" \
-	--title "Select your timezone" \
+	--title "Timezone" \
 	--scrollbar \
-	--radiolist "Press space to select your timezone" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your timezone." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
 countryTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
@@ -158,9 +158,9 @@ if [ -d /usr/share/zoneinfo/"$countryTimezone" ]; then #Check to see if the coun
 		MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 	done
 systimezone=(dialog --backtitle "$dialogBacktitle" \
-	--title "Select the city within your country" \
+	--title "Timezone" \
 	--scrollbar \
-	--radiolist "Press space to select your timezone city" "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select the region in your timezone." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
 cityTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
 fi
@@ -187,19 +187,15 @@ while : ; do
 	storage=$(echo "$installDisk" | sed 's/|.*//')
 	#determine storage type for partitions - nvme0n1p1, sda1, vda1 or mmcblk0p1 - $storagePartitions
 	if [[ "$storage" = /dev/nvme* ]]; then
-		echo "$green""NVME Storage Device""$reset"
 		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
 		break
 	elif [[ "$storage" = /dev/mmcblk* ]]; then
-		echo "$green""eMMC Storage Device""$reset"
 		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
 		break
 	elif [[ "$storage" = /dev/vd* ]]; then
-		echo "$green""Virtual Storage Device""$reset"
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	elif [[ "$storage" = /dev/sd* ]]; then
-		echo "$green""SATA Storage Device""$reset"
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	else
@@ -223,9 +219,9 @@ for i in $(echo "ext4 xfs f2fs jfs nilfs btrfs"); do
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
 sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
-	--title "Select your filesystem" \
+	--title "Filesystem" \
 	--scrollbar \
-	--radiolist "Press space to select your filesystem. EXT4 is the recommended choice is you are unsure." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your filesystem. EXT4 is the recommended choice if you are unsure." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
 filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
@@ -234,7 +230,7 @@ clear
 dialog --title "Disk Encryption" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to enable disk encryption for the root partition? If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to enable disk encryption for the root partition?" "If you do not know what this means, you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionEncrypt=$?
 if [ "$optionEncrypt" = 0 ]; then
 	encrypt="y"
@@ -249,18 +245,18 @@ while : ; do
 	#encpass1
 	encpass1=$(dialog --no-cancel --title "Disk Encryption Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter a password to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+		--passwordbox "Please enter a password to encrypt your disk (Hidden)." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	encpass1=${encpass1:-pass}
 	#encpass2
 	encpass2=$(dialog --no-cancel --title "Disk Encryption Password" \
 		--backtitle "$dialogBacktitle" \
-		--passwordbox "Please enter your password again to encrypt your disk (Hidden). Default pass. " "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
+		--passwordbox "Please enter your password again to encrypt your disk (Hidden)." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	encpass2=${encpass2:-pass}
 	if [ "$encpass1" = "$encpass2" ]; then
 		encpass="$encpass1"
 		break #exit loop
 	else
-		dialog --msgbox "The passwords you entered do not match. Please try again." "$dialogHeight" "$dialogWidth" && clear
+		dialog --msgbox "The provided passwords do not match. Please try again." "$dialogHeight" "$dialogWidth" && clear
 	fi
 done
 fi
@@ -270,7 +266,7 @@ clear
 dialog --title "Secure Disk Erase" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive. This is also NOT recommended on any solid state media as it can shorten the devices life. If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "This is also NOT recommended on any solid state media as it can shorten the devices life." "If you do not know what this means, you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionWipe=$?
 if [ "$optionWipe" = 0 ]; then
 	wipe="y"
@@ -281,10 +277,10 @@ clear
 
 #Kernel
 #Ask user if they want a custom kernel
-dialog --title "Custom Kernels" \
+dialog --title "Custom Kernel" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg, a kernel focused on gaming and desktop performance. The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware. This option is only recommended for advanced users. If you do not know what this means, you can safely press no." "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg, a kernel focused on gaming and desktop performance." "The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware." "This option is only recommended for advanced users. If you do not know what this means, you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionKernel=$?
 if [ "$optionKernel" = 0 ]; then
 	kernel="y"
@@ -304,7 +300,7 @@ if [ "$kernel" = y ]; then
 	done
 	targetKernel=(dialog --backtitle "$dialogBacktitle" \
 	--scrollbar \
-	--title "Select a kernel you would like to install" \
+	--title "Custom Kernel" \
 	--radiolist "Press space to select your Kernel." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 	options=(${MENU_OPTIONS})
 	installKernel=$("${targetKernel[@]}" "${options[@]}" 2>&1 >/dev/tty)
@@ -601,13 +597,13 @@ clear
 
 #install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing additional packages" \
+--title "Installing additional desktop packages" \
 --prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek firefox-clearurls tldr compsize kitty iwd vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine fsearch-git gvfs-smb --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing additional packages" \
+--title "Installing additional desktop packages" \
 --prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokeshell arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-canvasblocker firefox-extension-localcdn firefox-extension-user-agent-switcher skeuos-gtk ananicy-cpp ananicy-rules-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
@@ -967,18 +963,18 @@ mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysct
 if [ "$boot" = efi ]; then
 	if [ "$bootArch" = 64 ]; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "EFI Platform" \
+		--title "GRUB installation" \
 		--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
 	else
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "EFI Platform" \
+		--title "GRUB installation" \
 		--prgbox "Installing grub for 32 bit UEFI" "arch-chroot /mnt grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
 	fi
 fi
 
 if [[ "$boot" = bios ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "BIOS Platform" \
+	--title "GRUB installation" \
 	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc $storage --recheck" "$HEIGHT" "$WIDTH"
 fi
 clear
