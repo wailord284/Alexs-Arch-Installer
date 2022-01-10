@@ -2,7 +2,8 @@
 # ~/.bashrc
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
-cat /usr/share/pokeshell/$(($RANDOM % 151 + 1)).pokemon
+#cat /usr/share/pokeshell/$(($RANDOM % 151 + 1)).pokemon
+/usr/local/bin/pokemon-colorscripts  -r
 #Colors for ls
 . /usr/share/LS_COLORS/dircolors.sh
 #Do not save cmds with " " in front or duplicate commands run after eachother
