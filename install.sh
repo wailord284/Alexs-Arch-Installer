@@ -630,7 +630,7 @@ fi
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup haveged irqbalance logrotate.timer" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
 
 #If the user is using BTRFS, enable BTRFS-scrub service
 if [ "$filesystem" = btrfs ] ; then
@@ -653,7 +653,7 @@ ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Performance Services" \
-	--prgbox "Enabling ananicy, prelock and preload daemon" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service uresourced" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling ananicy, prelock and preload daemon" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service uresourced haveged irqbalance" "$HEIGHT" "$WIDTH"
 fi
 clear
 
