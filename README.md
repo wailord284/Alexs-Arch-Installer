@@ -46,6 +46,8 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Zlib-ng](https://github.com/zlib-ng/zlib-ng) with modern features and optimizations compared to zlib
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
 - Changes if RAM is over 2GB
+    * [IRQBalance](https://irqbalance.github.io/irqbalance/) an attempt to better balance system latency and throughput
+    * [Haveged](https://wiki.archlinux.org/title/Haveged) an attempt to remove and remedy low-entropy conditions
     * [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
     * [Uresourced](https://gitlab.freedesktop.org/benzea/uresourced) dynamically allocate resources to the active user 
