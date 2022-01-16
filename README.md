@@ -45,12 +45,13 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
 - [Zlib-ng](https://github.com/zlib-ng/zlib-ng) with modern features and optimizations compared to zlib
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
-- [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
-- [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
-- [Ananicy-cpp](https://gitlab.com/ananicy-cpp/ananicy-cpp) daemon to automatically set the NICe value of programs if system ram is detected over 2GB
-    * [Ananicy rules](https://aur.archlinux.org/packages/ananicy-rules-git/) are also installed for extra program support
-    * Ananicy-cpp was chosen for its better performance and lower RAM usage over the original ananicy
-    * Check frequency was also changed from 5 to 15 seconds
+- Changes if RAM is over 2GB
+    * [Prelockd](https://github.com/hakavlad/prelockd) daemon to lock desktop in RAM if system ram is detected over 2GB
+    * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) daemon to load commonly used applications/files in RAM to speed up the system if system ram is detected over 2GB
+    * [Uresourced](https://gitlab.freedesktop.org/benzea/uresourced) dynamically allocate resources to the active user 
+    * [Ananicy-cpp](https://gitlab.com/ananicy-cpp/ananicy-cpp) daemon to automatically set the NICe value of programs if system ram is detected over 2GB
+    * [Ananicy rules](https://aur.archlinux.org/packages/ananicy-rules-git/) for extra program support
+    * Ananicy check frequency changed from 5 to 15 seconds
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
@@ -63,7 +64,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) to allow gparted to run without a password (users in storage group)
     * [Gsmartcontrol](https://gsmartcontrol.sourceforge.io/home/) rule allowing gsmartcontrol to run without a password (users in storage group)
 - Bash changes:
-    * Custom [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
+    * [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) to add color and improve tab completion
     * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) on terminal startup
     * Add colored output to ls (installed ls-colors-git)
     * Custom aliases for yay/pacman and other system tasks
@@ -77,6 +78,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * UEFI Only [tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor
     * UEFI Only [games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
     * Trust CPU Random Number Generation (random.trust_cpu=on) improves boot time
+    * Cgroups V2 enabled (systemd.unified_cgroup_hierarchy=1)
     * Arch Linux theme
     * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 should work on all systems)
 - Makepkg changes:
