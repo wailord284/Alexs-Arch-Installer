@@ -80,7 +80,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * UEFI Only [tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor
     * UEFI Only [games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
     * Trust CPU Random Number Generation (random.trust_cpu=on) improves boot time
-    * Cgroups V2 enabled (systemd.unified_cgroup_hierarchy=1)
     * Arch Linux theme
     * Please note some UEFI tools will only work if the UEFI is newer (UEFI shell v1 should work on all systems)
 - Makepkg changes:
@@ -129,6 +128,5 @@ The user will now be prompted to supply basic information such as hostname, user
 # Todos
  - Combine filesystem setup
  - fix TTY ip address
- - investigate dialog functions and rename height/width variables
  - optionally allow people to upload hw-probe
  - optionally allow people to upload pkgstats
