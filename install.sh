@@ -915,6 +915,8 @@ if [ "$chassisType" = laptop ]; then
 	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
 	#Disable watchdog - may help with power
 	mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
+	#Set PCIE powersave in TLP
+	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 fi
 clear
 
