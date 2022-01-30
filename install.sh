@@ -912,11 +912,13 @@ if [ "$chassisType" = laptop ]; then
 	#Add touchpad config
 	mv Arch-Linux-Installer-master/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#Laptop mode
-	echo "vm.laptop_mode = 5" > /mnt/etc/sysctl.d/00-laptop-mode.conf
+	mv Arch-Linux-Installer-master/configs/sysctl/00-laptop-mode.conf /mnt/etc/sysctl.d/
 	#Disable watchdog - may help with power
 	mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
 	#Set PCIE powersave in TLP
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
+	#Increase dirty writeback time to 30 seconds
+	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 fi
 clear
 
