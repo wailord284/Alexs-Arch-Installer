@@ -989,10 +989,9 @@ mv Arch-Linux-Installer-master/configs/grub/tools/* /mnt/boot/EFI/tools/
 mv Arch-Linux-Installer-master/configs/grub/games/*.efi /mnt/boot/EFI/games/
 mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
-#Grub config setup/generate
-#Weird PCIE errors for X99 - https://unix.stackexchange.com/questions/327730/what-causes-this-pcieport-00000003-0-pcie-bus-error-aer-bad-tlp
-#https://make-linux-fast-again.com/
+##Grub config setup/generate
 #Use CPU Random generation: https://security.stackexchange.com/questions/42164/rdrand-from-dev-random
+#We most likely do not need anything more than mitigations=off, but having all these options (from https://make-linux-fast-again.com/) hurts nothing
 #Generate grubcfg with root UUID if encrypt=y
 mitigations=$(curl -s https://make-linux-fast-again.com/)
 if [ "$encrypt" = y ]; then
