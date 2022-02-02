@@ -29,6 +29,12 @@ dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
 
+#Stop the reflector.service as it sometimes fails. We sort mirrors later
+systemctl stop reflector.service
+
+#Set ArchISO to no siglevel. Needed for weird GPG errors
+sed "s,SigLevel    = Required DatabaseOptional,SigLevel    = Never,g" -i /etc/pacman.conf
+
 #Add chaotic-aur to live ISO pacman config in case user wants custom kernel.
 echo '[chaotic-aur]
 Server = https://random-mirror.chaotic.cx/$repo/$arch
@@ -47,8 +53,6 @@ echo 'Server = https://mirror.phx1.us.spryservers.net/archlinux/$repo/os/$arch' 
 #This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it.
 echo "$yellow""Please wait while the system clock and keyring are set""$reset"
 timedatectl set-ntp true
-#Stop the reflector.service as it always fails half way in
-systemctl stop reflector.service
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
 pacman -S archlinux-keyring ntp ncurses unzip wget dialog htop iotop --noconfirm
@@ -734,7 +738,7 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 
 
 #add sudo changes
-sed "s,\#\ %wheel ALL=(ALL) ALL, %wheel ALL=(ALL) ALL,g" -i /mnt/etc/sudoers
+sed "s,\#\ %wheel ALL=(ALL:ALL) ALL, %wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
 echo 'Defaults !tty_tickets' >> /mnt/etc/sudoers
 echo 'Defaults passwd_tries=5' >> /mnt/etc/sudoers
 echo 'Defaults passwd_timeout=0' >> /mnt/etc/sudoers
@@ -837,7 +841,7 @@ echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/e
 #Create account passwords
 echo "$user":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
-arch-chroot /mnt echo -e "$pass\n$pass" | passwd
+arch-chroot /mnt echo -e "$pass\n$pass" | passwd root
 #unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
 unset pass1 pass2 pass encpass encpass1 encpass2
 #Setup stronger password security
