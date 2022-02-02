@@ -841,7 +841,10 @@ echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/e
 #Create account passwords
 echo "$user":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
-arch-chroot /mnt echo -e "$pass\n$pass" | passwd root
+#Set the root password
+echo"root":"$pass" > "$TMPFILE"
+arch-chroot /mnt chpasswd < "$TMPFILE"
+
 #unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
 unset pass1 pass2 pass encpass encpass1 encpass2
 #Setup stronger password security
