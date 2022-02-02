@@ -365,9 +365,10 @@ fi
 #Begin disk partitioning
 if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
+	#We use fdisk to write a new partition table, then wipe it all with wipefs. This should unpartition the drive.
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
-	--prgbox "Erasing dirve" "wipefs --all $storage && yes | mkfs.ext4 $storage" "$HEIGHT" "$WIDTH"
+	--prgbox "Erasing dirve" "echo -e 'g\nw' | fdisk $storage && wipefs --all $storage" "$HEIGHT" "$WIDTH"
 	if [ "$boot" = bios ]; then
 		#BIOS needs msdos
 		parted -s "$storage" mklabel msdos
@@ -395,7 +396,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		elif [ "$filesystem" = xfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = jfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
@@ -434,7 +435,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		elif [ "$filesystem" = xfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.xfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = jfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
