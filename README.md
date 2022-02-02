@@ -126,6 +126,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 
 # Todos
+ - x86 V3 support - /lib/ld-linux-x86-64.so.2 --help | grep supported
  - Combine filesystem setup
  - fix TTY ip address
  - optionally allow people to upload hw-probe
