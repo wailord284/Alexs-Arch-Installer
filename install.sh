@@ -738,7 +738,7 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 
 
 #add sudo changes
-sed "s,\#\ %wheel ALL=(ALL:ALL) ALL, %wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
+sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
 echo 'Defaults !tty_tickets' >> /mnt/etc/sudoers
 echo 'Defaults passwd_tries=5' >> /mnt/etc/sudoers
 echo 'Defaults passwd_timeout=0' >> /mnt/etc/sudoers
@@ -807,10 +807,13 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 #Create /etc/skel dirs for configs to be applied to our new user
 mkdir -p /mnt/etc/skel/.config/gtk-3.0/
 mkdir -p /mnt/etc/skel/.config/kitty/
+mkdir -p /mnt/etc/skel/.config/wezterm/
 mkdir -p /mnt/etc/skel/.local/share/xfce4/
 #Move configs files to /etc/skel
 #Move kitty config
 mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel/.config/kitty/
+#Move wezterm config/ We dont install wezterm by default
+mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm
 #Move picom config. We don't use picom, but maybe in the future
 mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
 #Create gtk-2.0 disable recents
