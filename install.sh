@@ -29,11 +29,17 @@ dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
 
+#Welcome message
+echo "$yellow""Please wait while the system clock and keyring are set. This can take a moment.""$reset"
+
 #Stop the reflector.service as it sometimes fails. We sort mirrors later
 systemctl stop reflector.service
 
 #Set ArchISO to no siglevel. Needed for weird GPG errors
 sed "s,SigLevel    = Required DatabaseOptional,SigLevel    = Never,g" -i /etc/pacman.conf
+
+#Start the pacman key service
+systemctl start pacman-init
 
 #Add chaotic-aur to live ISO pacman config in case user wants custom kernel.
 echo '[chaotic-aur]
@@ -51,7 +57,6 @@ echo 'Server = https://mirror.phx1.us.spryservers.net/archlinux/$repo/os/$arch' 
 
 #Set time before init
 #This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it.
-echo "$yellow""Please wait while the system clock and keyring are set""$reset"
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
@@ -813,11 +818,11 @@ mkdir -p /mnt/etc/skel/.local/share/xfce4/
 #Move kitty config
 mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel/.config/kitty/
 #Move wezterm config/ We dont install wezterm by default
-mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm
+mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm/
 #Move picom config. We don't use picom, but maybe in the future
 mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
 #Create gtk-2.0 disable recents
-mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/etc/skel
+mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/etc/skel/
 #Create gtk-3.0 disable recents
 mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
 #Create the xfce configs for a wayyy better desktop setup than the xfconfs
