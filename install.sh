@@ -721,10 +721,10 @@ sed "s,check_freq=5,check_freq=15,g" -i /mnt/etc/ananicy.d/ananicy.conf
 sed "s,\#\ set linenumbers, set linenumbers,g" -i /mnt/etc/nanorc
 sed "s,\#\ set positionlog, set positionlog,g" -i /mnt/etc/nanorc
 sed "s,\#\ set constantshow, set constantshow,g" -i /mnt/etc/nanorc
-sed "s,\#\ set titlecolor bold\,lightwhite\,blue, set titlecolor bold\,lightwhite,g" -i /mnt/etc/nanorc
-sed "s,\#\ set promptcolor lightwhite\,lightblack, set promptcolor lightwhite\,lightblack,g" -i /mnt/etc/nanorc
-sed "s,\#\ set errorcolor bold\,lightwhite\,red, set errorcolor bold\,lightwhite\,red,g" -i /mnt/etc/nanorc
-sed "s,\#\ set spotlightcolor black\,lime, set spotlightcolor black\,lime,g" -i /mnt/etc/nanorc
+sed "s,\#\ set titlecolor bold\,white\,blue, set titlecolor bold\,lightwhite,g" -i /mnt/etc/nanorc
+sed "s,\#\ set promptcolor lightwhite\,grey, set promptcolor lightwhite\,lightblack,g" -i /mnt/etc/nanorc
+sed "s,\#\ set errorcolor bold\,white\,red, set errorcolor bold\,lightwhite\,red,g" -i /mnt/etc/nanorc
+sed "s,\#\ set spotlightcolor black\,lightyellow, set spotlightcolor black\,lime,g" -i /mnt/etc/nanorc
 sed "s,\#\ set selectedcolor lightwhite\,magenta, set selectedcolor lightwhite\,magenta,g" -i /mnt/etc/nanorc
 sed "s,\#\ set stripecolor yellow, set stripecolor yellow,g" -i /mnt/etc/nanorc
 sed "s,\#\ set scrollercolor cyan, set scrollercolor cyan,g" -i /mnt/etc/nanorc
@@ -749,7 +749,7 @@ echo 'Defaults passwd_tries=5' >> /mnt/etc/sudoers
 echo 'Defaults passwd_timeout=0' >> /mnt/etc/sudoers
 echo 'Defaults env_reset,pwfeedback' >> /mnt/etc/sudoers
 echo 'Defaults editor=/usr/bin/rnano' >> /mnt/etc/sudoers
-echo 'Defaults  log_host, log_year, logfile="/var/log/sudo.log"' >> /mnt/etc/sudoers
+echo 'Defaults log_host, log_year, logfile="/var/log/sudo.log"' >> /mnt/etc/sudoers
 echo "#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector" >> /mnt/etc/sudoers
 
 
