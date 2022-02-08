@@ -152,7 +152,7 @@ locale=$(echo "${locale//+/ }")
 clear
 
 
-###TIMEZONE COUNTRY###
+###TIMEZONE - COUNTRY###
 unset COUNT MENU_OPTIONS options
 COUNT=0
 for i in /usr/share/zoneinfo/* ; do
@@ -881,7 +881,7 @@ mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
 mv Arch-Linux-Installer-master/configs/bash/.screenrc /mnt/etc/skel/
 
 
-###USER AND PASSWORD###
+###USER AND PASSWORDS###
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
 #create a temp file to store the password in and delete it when the script finishes using a trap
@@ -1017,6 +1017,7 @@ mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/jo
 sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
 
+
 ###SYSCTL RULES###
 #Set journal to only keep 512MB of logs
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
@@ -1118,8 +1119,8 @@ selection=${selection:- 5 9 11 q}
 
 	case "${entry[@]}" in
 
-		1)
-		#bedrock - https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
+		1) #Bedrock Linux
+		#https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
 		bedrockVersion="0.7.26"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
@@ -1129,7 +1130,7 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		2)
+		2) #X2Go
 		echo "$green""Setting up X2Go server. Will also enable sshd.""$reset"
 		arch-chroot /mnt pacman -S x2goserver x2goclient --noconfirm
 		arch-chroot /mnt x2godbadmin --createdb
@@ -1138,13 +1139,13 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		3)
+		3) #SSHD
 		echo "$green""Enabling sshd""$reset" # AllowUsers, PermitRootLogin no
 		arch-chroot /mnt systemctl enable sshd
 		sleep 3s
 		;;
 
-		4)
+		4) #Tor
 		echo "$green""Routing all traffic over Tor""$reset"
 		arch-chroot /mnt pacman -S tor torsocks --noconfirm
 		#Copy iptables rules
@@ -1166,14 +1167,14 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		5)
+		5) #Mirrors
 		echo "$green""Sorting mirrors""$reset"
 		arch-chroot /mnt pacman -S reflector --noconfirm
 		arch-chroot /mnt reflector -f 15 --verbose --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
 		sleep 3s
 		;;
 
-		6)
+		6) #UFW
 		echo "$green""Installing and configuring the UFW firewall""$reset"
 		arch-chroot /mnt pacman -S ufw gufw --noconfirm
 		arch-chroot /mnt ufw default deny
@@ -1184,14 +1185,14 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		7)
+		7) #IWD
 		echo "$green""Configuring iwd as the default wifi backend in NetworkManager""$reset"
 		arch-chroot /mnt pacman -S iwd --noconfirm
 		mv Arch-Linux-Installer-master/configs/networkmanager/wifi_backend.conf /mnt/etc/NetworkManager/conf.d/
 		sleep 3s
 		;;
 
-		8)
+		8) #Blacklist modules
 		echo "$green""Blacklisting bluetooth and webcam""$reset"
 		#bluetooth
 		arch-chroot /mnt systemctl enable rfkill-block@bluetooth
@@ -1201,13 +1202,13 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		9)
+		9) #Desktop login - LXDM
 		echo "$green""Enabling automatic desktop login""$reset"
 		sed "s,\#\ autologin=dgod,\ autologin=$user,g" -i /mnt/etc/lxdm/lxdm.conf
 		sleep 3s
 		;;
 
-		10)
+		10) #Rkhunter
 		#https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/
 		echo "$green""Creating and enabling daily rkhunter systemd service""$reset"
 		arch-chroot /mnt pacman -S rkhunter --noconfirm
@@ -1217,7 +1218,7 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		11)
+		11) #hblock
 		#run hblock to prevent ads
 		echo "$green""Running hblock and enabling hblock.timer - hosts file will be modified""$reset"
 		arch-chroot /mnt pacman -S hblock --noconfirm #installed from Aurmageddon
@@ -1228,7 +1229,7 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		12)
+		12) #Encrypt DNS - dnscrypt/dnsmasq
 		#https://wiki.archlinux.org/index.php/Dnsmasq
 		#https://wiki.archlinux.org/index.php/NetworkManager#/etc/resolv.conf
 		#https://wiki.archlinux.org/index.php/Dnscrypt-proxy
@@ -1255,7 +1256,7 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		q)
+		q) #Finish
 		#unmount based on encryption
 		if [ "$encrypt" = y ]; then
 			umount -R /mnt
