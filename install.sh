@@ -32,21 +32,22 @@ dialogWidth=80
 #Welcome message
 echo "$yellow""Please wait while the system clock and keyring are set. This can take a moment.""$reset"
 
+
+###CONFIGURE PACMAN###
 #Stop the reflector.service as it sometimes fails. We sort mirrors later
 systemctl stop reflector.service
-
 #Set ArchISO to no siglevel. Needed for weird GPG errors
 sed "s,SigLevel    = Required DatabaseOptional,SigLevel    = Never,g" -i /etc/pacman.conf
-
 #Start the pacman key service
 systemctl start pacman-init
 
+
+###ADD REPOS AND MIRRORS###
 #Add chaotic-aur to live ISO pacman config in case user wants custom kernel.
 echo '[chaotic-aur]
 Server = https://random-mirror.chaotic.cx/$repo/$arch
 SigLevel = Never
 ' >> /etc/pacman.conf
-
 #Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?)
 echo 'Server = https://mirror.sfo12.us.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
 echo 'Server = https://mirror.arizona.edu/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
@@ -55,6 +56,8 @@ echo 'Server = https://mirrors.radwebhosting.com/archlinux/$repo/os/$arch' >> /e
 echo 'Server = https://mirror.lty.me/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
 echo 'Server = https://mirror.phx1.us.spryservers.net/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
 
+
+###SET TIME###
 #Set time before init
 #This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it.
 timedatectl set-ntp true
@@ -68,7 +71,8 @@ pacman-key --init
 pacman-key --populate
 clear
 
-#Welcome messages
+
+###WELCOME###
 dialog --title "Welcome!" \
 --backtitle "$dialogBacktitle" \
 --timeout 20 \
@@ -77,7 +81,9 @@ dialog --title "Welcome!" \
 "$dialogHeight" "$dialogWidth"
 clear
 
-#Username - loop until the username passes the regex check
+
+###USERNAME###
+#loop until the username passes the regex check
 #Username must only be lowercase with numbers. Anything else fails
 usernameCharacters="^[0-9a-z]+$"
 #Loop until the username passes the regex check
@@ -94,6 +100,8 @@ while : ; do
 done
 clear
 
+
+###USER PASSWORD###
 #Password input - run in a loop in case user enters wrong password
 #for some reason 2>&1 needs to be first or else password gets leaked in the text field for a second when you press enter
 while : ; do
@@ -116,6 +124,8 @@ while : ; do
 done
 clear
 
+
+###HOSTNAME###
 #hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
 host=$(dialog --no-cancel --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
@@ -123,7 +133,8 @@ host=$(dialog --no-cancel --title "Hostname" \
 host=${host:-linux}
 clear
 
-#Locale
+
+###LOCALE###
 COUNT=0
 #replace space with '+' to avoid splitting, remove leading #
 for i in $(cat /etc/locale.gen | tail -n+24 | sed -e 's/  $//' -e 's, ,+,g' -e 's,#,,g') ; do
@@ -140,10 +151,10 @@ locale=$("${syslocale[@]}" "${options[@]}" 2>&1 >/dev/tty)
 locale=$(echo "${locale//+/ }")
 clear
 
-#Timezone country
+
+###TIMEZONE COUNTRY###
 unset COUNT MENU_OPTIONS options
 COUNT=0
-
 for i in /usr/share/zoneinfo/* ; do
 	i=$(basename "$i") #remove the directory path
 	COUNT=$((COUNT+1))
@@ -157,7 +168,8 @@ options=(${MENU_OPTIONS})
 countryTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
 
-#Timezone city
+
+###TIMEZONE - CITY###
 unset COUNT MENU_OPTIONS options systimezone
 if [ -d /usr/share/zoneinfo/"$countryTimezone" ]; then #Check to see if the country has additional timezones
 	COUNT=0
@@ -175,7 +187,8 @@ cityTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
 fi
 clear
 
-#Disk
+
+###DISK SELECTION###
 declare -a storagePartitions
 while : ; do
 	#Choose disk to install to - $storage.
@@ -213,6 +226,8 @@ while : ; do
 done
 clear
 
+
+###DISK SPACE CHECK###
 #Make sure the drive is at least 8GB (8589934592 bytes)
 #8589934592 / 1048576 = 8192MB (8GB)
 driveSize=$(fdisk -l "$storage" | grep -m1 Disk | cut -d ":" -f 2 | cut -d "," -f 2 | sed -e 's/[^0-9]/ /g' -e 's/ //g')
@@ -221,7 +236,8 @@ if [ "$driveSize" -lt "8589934592" ]; then
 	exit 1
 fi
 
-#Filesystem
+
+###FILESYSTEM###
 unset COUNT MENU_OPTIONS options
 for i in $(echo "ext4 xfs f2fs jfs nilfs btrfs"); do
 	COUNT=$((COUNT+1))
@@ -235,7 +251,10 @@ options=(${MENU_OPTIONS})
 filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
 
+
+###ENCRYPTION###
 #Ask user if they want disk encryption
+#https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 dialog --title "Disk Encryption" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
@@ -248,6 +267,8 @@ else
 fi
 clear
 
+
+###ENCRYPTION PASSWORD###
 #If user wants disk encryption, prompt them for a password twice
 if [ "$encrypt" = y ]; then
 while : ; do
@@ -271,7 +292,8 @@ done
 fi
 clear
 
-#disk wipe
+
+###DISK WIPE###
 dialog --title "Secure Disk Erase" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
@@ -284,7 +306,8 @@ else
 fi
 clear
 
-#Kernel
+
+###CUSTOM KERNEL###
 #Ask user if they want a custom kernel
 dialog --title "Custom Kernel" \
 	--defaultno \
@@ -316,6 +339,8 @@ if [ "$kernel" = y ]; then
 	installKernelHeaders=$(echo "$installKernel" | sed 's/$/-headers/')
 fi
 
+
+###FINAL CONFIRMATION###
 #Ask the user if they want to continue with the current options
 #https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
 dialog --backtitle "$dialogBacktitle" \
@@ -335,6 +360,7 @@ else
 fi
 
 
+###DISK WIPE###
 #Before starting, wipe the drive if user said y to wipe
 if [ "$wipe" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -343,15 +369,13 @@ if [ "$wipe" = y ]; then
 fi
 
 
+###UEFI OR BIOS CHECK/SETUP###
 #Boot type override. You can manually change this variable to the platform you want to install to.
 #This is useful if youre installing on a 64bit uefi device but want a 32bit uefi boot (Ex. moving the drive to a different computer)
 #Set boot override to 64 or 32
 bootOverride=""
-
 #Start the install
 #detect efi/uefi bios
-#https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
-#https://forums.gentoo.org/viewtopic-p-5254317.html
 if [ -d /sys/firmware/efi/ ]; then #if efi is present in /sys/firmware/ then system is UEFI
 	boot="efi" #Set boot to efi
 else
@@ -361,7 +385,6 @@ fi
 if [ "$boot" = "efi" ]; then
 	bootArch="$(cat /sys/firmware/efi/fw_platform_size)"
 fi
-
 #Change boot arch if manually set above
 if [ "$bootOverride" = 64 ]; then
 	bootArch="64"
@@ -371,6 +394,8 @@ elif [ "$bootOverride" = 32 ]; then
 	boot="efi"
 fi
 
+
+###DISK PARTITIONING###
 #Begin disk partitioning
 if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#wipe drive - "${storagePartitions[1]}" is boot partition
@@ -487,6 +512,7 @@ fi
 clear
 
 
+###ADD AURMAGEDDON###
 #Install system, grub, mirrors
 #add my repo to pacman.conf
 echo '#wailord284 custom repo with many aur packages
@@ -494,21 +520,26 @@ echo '#wailord284 custom repo with many aur packages
 Server = https://wailord284.club/repo/$repo/$arch
 SigLevel = Never' >> /etc/pacman.conf
 
+
+###MIRRORLIST SORTING - REFLECTOR###
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
 --prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 15 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
-
 #Remove the following mirrors. For some reason they behave randomly 
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 
+
+###BASE PACKAGE INSTALL#
 #Begin base system install and install zlib-ng from aurmageddon
 clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
 --prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft jfsutils nilfs-utils --noconfirm" "$HEIGHT" "$WIDTH"
 
+
+###PACMAN SETUP###
 #Enable some options in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
@@ -516,6 +547,7 @@ sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 clear
 
 
+###KERNEL, FIRMWARE AND MICROCODE INSTALLATION###
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
@@ -534,6 +566,7 @@ fi
 clear
 
 
+###ENCRYPTION HOOK - MKINITCPIO###
 #Enable encryption mkinitcpio hooks if needed and set zstd compression
 #ZSTD compression: https://kernelnewbies.org/Linux_5.9#Support_for_ZSTD_compressed_kernel.2C_ramdisk_and_initramfs
 ###Arch has now made ZSTD the default (over gzip), but uncommenting zstd doesnt hurt anything. LZ4 is slightly faster but uses more disk space.
@@ -544,14 +577,21 @@ sed "s,\#\COMPRESSION=\"zstd\",COMPRESSION=\"zstd\",g" -i /mnt/etc/mkinitcpio.co
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
 
 
-#Create FSTAB and use inputs
+###FSTAB###
+#Create FSTAB
 genfstab -U /mnt >> /mnt/etc/fstab
+
+
+###TIMEZONE###
 #Set timezone
 if [ -z "$cityTimezone" ]; then
 	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$countryTimezone" /etc/localtime
 else
 	arch-chroot /mnt ln -sf /usr/share/zoneinfo/"$countryTimezone"/"$cityTimezone" /etc/localtime
 fi
+
+
+###LOCALE AND CLOCK###
 #set locale and clock
 sed "s,\#$locale,$locale,g" -i /mnt/etc/locale.gen
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -560,6 +600,9 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 #Set language
 lang=$(echo "$locale" | cut -d ' ' -f 1)
 echo "LANG=$lang" >> /mnt/etc/locale.conf
+
+
+###HOSTNAME AND HOST FILE###
 #set hostname
 echo "$host" >> /mnt/etc/hostname
 #add hostname and ip stuffs to /etc/hosts
@@ -569,6 +612,7 @@ echo "127.0.0.1	localhost
 clear
 
 
+###REPO AND KEY SETUP###
 #Install repos - multilib, aurmageddon, archlinuxcn
 echo '[multilib]
 Include = /etc/pacman.d/mirrorlist
@@ -588,48 +632,49 @@ SigLevel = PackageOptional
 Server = https://wailord284.club/repo/$repo/$arch
 Server = https://wailord284.club/repo/$repo/$arch
 SigLevel = Never' >> /mnt/etc/pacman.conf
-
 #Add the ubuntu keyserver to gpg
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
-
 #Sign the chaotic-aur key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Chaotic-aur keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key FBA220DFC880C036 && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
 clear
-
 #reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
+
+###PACKAGE INSTALLATION###
 #install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
 --prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme transmission-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme ntfs-3g memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libva-utils gpart pinta haveged irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek firefox-clearurls tldr compsize kitty vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine fsearch-git gvfs-smb mesa-utils firefox-decentraleyes xournalpp xorg-xkill arandr --noconfirm" "$HEIGHT" "$WIDTH"
 clear
-
 #additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
 --prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont materiav2-gtk-theme layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk ananicy-cpp ananicy-rules-git uresourced pacman-updatedb-hook --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
+
+###SETUP CHAOTIC-AUR REPO###
 #add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
 echo '#Chaotic-aur repo with many packages
 [chaotic-aur]
 SigLevel = PackageOptional
 Server = https://us-ca-mirror.chaotic.cx/$repo/$arch
 Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
-
 #Update repos
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Updating repos" \
 --prgbox "Updating pacman repos for chaotic-aur" "arch-chroot /mnt pacman -Syy && pacman -Syy" "$HEIGHT" "$WIDTH"
 clear
 
+
+###CUSTOM KERNEL CHECK/INSTALL###
 #If user wants a custom kernel, install it here - for some reason, we need to echo the variables otherwise it doesnt work with pacman
 if [ "$kernel" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -637,18 +682,18 @@ if [ "$kernel" = y ]; then
 	--prgbox "Installing custom kernel and headers" "arch-chroot /mnt pacman -S $(echo $installKernel $installKernelHeaders) --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 
+
+###CORE SYSTEM SERVICES###
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
-
 #If the user is using BTRFS, enable BTRFS-scrub service
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling monthly BTRFS Scrub timer" \
 	--prgbox "Enabling BTRFS Scrub" "arch-chroot /mnt systemctl enable btrfs-scrub@-.timer" "$HEIGHT" "$WIDTH"
 fi
-
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
 #This works however, if you install via usb itll detect the usb drive as nonrotational and enable fstrim
 if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
@@ -657,7 +702,6 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
 fi
 clear
-
 #Enable prelockd, ananicy-cpp preload daemon if ram is over ~2GB - https://github.com/hakavlad/prelockd https://wiki.archlinux.org/index.php/Preload
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
@@ -666,7 +710,6 @@ if [ "$ramTotal" -gt "2000000" ]; then
 	--prgbox "Enabling ananicy, prelock and preload daemon" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service haveged irqbalance uresourced" "$HEIGHT" "$WIDTH"
 fi
 clear
-
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
 #https://wiki.archlinux.org/index.php/D-Bus#Alternative_Implementations
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -675,6 +718,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 clear
 
 
+###GPU CHECK/SETUP###
 #Determine installed GPU - by default we now install the stuff required for AMD/Intel since those just autoload drivers
 #The below stuff is now set to install vulkan drivers and hardware decoding for correct hardware
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -699,6 +743,7 @@ fi
 clear
 
 
+###B43 FIRMWARE CHECK/SETUP###
 #Detect b43 firmware wifi cards and install b43-firmware
 if dmesg | grep -q 'b43-phy0 ERROR'; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -707,16 +752,19 @@ if dmesg | grep -q 'b43-phy0 ERROR'; then
 fi
 
 
+###TTY NETWORK INTERFACES###
 #Find all network interfaces, and add them to /etc/issue to display IP address
 for interface in $(netstat -i | cut -d" " -f 1 | sed -e 's/Kernel//g' -e 's/Iface//g' -e '/^$/d' | sort -u) ; do
 	echo "IP Address for $interface: \4{$interface}" >> /mnt/etc/issue
 done
 
 
+###ANANICY SETUP###
 #Change the default frequency ananicy checks system programs from 5 to 15 seconds
 sed "s,check_freq=5,check_freq=15,g" -i /mnt/etc/ananicy.d/ananicy.conf
 
 
+###NANO SETUP###
 #setup nano config
 sed "s,\#\ set linenumbers, set linenumbers,g" -i /mnt/etc/nanorc
 sed "s,\#\ set positionlog, set positionlog,g" -i /mnt/etc/nanorc
@@ -735,6 +783,7 @@ sed "s,\#\ include \"/usr/share/nano/\*.nanorc\", include \"/usr/share/nano/\*.n
 echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
 
 
+###PULSEAUDIO SETUP###
 #Change pulseaudio to have higher priority and enable realtime priority - https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level
 sed "s,\; high-priority = yes,high-priority = yes,g" -i /mnt/etc/pulse/daemon.conf
 sed "s,\; nice-level = -11,nice-level = -11,g" -i /mnt/etc/pulse/daemon.conf
@@ -742,6 +791,7 @@ sed "s,\; realtime-scheduling = yes,realtime-scheduling = yes,g" -i /mnt/etc/pul
 sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemon.conf
 
 
+###SUDO SETUP###
 #add sudo changes
 sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
 echo 'Defaults timestamp_type=global' >> /mnt/etc/sudoers
@@ -753,11 +803,7 @@ echo 'Defaults log_host, log_year, logfile="/var/log/sudo.log"' >> /mnt/etc/sudo
 echo "#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector" >> /mnt/etc/sudoers
 
 
-#set a lower systemd timeout
-sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
-sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
-
-
+###MAKEPKG SETUP###
 #setup makepkg config
 #Change default -j count to use all cores
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
@@ -776,6 +822,7 @@ sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=
 sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 
 
+###VIRTUAL MACHINE CHECK/SETUP###
 #Detect if running in virtual machine and install guest additions
 #product sets to company that produces the system
 #hypervisor sets to name of hypervisor software (extra check if dmidecode fails)
@@ -784,7 +831,6 @@ sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting virtual machine" \
 --prgbox "Checking if system is a virtual machine" "pacman -S dmidecode --noconfirm" "$HEIGHT" "$WIDTH"
-
 product=$(dmidecode -s system-product-name)
 hypervisor=$(dmesg | grep "Hypervisor detected" | cut -d ":" -f 2 | tr -d ' ')
 manufacturer=$(systemd-detect-virt)
@@ -804,11 +850,11 @@ fi
 clear
 
 
+###USER CONFIG SETUP - /etc/skel###
 #Download config files from github
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
-
 #Create /etc/skel dirs for configs to be applied to our new user
 mkdir -p /mnt/etc/skel/.config/gtk-3.0/
 mkdir -p /mnt/etc/skel/.config/kitty/
@@ -835,6 +881,7 @@ mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
 mv Arch-Linux-Installer-master/configs/bash/.screenrc /mnt/etc/skel/
 
 
+###USER AND PASSWORD###
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
 #create a temp file to store the password in and delete it when the script finishes using a trap
@@ -852,7 +899,6 @@ arch-chroot /mnt chpasswd < "$TMPFILE"
 #Set the root password
 echo "root":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
-
 #unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
 unset pass1 pass2 pass encpass encpass1 encpass2
 #Setup stronger password security
@@ -860,15 +906,21 @@ unset pass1 pass2 pass encpass encpass1 encpass2
 #Increase delay between password attempts to 4 seconds
 echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
 
+
+###FONTS###
 #set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
 sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
 
+
+###XORG###
 #Add xorg file that allows the user to press control + alt + backspace to kill xorg (returns to login manager)
 mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 
+
+###NETWORKMANAGER###
 #NetworkManager/Network startup scripts
 mkdir -p /mnt/etc/NetworkManager/conf.d/
 mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
@@ -888,32 +940,36 @@ mv Arch-Linux-Installer-master/configs/networkmanager/no-systemd-resolve.conf /m
 #Create one time ntpdupdate + hwclock to set date
 mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
 mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
-#Allow user in the network group to add/modify/delete networks without a password
-mv -f Arch-Linux-Installer-master/configs/polkit-1/networkmanager.rules /mnt/etc/polkit-1/rules.d/
 
+
+###UDEV RULES###
 #IOschedulers for storage that supposedly increase perfomance
 mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
-
 #HDParm rule to spin down drives after 20 idle minutes
 mv Arch-Linux-Installer-master/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
 
+
+###POLKIT RULES###
 #Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
-
 #Add gparted polkit rule for storage group, allow users to not enter a password
 mv -f Arch-Linux-Installer-master/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
-
 #Add gsmartcontrol rule for storage group, allow users to not enter a password to view smart data
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
+#Allow user in the network group to add/modify/delete networks without a password
+mv -f Arch-Linux-Installer-master/configs/polkit-1/networkmanager.rules /mnt/etc/polkit-1/rules.d/
 clear
 
 
+###WACOM TABLET###
 #Change to and if -d /proc/bus/input/devices/wacom
 #check and setup touchscreen - like x201T/x220T
 if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
 
+
+###LAPTOP SETUP###
 #Check and setup laptop features
 #Use hostnamectl to check the chassis type for laptop
 chassisType=$(hostnamectl chassis)
@@ -937,47 +993,50 @@ if [ "$chassisType" = laptop ]; then
 fi
 clear
 
+
+###MODULES###
 #load the tcp_bbr module for better network stuffs. This is utilized in the network sysctl config.
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
+
+###LXDM - DISPLAY MANAGER###
 #set LXDM theme and session
 sed "s,\#\ session=/usr/bin/startlxde,\ session=/usr/bin/startxfce4,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,theme=Industrial,theme=Archlinux,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,gtk_theme=Adwaita,gtk_theme=Arc-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
 
 
+###SYSTEMD###
 #Systemd services
 #https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode - packet sniffing/monitoring
 mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
-
 #Set journal to output log contents to TTY12
 mkdir /mnt/etc/systemd/journald.conf.d
 mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
+#set a lower systemd timeout
+sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
+sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
 
+###SYSCTL RULES###
 #Set journal to only keep 512MB of logs
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
-
 #Low-level console messages
 mv Arch-Linux-Installer-master/configs/sysctl/00-console-messages.conf /mnt/etc/sysctl.d/
-
 #unprivileged_userns_clone
 mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
-
 #ipv6 privacy
 mv Arch-Linux-Installer-master/configs/sysctl/00-ipv6-privacy.conf /mnt/etc/sysctl.d/
-
 #kernel hardening
 mv Arch-Linux-Installer-master/configs/sysctl/00-kernel-hardening.conf /mnt/etc/sysctl.d/
-
 #system tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
-
 #network tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
-
 #RAM and storage tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
 
+
+###GRUB INSTALL###
 #grub install - support uefi 64 and 32
 if [ "$boot" = efi ]; then
 	if [ "$bootArch" = 64 ]; then
@@ -999,6 +1058,7 @@ fi
 clear
 
 
+###GRUB MENUS###
 #add custom menus to grub
 #https://wiki.archlinux.org/index.php/GRUB#EFI_binaries
 #Move grub boot items
@@ -1008,7 +1068,8 @@ mv Arch-Linux-Installer-master/configs/grub/tools/* /mnt/boot/EFI/tools/
 mv Arch-Linux-Installer-master/configs/grub/games/*.efi /mnt/boot/EFI/games/
 mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
-##Grub config setup/generate
+
+###GRUB CONFIG###
 #Use CPU Random generation: https://security.stackexchange.com/questions/42164/rdrand-from-dev-random
 #We most likely do not need anything more than mitigations=off, but having all these options (from https://make-linux-fast-again.com/) hurts nothing
 #Generate grubcfg with root UUID if encrypt=y
@@ -1032,6 +1093,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 clear
 
 
+###POST INSTALL###
 #optional post install settings
 declare -a selection
 echo "$green""Installation complete! Here are some optional things you may want to install:""$reset"
