@@ -56,7 +56,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * Ananicy check frequency changed from 5 to 15 seconds
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
-    * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Jacascript blocker
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
     * [Decentral Eyes](https://decentraleyes.org/) - Local emulation of Content Delivery Networks
