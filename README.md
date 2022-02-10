@@ -21,6 +21,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [JFS](https://wiki.archlinux.org/title/JFS), [NILFS2](https://en.wikipedia.org/wiki/NILFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
     * BTRFS will use [compress-force=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression
     * BTRFS scrub timer will be enabled for the root directory if selected
+    * BTRFS autodefrag timer (monthly) will be enabled for the root directory if selected
     * All filesystems will use an *atime (noatime or lazytime usually) mount option
 - GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)
 - Preconfigured GPU Accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
