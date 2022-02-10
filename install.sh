@@ -44,17 +44,20 @@ systemctl start pacman-init
 
 ###ADD REPOS AND MIRRORS###
 #Add chaotic-aur to live ISO pacman config in case user wants custom kernel.
-echo '[chaotic-aur]
-Server = https://random-mirror.chaotic.cx/$repo/$arch
+cat << EOF >> /etc/pacman.conf
+[chaotic-aur]
+Server = https://random-mirror.chaotic.cx/\$repo/\$arch
 SigLevel = Never
-' >> /etc/pacman.conf
+EOF
 #Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?)
-echo 'Server = https://mirror.sfo12.us.leaseweb.net/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-echo 'Server = https://mirror.arizona.edu/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = https://arch.hu.fo/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = https://mirrors.radwebhosting.com/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = https://mirror.lty.me/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-echo 'Server = https://mirror.phx1.us.spryservers.net/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+cat << EOF > /etc/pacman.d/mirrorlist
+Server = https://mirror.sfo12.us.leaseweb.net/archlinux/\$repo/os/\$arch
+Server = https://mirror.arizona.edu/archlinux/\$repo/os/\$arch
+Server = https://arch.hu.fo/archlinux/\$repo/os/\$arch
+Server = https://mirrors.radwebhosting.com/archlinux/\$repo/os/\$arch
+Server = https://mirror.lty.me/archlinux/\$repo/os/\$arch
+Server = https://mirror.phx1.us.spryservers.net/archlinux/\$repo/os/\$arch
+EOF
 
 
 ###SET TIME###
@@ -515,10 +518,12 @@ clear
 ###ADD AURMAGEDDON###
 #Install system, grub, mirrors
 #add my repo to pacman.conf
-echo '#wailord284 custom repo with many aur packages
+cat << EOF >> /etc/pacman.conf
+#wailord284 custom repo with many aur packages
 [aurmageddon]
-Server = https://wailord284.club/repo/$repo/$arch
-SigLevel = Never' >> /etc/pacman.conf
+Server = https://wailord284.club/repo/\$repo/\$arch
+SigLevel = Never
+EOF
 
 
 ###MIRRORLIST SORTING - REFLECTOR###
@@ -606,22 +611,25 @@ echo "LANG=$lang" >> /mnt/etc/locale.conf
 #set hostname
 echo "$host" >> /mnt/etc/hostname
 #add hostname and ip stuffs to /etc/hosts
-echo "127.0.0.1	localhost
+cat << EOF > /mnt/etc/hosts
+127.0.0.1	localhost
 ::1		localhost
-127.0.1.1	"$host".localdomain	"$host"" > /mnt/etc/hosts
+127.0.1.1	$host.localdomain	$host
+EOF
 clear
 
 
 ###REPO AND KEY SETUP###
 #Install repos - multilib, aurmageddon, archlinuxcn
-echo '[multilib]
+cat << EOF >> /mnt/etc/pacman.conf
+[multilib]
 Include = /etc/pacman.d/mirrorlist
 
 #Chia archlinux repo with many aur packages
 [archlinuxcn]
-Server = http://repo.archlinuxcn.org/$arch
-Server = https://mirror.xtom.com/archlinuxcn/$arch
-Server = https://cdn.repo.archlinuxcn.org/$arch
+Server = http://repo.archlinuxcn.org/\$arch
+Server = https://mirror.xtom.com/archlinuxcn/\$arch
+Server = https://cdn.repo.archlinuxcn.org/\$arch
 #Optional mirrorlists - requires archlinuxcn-mirrorlist-git
 #Include = /etc/pacman.d/archlinuxcn-mirrorlist
 SigLevel = PackageOptional
@@ -629,9 +637,10 @@ SigLevel = PackageOptional
 #wailord284/maintainer custom repo with many aur packages
 #https://wailord284.club/repo/aurmageddon/x86_64/
 [aurmageddon]
-Server = https://wailord284.club/repo/$repo/$arch
-Server = https://wailord284.club/repo/$repo/$arch
-SigLevel = Never' >> /mnt/etc/pacman.conf
+Server = https://wailord284.club/repo/\$repo/\$arch
+Server = https://wailord284.club/repo/\$repo/\$arch
+SigLevel = Never
+EOF
 #Add the ubuntu keyserver to gpg
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
@@ -662,11 +671,14 @@ clear
 
 ###SETUP CHAOTIC-AUR REPO###
 #add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
-echo '#Chaotic-aur repo with many packages
+
+cat << EOF >> /mnt/etc/pacman.conf
+#Chaotic-aur repo with many packages
 [chaotic-aur]
 SigLevel = PackageOptional
-Server = https://us-ca-mirror.chaotic.cx/$repo/$arch
-Include = /etc/pacman.d/chaotic-mirrorlist' >> /mnt/etc/pacman.conf
+Server = https://us-ca-mirror.chaotic.cx/\$repo/\$arch
+Include = /etc/pacman.d/chaotic-mirrorlist
+EOF
 #Update repos
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Updating repos" \
@@ -794,13 +806,15 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 ###SUDO SETUP###
 #add sudo changes
 sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
-echo 'Defaults timestamp_type=global' >> /mnt/etc/sudoers
-echo 'Defaults passwd_tries=5' >> /mnt/etc/sudoers
-echo 'Defaults passwd_timeout=0' >> /mnt/etc/sudoers
-echo 'Defaults env_reset,pwfeedback' >> /mnt/etc/sudoers
-echo 'Defaults editor=/usr/bin/rnano' >> /mnt/etc/sudoers
-echo 'Defaults log_host, log_year, logfile="/var/log/sudo.log"' >> /mnt/etc/sudoers
-echo "#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector" >> /mnt/etc/sudoers
+cat << EOF >> /mnt/etc/sudoers
+Defaults timestamp_type=global
+Defaults passwd_tries=5
+Defaults passwd_timeout=0
+Defaults env_reset,pwfeedback
+Defaults editor=/usr/bin/rnano 
+Defaults log_host, log_year, logfile="/var/log/sudo.log"
+"#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector"
+EOF
 
 
 ###MAKEPKG SETUP###
@@ -927,7 +941,12 @@ mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
 #configure mac address spoofing on startup via networkmanager. Only wireless interfaces are randomized
 mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
 #IPv6 privacy and managed connection
-echo -e "[connection]\nipv6.ip6-privacy=2\n[ifupdown]\nmanaged=true" >> /mnt/etc/NetworkManager/NetworkManager.conf
+cat << EOF >> /mnt/etc/NetworkManager/NetworkManager.conf
+[connection]
+ipv6.ip6-privacy=2
+[ifupdown]
+managed=true
+EOF
 #Use dnsmasq for dns - this is currently disabled - networkmanager sets resolv.conf to 127.0.0.1 when dns=dnsmasq
 mv Arch-Linux-Installer-master/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
 echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
