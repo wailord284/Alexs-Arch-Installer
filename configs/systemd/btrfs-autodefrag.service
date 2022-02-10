@@ -1,0 +1,10 @@
+[Unit]
+Description=Monthly BTRFS defragmentation
+Documentation=man:btrfs
+
+[Service]
+ExecStart=btrfs filesystem defragment -r /
+type=simple
+
+[Install]
+WantedBy=multi-user.target

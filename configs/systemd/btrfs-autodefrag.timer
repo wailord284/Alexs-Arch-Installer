@@ -1,0 +1,15 @@
+[Unit]
+Description=Monthly BTRFS defragmentation
+Documentation=man:btrfs
+
+[Timer]
+OnCalendar=monthly
+AccuracySec=6h
+Persistent=true
+RandomizedDelaySec=900
+WakeSystem=true
+Unit=btrfs-autodefrag.service 
+
+[Install]
+WantedBy=timers.target
+
