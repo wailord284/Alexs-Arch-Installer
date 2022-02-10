@@ -1019,6 +1019,7 @@ sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/sys
 #Move the BTRFS defrag service and timer
 mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
 mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
+arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
 
 
 ###SYSCTL RULES###
