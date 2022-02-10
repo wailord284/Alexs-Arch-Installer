@@ -754,9 +754,9 @@ fi
 
 ###TTY NETWORK INTERFACES###
 #Find all network interfaces, and add them to /etc/issue to display IP address
-for interface in $(netstat -i | cut -d" " -f 1 | sed -e 's/Kernel//g' -e 's/Iface//g' -e '/^$/d' | sort -u) ; do
-	echo "IP Address for $interface: \4{$interface}" >> /mnt/etc/issue
-done
+#for interface in $(netstat -i | cut -d" " -f 1 | sed -e 's/Kernel//g' -e 's/Iface//g' -e '/^$/d' | sort -u) ; do
+#	echo "IP Address for $interface: \4{$interface}" >> /mnt/etc/issue
+#done
 
 
 ###ANANICY SETUP###
