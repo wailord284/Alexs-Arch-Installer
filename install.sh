@@ -1016,11 +1016,14 @@ mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/jo
 #set a lower systemd timeout
 sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
-#Move the BTRFS defrag service and timer
-mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
-mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
-arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
-
+#Copy BTRFS file defrag service if filesystem is BTRFS
+if [ "$filesystem" = btrfs ] ; then
+	#Move the BTRFS defrag service and timer
+	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
+	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/\
+	#Enable the service ONLY if the filesystem is BTRFS
+	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
+fi
 
 ###SYSCTL RULES###
 #Set journal to only keep 512MB of logs
