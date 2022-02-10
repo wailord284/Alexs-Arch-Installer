@@ -452,7 +452,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 		#Mount the BTRFS root partition using -o compress=zstd
 		if [ "$filesystem" = btrfs ] ; then
-			mount -o autodefrag,compress-force=zstd,noatime /dev/mapper/cryptroot /mnt
+			mount -o compress-force=zstd,noatime /dev/mapper/cryptroot /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
 			mount -o compress_algorithm=zstd /dev/mapper/cryptroot /mnt
@@ -491,7 +491,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 		#Mount the BTRFS root partition using -o compress=zstd
 		if [ "$filesystem" = btrfs ] ; then
-			mount -o autodefrag,compress-force=zstd,noatime "${storagePartitions[2]}" /mnt
+			mount -o compress-force=zstd,noatime "${storagePartitions[2]}" /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
 			mount -o compress_algorithm=zstd "${storagePartitions[2]}" /mnt
@@ -1016,7 +1016,9 @@ mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/jo
 #set a lower systemd timeout
 sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
-
+#Move the BTRFS defrag service and timer
+mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/journald.conf.d/
+mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/journald.conf.d/
 
 ###SYSCTL RULES###
 #Set journal to only keep 512MB of logs
