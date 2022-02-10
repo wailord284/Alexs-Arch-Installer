@@ -4,7 +4,7 @@ Documentation=man:btrfs
 
 [Service]
 ExecStart=btrfs filesystem defragment -r /
-type=simple
+Type=simple
 
 [Install]
 WantedBy=multi-user.target
