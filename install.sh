@@ -794,8 +794,7 @@ sed "s,\#\ set keycolor cyan, set keycolor cyan,g" -i /mnt/etc/nanorc
 sed "s,\#\ set functioncolor green, set functioncolor green,g" -i /mnt/etc/nanorc
 sed "s,\#\ include \"/usr/share/nano/\*.nanorc\", include \"/usr/share/nano/\*.nanorc\",g" -i /mnt/etc/nanorc
 echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
-# set statuscolor bold,white,green
-set statuscolor bold,white
+
 
 ###PULSEAUDIO SETUP###
 #Change pulseaudio to have higher priority and enable realtime priority - https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level
