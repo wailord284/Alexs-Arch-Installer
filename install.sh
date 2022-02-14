@@ -786,14 +786,16 @@ sed "s,\#\ set promptcolor lightwhite\,grey, set promptcolor lightwhite\,lightbl
 sed "s,\#\ set errorcolor bold\,white\,red, set errorcolor bold\,lightwhite\,red,g" -i /mnt/etc/nanorc
 sed "s,\#\ set spotlightcolor black\,lightyellow, set spotlightcolor black\,lime,g" -i /mnt/etc/nanorc
 sed "s,\#\ set selectedcolor lightwhite\,magenta, set selectedcolor lightwhite\,magenta,g" -i /mnt/etc/nanorc
-sed "s,\#\ set stripecolor yellow, set stripecolor yellow,g" -i /mnt/etc/nanorc
+sed "s,\#\ set stripecolor \,yellow, set stripecolor yellow,g" -i /mnt/etc/nanorc
+sed "s,\#\ set statuscolor bold\,white\,green, set statuscolor bold\,white,g" -i /mnt/etc/nanorc
 sed "s,\#\ set scrollercolor cyan, set scrollercolor cyan,g" -i /mnt/etc/nanorc
 sed "s,\#\ set numbercolor cyan, set numbercolor magenta,g" -i /mnt/etc/nanorc
 sed "s,\#\ set keycolor cyan, set keycolor cyan,g" -i /mnt/etc/nanorc
 sed "s,\#\ set functioncolor green, set functioncolor green,g" -i /mnt/etc/nanorc
 sed "s,\#\ include \"/usr/share/nano/\*.nanorc\", include \"/usr/share/nano/\*.nanorc\",g" -i /mnt/etc/nanorc
 echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
-
+# set statuscolor bold,white,green
+set statuscolor bold,white
 
 ###PULSEAUDIO SETUP###
 #Change pulseaudio to have higher priority and enable realtime priority - https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level
