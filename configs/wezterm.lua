@@ -20,8 +20,8 @@ return {
 	scrollback_lines = 8192,
 	window_background_opacity = 0.95,
 	text_background_opacity = 1.0,
-	font_size = 13.0,
+	font_size = 14.0,
 	font = wezterm.font("IBM Plex Mono", {weight="Medium"}),
-	initial_cols = 80,
-	initial_rows = 24,
+	initial_cols = 90,
+	initial_rows = 26,
 }
