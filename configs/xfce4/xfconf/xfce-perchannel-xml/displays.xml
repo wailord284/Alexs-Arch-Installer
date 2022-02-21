@@ -5,9 +5,9 @@
   <property name="Default" type="empty">
     <property name="LVDS1" type="string" value="Laptop">
       <property name="Active" type="bool" value="true"/>
-      <property name="EDID" type="string" value="23bd525330363e16cdbd55c911842413ddb5301b"/>
-      <property name="Resolution" type="string" value="1600x900"/>
-      <property name="RefreshRate" type="double" value="59.995200"/>
+      <property name="EDID" type="string" value="ab653e9b5fed30a6400e90590e171bccf123519e"/>
+      <property name="Resolution" type="string" value="1920x1080"/>
+      <property name="RefreshRate" type="double" value="60.004317"/>
       <property name="Rotation" type="int" value="0"/>
       <property name="Reflection" type="string" value="0"/>
       <property name="Primary" type="bool" value="true"/>
@@ -24,9 +24,9 @@
   <property name="Fallback" type="empty">
     <property name="LVDS1" type="string" value="Laptop">
       <property name="Active" type="bool" value="true"/>
-      <property name="EDID" type="string" value="23bd525330363e16cdbd55c911842413ddb5301b"/>
-      <property name="Resolution" type="string" value="1600x900"/>
-      <property name="RefreshRate" type="double" value="59.995200"/>
+      <property name="EDID" type="string" value="ab653e9b5fed30a6400e90590e171bccf123519e"/>
+      <property name="Resolution" type="string" value="1920x1080"/>
+      <property name="RefreshRate" type="double" value="60.004317"/>
       <property name="Rotation" type="int" value="0"/>
       <property name="Reflection" type="string" value="0"/>
       <property name="Primary" type="bool" value="true"/>

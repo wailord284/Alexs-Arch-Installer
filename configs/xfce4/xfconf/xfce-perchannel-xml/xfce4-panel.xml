@@ -8,10 +8,13 @@
       <property name="position" type="string" value="p=6;x=0;y=0"/>
       <property name="length" type="uint" value="100"/>
       <property name="position-locked" type="bool" value="true"/>
-      <property name="icon-size" type="uint" value="16"/>
+      <property name="icon-size" type="uint" value="0"/>
       <property name="size" type="uint" value="28"/>
       <property name="plugin-ids" type="array">
         <value type="int" value="1"/>
+        <value type="int" value="17"/>
+        <value type="int" value="20"/>
+        <value type="int" value="19"/>
         <value type="int" value="2"/>
         <value type="int" value="3"/>
         <value type="int" value="4"/>
@@ -47,6 +50,7 @@
         <value type="int" value="22"/>
       </property>
     </property>
+    <property name="dark-mode" type="bool" value="true"/>
   </property>
   <property name="plugins" type="empty">
     <property name="plugin-1" type="string" value="whiskermenu"/>
@@ -68,6 +72,7 @@
         <value type="string" value="networkmanager applet"/>
       </property>
       <property name="known-legacy-items" type="array">
+        <value type="string" value="thunar"/>
         <value type="string" value="networkmanager applet"/>
       </property>
     </property>
@@ -86,26 +91,6 @@
       <property name="style" type="uint" value="0"/>
     </property>
     <property name="plugin-14" type="string" value="actions"/>
-    <property name="plugin-17" type="string" value="launcher">
-      <property name="items" type="array">
-        <value type="string" value="15898622021.desktop"/>
-      </property>
-    </property>
-    <property name="plugin-18" type="string" value="launcher">
-      <property name="items" type="array">
-        <value type="string" value="15898622022.desktop"/>
-      </property>
-    </property>
-    <property name="plugin-19" type="string" value="launcher">
-      <property name="items" type="array">
-        <value type="string" value="15898622023.desktop"/>
-      </property>
-    </property>
-    <property name="plugin-20" type="string" value="launcher">
-      <property name="items" type="array">
-        <value type="string" value="15898622024.desktop"/>
-      </property>
-    </property>
     <property name="plugin-21" type="string" value="separator"/>
     <property name="plugin-22" type="string" value="directorymenu">
       <property name="base-directory" type="string" value="/home/alex"/>
@@ -118,6 +103,21 @@
     </property>
     <property name="plugin-16" type="string" value="separator">
       <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-17" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="16454206721.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-19" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="16454207545.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-20" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="16454207403.desktop"/>
+      </property>
     </property>
   </property>
 </channel>

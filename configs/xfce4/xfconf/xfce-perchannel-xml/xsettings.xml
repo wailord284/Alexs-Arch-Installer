@@ -2,8 +2,8 @@
 
 <channel name="xsettings" version="1.0">
   <property name="Net" type="empty">
-    <property name="ThemeName" type="string" value="Matcha-dark-azul"/>
-    <property name="IconThemeName" type="string" value="Surfn-Arch-Blue"/>
+    <property name="ThemeName" type="string" value="Skeuos-Teal-Dark"/>
+    <property name="IconThemeName" type="string" value="zafiro-icon-theme"/>
     <property name="DoubleClickTime" type="empty"/>
     <property name="DoubleClickDistance" type="empty"/>
     <property name="DndDragThreshold" type="empty"/>
