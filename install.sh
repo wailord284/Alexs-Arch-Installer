@@ -66,7 +66,7 @@ EOF
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring ntp ncurses unzip wget dialog htop iotop --noconfirm
+pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
