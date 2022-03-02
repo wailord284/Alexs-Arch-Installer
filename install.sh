@@ -676,7 +676,6 @@ cat << EOF >> /mnt/etc/pacman.conf
 #Chaotic-aur repo with many packages
 [chaotic-aur]
 SigLevel = PackageOptional
-Server = https://us-ca-mirror.chaotic.cx/\$repo/\$arch
 Include = /etc/pacman.d/chaotic-mirrorlist
 EOF
 #Update repos
