@@ -871,7 +871,10 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Arch-Linux-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 #Create /etc/skel dirs for configs to be applied to our new user
 mkdir -p /mnt/etc/skel/.config/gtk-3.0/
+mkdir -p /mnt/etc/skel/.config/gtk-2.0/
+mkdir -p /mnt/etc/skel/.config/readline/
 mkdir -p /mnt/etc/skel/.config/kitty/
+mkdir -p /mnt/etc/skel/.config/screen
 mkdir -p /mnt/etc/skel/.config/wezterm/
 mkdir -p /mnt/etc/skel/.local/share/xfce4/
 #Move configs files to /etc/skel
@@ -882,7 +885,7 @@ mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm
 #Move picom config. We don't use picom, but maybe in the future
 mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
 #Create gtk-2.0 disable recents
-mv Arch-Linux-Installer-master/configs/.gtkrc-2.0 /mnt/etc/skel/
+mv Arch-Linux-Installer-master/configs/gtk-2.0/gtkrc /mnt/etc/skel/gtk-2.0/
 #Create gtk-3.0 disable recents
 mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
 #Create the xfce configs for a wayyy better desktop setup than the xfconfs
@@ -892,9 +895,9 @@ mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
 #Default wallpaper from manjaro forum
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
 #Bash stuffs and screenrc
-mv Arch-Linux-Installer-master/configs/bash/.inputrc /mnt/etc/skel/
+mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/readline/
+mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/screen/
 mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
-mv Arch-Linux-Installer-master/configs/bash/.screenrc /mnt/etc/skel/
 
 
 ###USER AND PASSWORDS###
