@@ -898,6 +898,7 @@ mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgro
 mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/readline/
 mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/screen/
 mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
+mv Arch-Linux-Installer-master/configs/bash/.bash_profile /mnt/etc/skel/
 
 
 ###USER AND PASSWORDS###
