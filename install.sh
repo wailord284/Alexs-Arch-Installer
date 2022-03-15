@@ -885,7 +885,7 @@ mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm
 #Move picom config. We don't use picom, but maybe in the future
 mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
 #Create gtk-2.0 disable recents
-mv Arch-Linux-Installer-master/configs/gtk-2.0/gtkrc /mnt/etc/skel/gtk-2.0/
+mv Arch-Linux-Installer-master/configs/gtk-2.0/gtkrc /mnt/etc/skel/.config/gtk-2.0/
 #Create gtk-3.0 disable recents
 mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
 #Create the xfce configs for a wayyy better desktop setup than the xfconfs
@@ -895,8 +895,8 @@ mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
 #Default wallpaper from manjaro forum
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
 #Bash stuffs and screenrc
-mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/readline/
-mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/screen/
+mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/.config/readline/
+mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/.config/screen/
 mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
 mv Arch-Linux-Installer-master/configs/bash/.bash_profile /mnt/etc/skel/
 
@@ -909,7 +909,7 @@ arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel
 TMPFILE=$(mktemp) || exit 1
 trap 'rm -f "$TMPFILE"' EXIT
 #root password and user password and setup stronger password encryption
-arch-chroot /mnt echo -e "$pass\n$pass" | passwd
+#arch-chroot /mnt echo -e "$pass\n$pass" | passwd
 #setup more secure passwd by increasing hashes
 sed '/nullok/d' -i /mnt/etc/pam.d/passwd
 echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
