@@ -908,8 +908,6 @@ arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel
 #https://www.pixelstech.net/article/1577768087-Create-temp-file-in-Bash-using-mktemp-and-trap
 TMPFILE=$(mktemp) || exit 1
 trap 'rm -f "$TMPFILE"' EXIT
-#root password and user password and setup stronger password encryption
-#arch-chroot /mnt echo -e "$pass\n$pass" | passwd
 #setup more secure passwd by increasing hashes
 sed '/nullok/d' -i /mnt/etc/pam.d/passwd
 echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
