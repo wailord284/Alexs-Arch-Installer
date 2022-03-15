@@ -10,7 +10,7 @@ bash install.sh
 ```
 The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Each option has a "default" which can be used by pressing enter without entering any text. Make sure to press space before pressing enter on options that require selecting something from a list.
 # Features! (in no particular order)
-- Works with both UEFI (64 and 32 bit) and BIOS!
+- Works with both UEFI (64 and 32 bit) and Legacy BIOS
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatically detect if running in VirtualBox, KVM or VMware and install appropriate guest additions
 - Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
@@ -77,7 +77,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Grub changes:
     * [Disabled spectre/meltdown patches](https://make-linux-fast-again.com/) (Increase performance. Edit /etc/defult/grub to remove)
     * Reboot, shutdown, [File Manager](https://github.com/a1ive/grub2-filemanager) option for both UEFI/BIOS
-    * UEFI Only [tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor
+    * UEFI Only [tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor, Memtest86, Super Grub Disk
     * UEFI Only [games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
     * Trust CPU Random Number Generation (random.trust_cpu=on) improves boot time
     * Arch Linux theme
@@ -127,7 +127,11 @@ The user will now be prompted to supply basic information such as hostname, user
 
 # Todos
  - https://wiki.archlinux.org/title/Profile-sync-daemon
- - x86 V3 support - /lib/ld-linux-x86-64.so.2 --help | grep supported
+ - xsuspender?
+ - make sure deep sleep is enabled (needed on devices like framework)
+    * cat /sys/power/mem_sleep
+ - x86 V3 support
+    * /lib/ld-linux-x86-64.so.2 --help | grep supported
  - Combine filesystem setup
  - fix TTY ip address
  - optionally allow people to upload hw-probe
