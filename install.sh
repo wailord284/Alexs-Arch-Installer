@@ -66,7 +66,7 @@ EOF
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop --noconfirm
+pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop f2fs-tools --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -463,7 +463,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		elif [ "$filesystem" = f2fs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.f2fs -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.f2fs -f -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -502,7 +502,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		elif [ "$filesystem" = f2fs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.f2fs -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.f2fs -f -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
 		else
 			#BTRFS
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
