@@ -46,6 +46,8 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
 - [Zlib-ng](https://github.com/zlib-ng/zlib-ng) with modern features and optimizations compared to zlib
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
+- Spectre and Meltdown mitigations can be disabled
+    * noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
 - Changes if RAM is over 2GB
     * [IRQBalance](https://irqbalance.github.io/irqbalance/) an attempt to better balance system latency and throughput
     * [Haveged](https://wiki.archlinux.org/title/Haveged) an attempt to remove and remedy low-entropy conditions
@@ -120,8 +122,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - NO manual partitioning (you can only select the drive)
 - NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)
 - NO Snapshots or backup system enabled even if BTRFS is selected
-- Spectre and Meltdown mitigations are disabled!
-    * noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
 - Third party repositories enabled by default (archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 
