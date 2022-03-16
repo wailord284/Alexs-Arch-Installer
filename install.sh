@@ -1133,9 +1133,9 @@ fi
 if [ "$disableMitigations" = "y" ]; then
 	#First check if grubOptionalSettings is empty. If it is not, add its contents to the overall boot options
 	if [ -z "$grubEnableDeepSleep" ]; then
-		grubCmdlineLinuxOptions=$grubSecurityMitigations $grubBootPerformance
+		grubCmdlineLinuxOptions="$grubSecurityMitigations $grubBootPerformance"
 	else
-		grubCmdlineLinuxOptions=$grubSecurityMitigations $grubBootPerformance $grubEnableDeepSleep
+		grubCmdlineLinuxOptions="$grubSecurityMitigations $grubBootPerformance $grubEnableDeepSleep"
 	fi
 fi
 
