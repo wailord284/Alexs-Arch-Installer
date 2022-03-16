@@ -343,6 +343,24 @@ if [ "$kernel" = y ]; then
 fi
 
 
+###GRUB/SECURITY OPTIONS###
+#Ask if user wants to disable security mitigations as well as trust cpu random
+#We might add more performance options so lets make it a variable just in case
+grubSecurityMitigations=$(curl -s https://make-linux-fast-again.com/)
+grubBootPerformance=random.trust_cpu=on
+dialog --title "Performance Options" \
+	--defaultno \
+	--backtitle "$dialogBacktitle" \
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations as well as trust CPU RNG?" "Combined, these two options will improve boot time as well as general performance depending on system age." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations $grubBootPerformance")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+optionDisableMitigations=$?
+if [ "$optionDisableMitigations" = 0 ]; then
+	disableMitigations="y"
+else
+	disableMitigations="n"
+fi
+clear
+
+
 ###FINAL CONFIRMATION###
 #Ask the user if they want to continue with the current options
 #https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
@@ -718,7 +736,7 @@ ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Performance Services" \
-	--prgbox "Enabling ananicy, prelock and preload daemon" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service haveged irqbalance uresourced" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling ananicy, prelock, preload, haveged, irqbalance and uresourced" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service haveged irqbalance uresourced" "$HEIGHT" "$WIDTH"
 fi
 clear
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
@@ -1101,24 +1119,50 @@ mv Arch-Linux-Installer-master/configs/grub/games/*.efi /mnt/boot/EFI/games/
 mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 
 
+###GRUB BOOT OPTIONS###
+#Check the output of cat /sys/power/mem_sleep for the systems sleep mode
+#If the system is using s2idle but also has deep sleep mode availible, switch it to deep
+#This is especially needed on the Framework laptop, although others may benefit
+#https://www.kernel.org/doc/html/v4.18/admin-guide/pm/sleep-states.html
+sleepMode=$(cat /sys/power/mem_sleep)
+if [ "$sleepMode" = "[s2idle] deep" ]; then
+	#If the system has both s2idle and deep but s2idle is currently select, then deep sleep will be used
+	#This will set mem_sleep_default=deep in grub - GRUB_CMDLINE_LINUX
+	grubEnableDeepSleep=mem_sleep_default=deep
+fi
+if [ "$disableMitigations" = "y" ]; then
+	#First check if grubOptionalSettings is empty. If it is not, add its contents to the overall boot options
+	if [ -z "$grubEnableDeepSleep" ]; then
+		grubCmdlineLinuxOptions=$grubSecurityMitigations $grubBootPerformance
+	else
+		grubCmdlineLinuxOptions=$grubSecurityMitigations $grubBootPerformance $grubEnableDeepSleep
+	fi
+fi
+
+
 ###GRUB CONFIG###
 #Use CPU Random generation: https://security.stackexchange.com/questions/42164/rdrand-from-dev-random
 #We most likely do not need anything more than mitigations=off, but having all these options (from https://make-linux-fast-again.com/) hurts nothing
 #Generate grubcfg with root UUID if encrypt=y
-mitigations=$(curl -s https://make-linux-fast-again.com/)
 if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
-	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3 random.trust_cpu=on $mitigations\",g" -i /mnt/etc/default/grub
+	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #generate grubcfg if no encryption
 if [ "$encrypt" = n ]; then
-	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3 random.trust_cpu=on $mitigations\",g" -i /mnt/etc/default/grub
+	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
-#Change timeout
-#sed "s,\GRUB_TIMEOUT=5,\GRUB_TIMEOUT=3,g" -i /mnt/etc/default/grub
+#Append additional grub boot options if selected
+if [ -z "$grubCmdlineLinuxOptions" ]; then
+	#Do nothing if unset
+	true
+else
+	#If set, add the options to grub
+	sed "s,\GRUB_CMDLINE_LINUX=\"\",\GRUB_CMDLINE_LINUX=\"$grubCmdlineLinuxOptions\",g" -i /mnt/etc/default/grub
+fi
 #Change theme
 echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
-#generate grubcfg
+#Generate grubcfg
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
 --prgbox "Generating grubcfg" "arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg" "$HEIGHT" "$WIDTH"
