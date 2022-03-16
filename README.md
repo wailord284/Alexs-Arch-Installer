@@ -128,8 +128,6 @@ The user will now be prompted to supply basic information such as hostname, user
 # Todos
  - https://wiki.archlinux.org/title/Profile-sync-daemon
  - xsuspender?
- - make sure deep sleep is enabled (needed on devices like framework)
-    * cat /sys/power/mem_sleep
  - x86 V3 support
     * /lib/ld-linux-x86-64.so.2 --help | grep supported
  - Combine filesystem setup
