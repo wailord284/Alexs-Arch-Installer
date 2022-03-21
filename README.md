@@ -46,7 +46,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
 - [Zlib-ng](https://github.com/zlib-ng/zlib-ng) with modern features and optimizations compared to zlib
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
-- Spectre and Meltdown mitigations can be disabled
+- [Spectre](https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)) and [Meltdown](https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)) mitigations can be [disabled](https://sleeplessbeastie.eu/2020/03/27/how-to-disable-mitigations-for-cpu-vulnerabilities/)
     * noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off mitigations=off
 - Changes if RAM is over 2GB
     * [IRQBalance](https://irqbalance.github.io/irqbalance/) an attempt to better balance system latency and throughput
@@ -60,7 +60,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
-    * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent randomly
+    * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent
     * [Decentral Eyes](https://decentraleyes.org/) - Local emulation of Content Delivery Networks
 - Polkit changes:
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) to use libvirt without password (users in the KVM group)
@@ -74,7 +74,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Custom aliases for yay/pacman and other system tasks
 - Laptop changes (If detected):
     * Modified [trackpad behavior](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) to be more comfortable
-    * [TLP](https://wiki.archlinux.org/title/TLP) with default settings
+    * [TLP](https://wiki.archlinux.org/title/TLP) with default settings and PCIE_ASPM_ON_BAT=powersupersave
     * [Powertop](https://wiki.archlinux.org/title/Powertop) with --auto-tune enabled
 - Grub changes:
     * [Disabled spectre/meltdown patches](https://make-linux-fast-again.com/) (Increase performance. Edit /etc/defult/grub to remove)
@@ -124,6 +124,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - NO Snapshots or backup system enabled even if BTRFS is selected
 - Third party repositories enabled by default (archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
+- Some aspects are optimized for performance/convenience over security
 
 # Todos
  - https://wiki.archlinux.org/title/Profile-sync-daemon

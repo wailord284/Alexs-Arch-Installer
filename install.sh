@@ -11,39 +11,36 @@
 #All the post install options are optional but may improve your experience. Some options are selected by default.
 #This is an ongoing project of mine and will recieve constant updates and improvements.
 
-#colors
-#white=$(tput setaf 7)
-#purple=$(tput setaf 5)
-#blue=$(tput setaf 4)
+#Colors
 yellow=$(tput setaf 3)
 green=$(tput setaf 2)
 red=$(tput setaf 1)
 reset=$(tput sgr 0)
-##Dialog prgbox
+#Dialog prgbox
 HEIGHT=42
 WIDTH=135
 #WIDTH=0 #0 auto sets
 CHOICE_HEIGHT=40
-#dialog options for user input
+#Dialog options for user input
 dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
 
 #Welcome message
-echo "$yellow""Please wait while the system clock and keyring are set. This can take a moment.""$reset"
+echo "$yellow""Please wait while the system clock and keyring are configured. This can take a moment.""$reset"
 
 
 ###CONFIGURE PACMAN###
 #Stop the reflector.service as it sometimes fails. We sort mirrors later
 systemctl stop reflector.service
-#Set ArchISO to no siglevel. Needed for weird GPG errors
+#Set ArchISO to no siglevel. Needed for weird GPG errors or outdated Arch ISO
 sed "s,SigLevel    = Required DatabaseOptional,SigLevel    = Never,g" -i /etc/pacman.conf
 #Start the pacman key service
 systemctl start pacman-init
 
 
 ###ADD REPOS AND MIRRORS###
-#Add chaotic-aur to live ISO pacman config in case user wants custom kernel.
+#Add chaotic-aur to live ISO pacman config in case user wants custom kernel
 cat << EOF >> /etc/pacman.conf
 [chaotic-aur]
 Server = https://random-mirror.chaotic.cx/\$repo/\$arch
@@ -66,7 +63,7 @@ EOF
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop f2fs-tools --noconfirm
+pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -86,7 +83,7 @@ clear
 
 
 ###USERNAME###
-#loop until the username passes the regex check
+#Loop until the username passes the regex check
 #Username must only be lowercase with numbers. Anything else fails
 usernameCharacters="^[0-9a-z]+$"
 #Loop until the username passes the regex check
@@ -96,7 +93,7 @@ while : ; do
 		--inputbox "Please enter a username. Must be lowercase only." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
 	user=${user:-arch}
 	if [[ $user =~ $usernameCharacters ]]; then
-		break #exit loop
+		break #Exit loop if regex matches
 	else
 		dialog --msgbox "Username does not contain valid characters. Please try again with lowercase or numbers only." "$dialogHeight" "$dialogWidth" && clear
 	fi
@@ -106,7 +103,7 @@ clear
 
 ###USER PASSWORD###
 #Password input - run in a loop in case user enters wrong password
-#for some reason 2>&1 needs to be first or else password gets leaked in the text field for a second when you press enter
+#For some reason 2>&1 needs to be first or else password gets displayed in the text field for a second when you press enter
 while : ; do
 	#pass1
 	pass1=$(dialog --no-cancel --title "Password" \
@@ -120,7 +117,7 @@ while : ; do
 	pass2=${pass2:-pass}
 	if [ "$pass1" = "$pass2" ]; then
 		pass="$pass1"
-		break #exit loop
+		break #Exit loop if the passwords match
 	else
 		dialog --msgbox "The provided passwords do not match. Please try again." "$dialogHeight" "$dialogWidth" && clear
 	fi
@@ -129,7 +126,7 @@ clear
 
 
 ###HOSTNAME###
-#hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
+#Hostname - for some reason 2>&1 needs to be first or else hostname doesnt work
 host=$(dialog --no-cancel --title "Hostname" \
 	--backtitle "$dialogBacktitle" \
 	--inputbox "Please enter a hostname." "$dialogHeight" "$dialogWidth" 2>&1 > /dev/tty)
@@ -139,7 +136,7 @@ clear
 
 ###LOCALE###
 COUNT=0
-#replace space with '+' to avoid splitting, remove leading #
+#Replace space with '+' to avoid splitting, then remove leading the #
 for i in $(cat /etc/locale.gen | tail -n+24 | sed -e 's/  $//' -e 's, ,+,g' -e 's,#,,g') ; do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
@@ -159,7 +156,8 @@ clear
 unset COUNT MENU_OPTIONS options
 COUNT=0
 for i in /usr/share/zoneinfo/* ; do
-	i=$(basename "$i") #remove the directory path
+	#Remove the directory path
+	i=$(basename "$i")
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -173,8 +171,9 @@ clear
 
 
 ###TIMEZONE - CITY###
+#Check to see if the country has additional timezones
 unset COUNT MENU_OPTIONS options systimezone
-if [ -d /usr/share/zoneinfo/"$countryTimezone" ]; then #Check to see if the country has additional timezones
+if [ -d /usr/share/zoneinfo/"$countryTimezone" ]; then
 	COUNT=0
 	for i in /usr/share/zoneinfo/"$countryTimezone"/* ; do
 		i=$(basename "$i")
@@ -208,9 +207,9 @@ while : ; do
 		--radiolist "Press space to select your drive. No data will be written at this point." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 	options=(${MENU_OPTIONS})
 	installDisk=$("${targetDisk[@]}" "${options[@]}" 2>&1 >/dev/tty)
-	#remove '|'
+	#Remove '|'
 	storage=$(echo "$installDisk" | sed 's/|.*//')
-	#determine storage type for partitions - nvme0n1p1, sda1, vda1 or mmcblk0p1 - $storagePartitions
+	#Determine storage type for partitions - nvme0n1p1, sda1, vda1 or mmcblk0p1 - $storagePartitions
 	if [[ "$storage" = /dev/nvme* ]]; then
 		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
 		break
@@ -287,7 +286,7 @@ while : ; do
 	encpass2=${encpass2:-pass}
 	if [ "$encpass1" = "$encpass2" ]; then
 		encpass="$encpass1"
-		break #exit loop
+		break #Exit loop if encryption passwords match
 	else
 		dialog --msgbox "The provided passwords do not match. Please try again." "$dialogHeight" "$dialogWidth" && clear
 	fi
@@ -395,9 +394,9 @@ fi
 #This is useful if youre installing on a 64bit uefi device but want a 32bit uefi boot (Ex. moving the drive to a different computer)
 #Set boot override to 64 or 32
 bootOverride=""
-#Start the install
-#detect efi/uefi bios
-if [ -d /sys/firmware/efi/ ]; then #if efi is present in /sys/firmware/ then system is UEFI
+#Start the install - detect efi/uefi bios
+#If efi is present in /sys/firmware/ then system is UEFI
+if [ -d /sys/firmware/efi/ ]; then
 	boot="efi" #Set boot to efi
 else
 	boot="bios" #Set boot to bios
@@ -419,7 +418,7 @@ fi
 ###DISK PARTITIONING###
 #Begin disk partitioning
 if [ "$boot" = bios ] || [ "$boot" = efi ]; then
-	#wipe drive - "${storagePartitions[1]}" is boot partition
+	#Wipe drive - "${storagePartitions[1]}" is boot partition
 	#We use fdisk to write a new partition table, then wipe it all with wipefs. This should unpartition the drive.
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
@@ -431,15 +430,17 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#UEFI needs GPT
 		parted -s "$storage" mklabel gpt
 	fi
-	#create fat32 boot partition
+	#Create fat32 boot partition
 	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
-	parted -s "$storage" set 1 boot on #mark bootable
-	#create ext4 root partition
+	#Mark partition 1 as bootable
+	parted -s "$storage" set 1 boot on
+	#Create ext4 root partition
 	parted -a optimal -s "$storage" mkpart primary "$filesystem" 512MiB 100%
 
 	#Format partitions for encryption
 	if [ "$encrypt" = y ]; then
-		clear #Run cryptsetup just in terminal, password will be piped in from $encpass
+		clear
+		#Run cryptsetup just in terminal, password will be piped in from $encpass
 		echo "$green""Setting up disk encryption. Please wait.""$reset"
 		echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
 		echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
@@ -526,7 +527,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
 	--prgbox "Formatting boot partition" "mkfs.vfat -n ArchBoot -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	#mount drives
+	#Mount drives
 	mkdir /mnt/boot
 	mount -o noatime "${storagePartitions[1]}" /mnt/boot
 fi
@@ -534,8 +535,7 @@ clear
 
 
 ###ADD AURMAGEDDON###
-#Install system, grub, mirrors
-#add my repo to pacman.conf
+#Add my repo to pacman.conf
 cat << EOF >> /etc/pacman.conf
 #wailord284 custom repo with many aur packages
 [aurmageddon]
@@ -544,12 +544,12 @@ SigLevel = Never
 EOF
 
 
-###MIRRORLIST SORTING - REFLECTOR###
+###MIRRORLIST SORTING###
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
 --prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 15 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
-#Remove the following mirrors. For some reason they behave randomly 
+#Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 
@@ -615,7 +615,7 @@ fi
 
 
 ###LOCALE AND CLOCK###
-#set locale and clock
+#Set clock
 sed "s,\#$locale,$locale,g" -i /mnt/etc/locale.gen
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system..." \
@@ -626,9 +626,9 @@ echo "LANG=$lang" >> /mnt/etc/locale.conf
 
 
 ###HOSTNAME AND HOST FILE###
-#set hostname
+#Set hostname
 echo "$host" >> /mnt/etc/hostname
-#add hostname and ip stuffs to /etc/hosts
+#Set hostname and ip stuffs to /etc/hosts
 cat << EOF > /mnt/etc/hosts
 127.0.0.1	localhost
 ::1		localhost
@@ -638,7 +638,7 @@ clear
 
 
 ###REPO AND KEY SETUP###
-#Install repos - multilib, aurmageddon, archlinuxcn
+#Install repos to target - multilib, aurmageddon, archlinuxcn
 cat << EOF >> /mnt/etc/pacman.conf
 [multilib]
 Include = /etc/pacman.d/mirrorlist
@@ -667,7 +667,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Chaotic-aur keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key FBA220DFC880C036 && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
 clear
-#reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
+#Reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
@@ -675,21 +675,20 @@ clear
 
 
 ###PACKAGE INSTALLATION###
-#install desktop and software
+#Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
 --prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit gnome-calculator geeqie mpv gedit gedit-plugins papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift youtube-dl ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta haveged irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek firefox-clearurls tldr compsize kitty vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools --noconfirm" "$HEIGHT" "$WIDTH"
 clear
-#additional aurmageddon packages
+#Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk ananicy-cpp ananicy-rules-git uresourced pacman-updatedb-hook ntfsprogs-ntfs3 --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk ananicy-cpp ananicy-rules-git uresourced pacman-updatedb-hook ntfsprogs-ntfs3 graphite-gtk-theme-nord-rimless-compact-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
 ###SETUP CHAOTIC-AUR REPO###
-#add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
-
+#Add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
 cat << EOF >> /mnt/etc/pacman.conf
 #Chaotic-aur repo with many packages
 [chaotic-aur]
@@ -703,7 +702,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 clear
 
 
-###CUSTOM KERNEL CHECK/INSTALL###
+###INSTALL CUSTOM KERNEL###
 #If user wants a custom kernel, install it here - for some reason, we need to echo the variables otherwise it doesnt work with pacman
 if [ "$kernel" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -731,7 +730,8 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
 fi
 clear
-#Enable prelockd, ananicy-cpp preload daemon if ram is over ~2GB - https://github.com/hakavlad/prelockd https://wiki.archlinux.org/index.php/Preload
+#Enable prelockd, ananicy-cpp preload daemon if ram is over ~2GB
+#https://github.com/hakavlad/prelockd https://wiki.archlinux.org/index.php/Preload
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -794,7 +794,7 @@ sed "s,check_freq=5,check_freq=15,g" -i /mnt/etc/ananicy.d/ananicy.conf
 
 
 ###NANO SETUP###
-#setup nano config
+#Setup nano config
 sed "s,\#\ set linenumbers, set linenumbers,g" -i /mnt/etc/nanorc
 sed "s,\#\ set positionlog, set positionlog,g" -i /mnt/etc/nanorc
 sed "s,\#\ set constantshow, set constantshow,g" -i /mnt/etc/nanorc
@@ -814,7 +814,8 @@ echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
 
 
 ###PULSEAUDIO SETUP###
-#Change pulseaudio to have higher priority and enable realtime priority - https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level
+#Change pulseaudio to have higher priority and enable realtime priority 
+#https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level
 sed "s,\; high-priority = yes,high-priority = yes,g" -i /mnt/etc/pulse/daemon.conf
 sed "s,\; nice-level = -11,nice-level = -11,g" -i /mnt/etc/pulse/daemon.conf
 sed "s,\; realtime-scheduling = yes,realtime-scheduling = yes,g" -i /mnt/etc/pulse/daemon.conf
@@ -822,7 +823,7 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 
 
 ###SUDO SETUP###
-#add sudo changes
+#Add sudo changes
 sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
 cat << EOF >> /mnt/etc/sudoers
 Defaults timestamp_type=global
@@ -836,14 +837,14 @@ EOF
 
 
 ###MAKEPKG SETUP###
-#setup makepkg config
+#Setup makepkg config
 #Change default -j count to use all cores
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
 #Build all pkgs with native optimizations
 sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
 #Enable link time optimizations
 sed "s,\!lto,lto,g" -i /mnt/etc/makepkg.conf
-##Build all rust pkgs with native optimizations
+#Build all rust pkgs with native optimizations
 sed "s,\#\RUSTFLAGS=\"-C opt-level=2\",RUSTFLAGS=\"-C opt-level=2 -C target-cpu=native\",g" -i /mnt/etc/makepkg.conf
 #Enable multithreaded compression support
 sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/makepkg.conf
@@ -855,6 +856,7 @@ sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 
 
 ###ENVIRONMENT VARIABLES###
+#These variables help enforce config files out of the home directory
 cat << EOF >> /mnt/etc/profile
 #Environment variables to move files out of home directory
 export XDG_CONFIG_HOME="\$HOME/.config"
@@ -875,9 +877,9 @@ EOF
 
 ###VIRTUAL MACHINE CHECK/SETUP###
 #Detect if running in virtual machine and install guest additions
-#product sets to company that produces the system
-#hypervisor sets to name of hypervisor software (extra check if dmidecode fails)
-#manufacturer - Systemd has built in tools to check for VM (extra extra check)
+#$product - Sets to company that produces the system
+#$hypervisor - Name of hypervisor software (extra check if dmidecode fails)
+#$manufacturer - Systemd has built in tools to check for VM (extra extra check)
 #https://www.ostechnix.com/check-linux-system-physical-virtual-machine/
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting virtual machine" \
@@ -931,7 +933,7 @@ mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/etc/skel/.config/
 mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
 #Default wallpaper from manjaro forum
 mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
-#Bash stuffs and screenrc
+#Bash stuff and screenrc
 mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/.config/readline/
 mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/.config/screen/
 mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
@@ -941,11 +943,11 @@ mv Arch-Linux-Installer-master/configs/bash/.bash_profile /mnt/etc/skel/
 ###USER AND PASSWORDS###
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
-#create a temp file to store the password in and delete it when the script finishes using a trap
+#reate a temp file to store the password in and delete it when the script finishes using a trap
 #https://www.pixelstech.net/article/1577768087-Create-temp-file-in-Bash-using-mktemp-and-trap
 TMPFILE=$(mktemp) || exit 1
 trap 'rm -f "$TMPFILE"' EXIT
-#setup more secure passwd by increasing hashes
+#Setup more secure passwd by increasing hashes
 sed '/nullok/d' -i /mnt/etc/pam.d/passwd
 echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
 #Create account passwords
@@ -954,7 +956,7 @@ arch-chroot /mnt chpasswd < "$TMPFILE"
 #Set the root password
 echo "root":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
-#unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
+#Unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
 unset pass1 pass2 pass encpass encpass1 encpass2
 #Setup stronger password security
 #https://wiki.archlinux.org/index.php/Security#User_setup
@@ -963,7 +965,8 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 
 
 ###FONTS###
-#set fonts - https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
+#Set fonts 
+#https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
@@ -979,7 +982,7 @@ mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d
 #NetworkManager/Network startup scripts
 mkdir -p /mnt/etc/NetworkManager/conf.d/
 mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
-#configure mac address spoofing on startup via networkmanager. Only wireless interfaces are randomized
+#Configure mac address spoofing on startup via networkmanager. Only wireless interfaces are randomized
 mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
 #IPv6 privacy and managed connection
 cat << EOF >> /mnt/etc/NetworkManager/NetworkManager.conf
@@ -1023,7 +1026,7 @@ clear
 
 ###WACOM TABLET###
 #Change to and if -d /proc/bus/input/devices/wacom
-#check and setup touchscreen - like x201T/x220T
+#Check and setup touchscreen - like x201T/x220T
 if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
@@ -1055,12 +1058,12 @@ clear
 
 
 ###MODULES###
-#load the tcp_bbr module for better network stuffs. This is utilized in the network sysctl config.
+#Load the tcp_bbr module for better network stuffs. This is utilized in the network sysctl config
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 
 ###LXDM - DISPLAY MANAGER###
-#set LXDM theme and session
+#Set LXDM theme and session
 sed "s,\#\ session=/usr/bin/startlxde,\ session=/usr/bin/startxfce4,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,theme=Industrial,theme=Archlinux,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,gtk_theme=Adwaita,gtk_theme=Arc-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
@@ -1073,7 +1076,7 @@ mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/sys
 #Set journal to output log contents to TTY12
 mkdir /mnt/etc/systemd/journald.conf.d
 mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
-#set a lower systemd timeout
+#Set a lower systemd timeout
 sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
 #Copy BTRFS file defrag service if filesystem is BTRFS
@@ -1091,22 +1094,22 @@ fi
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 #Low-level console messages
 mv Arch-Linux-Installer-master/configs/sysctl/00-console-messages.conf /mnt/etc/sysctl.d/
-#unprivileged_userns_clone
+#Allow unprivileged_userns_clone
 mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
-#ipv6 privacy
+#IPv6 privacy
 mv Arch-Linux-Installer-master/configs/sysctl/00-ipv6-privacy.conf /mnt/etc/sysctl.d/
-#kernel hardening
+#Kernel hardening
 mv Arch-Linux-Installer-master/configs/sysctl/00-kernel-hardening.conf /mnt/etc/sysctl.d/
-#system tweaks
+#System tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
-#network tweaks
+#Network tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 #RAM and storage tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
 
 
 ###GRUB INSTALL###
-#grub install - support uefi 64 and 32
+#Grub install - support uefi 64 and 32
 if [ "$boot" = efi ]; then
 	if [ "$bootArch" = 64 ]; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1128,7 +1131,7 @@ clear
 
 
 ###GRUB MENUS###
-#add custom menus to grub
+#Add custom menus to grub
 #https://wiki.archlinux.org/index.php/GRUB#EFI_binaries
 #Move grub boot items
 mkdir -p /mnt/boot/EFI/tools
@@ -1167,7 +1170,7 @@ if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
-#generate grubcfg if no encryption
+#Generate grubcfg if no encryption
 if [ "$encrypt" = n ]; then
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
@@ -1189,7 +1192,7 @@ clear
 
 
 ###POST INSTALL###
-#optional post install settings
+#Optional post install settings
 declare -a selection
 echo "$green""Installation complete! Here are some optional things you may want to install:""$reset"
 echo "$green""1$reset - Install Bedrock Linux"
@@ -1215,7 +1218,7 @@ selection=${selection:- 5 9 11 q}
 
 		1) #Bedrock Linux
 		#https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
-		bedrockVersion="0.7.26"
+		bedrockVersion="0.7.27"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
@@ -1351,7 +1354,7 @@ selection=${selection:- 5 9 11 q}
 		;;
 
 		q) #Finish
-		#unmount based on encryption
+		#Unmount based on encryption
 		if [ "$encrypt" = y ]; then
 			umount -R /mnt
 			umount -R /mnt/boot
