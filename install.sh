@@ -442,7 +442,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		clear
 		#Run cryptsetup just in terminal, password will be piped in from $encpass
 		echo "$green""Setting up disk encryption. Please wait.""$reset"
-		echo "$encpass" | cryptsetup --iter-time 3000 --type luks2 --cipher aes-xts-plain64 --key-size 512 --hash sha512 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
+		echo "$encpass" | cryptsetup --iter-time 5000 --type luks2 --cipher aes-xts-plain64 --key-size 256 --hash sha256 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
 		echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 		#Filesystem creation
 		if [ "$filesystem" = ext4 ] ; then 

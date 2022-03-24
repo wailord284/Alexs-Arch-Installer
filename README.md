@@ -13,7 +13,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Works with both UEFI (64 and 32 bit) and Legacy BIOS
 - Automatic detection for Intel, AMD and NVidia graphics
 - Automatically detect if running in VirtualBox, KVM or VMware and install appropriate guest additions
-- Optional disk encryption for the main root partition (SHA512, Luks2, 3 second iteration time)
+- Optional disk encryption for the main root partition (SHA256, Luks2, 5 second iteration time)
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Custom nanorc file to include syntax highlighting
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
