@@ -37,9 +37,9 @@ The user will now be prompted to supply basic information such as hostname, user
 - Support for [Touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) found in most file managers
 - LXDM display manager with [Archlinux theme](https://aur.archlinux.org/packages/archlinux-lxdm-theme/)
-- Large amount of [sysctl.d/configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
+- Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
 - Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to kill the running desktop and return to the login manager
-- Add the [Archlinuxcn](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn) and [chaotic-aur](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#chaotic-aur) repository for additional software
+- [Archlinuxcn](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn) and [chaotic-aur](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#chaotic-aur) repository for additional software
 - Automatic log rotation with [logrotate](https://wiki.archlinux.org/title/Logrotate)
 - [DBus-Broker](https://wiki.archlinux.org/index.php/D-Bus#dbus-broker) over traditional D-Bus for higher performance and reliability
 - [Realtime priority](https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level) in Pulseaudio
@@ -75,25 +75,25 @@ The user will now be prompted to supply basic information such as hostname, user
     * [TLP](https://wiki.archlinux.org/title/TLP) - Default settings and PCIE_ASPM_ON_BAT=powersupersave
     * [Powertop](https://wiki.archlinux.org/title/Powertop) - With --auto-tune enabled
 - Grub changes:
-    * Reboot, shutdown and [File Manager](https://github.com/a1ive/grub2-filemanager) - Available as additional grub menus
-    * UEFI Only [tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor, Memtest86, Super Grub Disk
-    * UEFI Only [games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
-    * Arch Linux theme
+    * [File Manager](https://github.com/a1ive/grub2-filemanager), Reboot and Shutdown - Available as additional grub menus
+    * [UEFI tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor, Memtest86, Super Grub Disk
+    * [UEFI games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
+    * Arch Linux [theme](https://github.com/fghibellini/arch-silence)
 - Makepkg changes:
     * [Makeflags](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) - Set makeflags to use all cores
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
     * Change RUSTFLAGS to build [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) binaries
     * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (No compression) when building AUR packages
     * Add [multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
-    * Enable max compression when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
+    * Enable [max compression](https://wiki.archlinux.org/title/Makepkg#Utilizing_multiple_cores_on_compression) when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
     * LTO optimizations enabled
 - Systemd changes:
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) - Systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
-    * Keep only [512MB of journald logs](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) (/var/log/journal)
+    * [Journald logs](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) - Keep only 512MB of logs
     * Systemd service timeout changed from 90 seconds to 45 seconds
 - Password changes (How the password is stored):
-    * Increase hashing rounds and change hash to [SHA512](https://wiki.archlinux.org/title/SHA_password_hashes)
+    * [Increased hashing rounds](https://wiki.archlinux.org/title/SHA_password_hashes)
     * 4 second delay between password attempts
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
