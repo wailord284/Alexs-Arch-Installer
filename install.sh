@@ -442,7 +442,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		clear
 		#Run cryptsetup just in terminal, password will be piped in from $encpass
 		echo "$green""Setting up disk encryption. Please wait.""$reset"
-		echo "$encpass" | cryptsetup --iter-time 5000 --type luks2 --cipher aes-xts-plain64 --key-size 256 --hash sha256 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
+		echo "$encpass" | cryptsetup --iter-time 5000 --use-random --type luks2 --cipher aes-xts-plain64 --key-size 512 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
 		echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 		#Filesystem creation
 		if [ "$filesystem" = ext4 ] ; then 
@@ -1079,19 +1079,19 @@ mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/jo
 #Set a lower systemd timeout
 sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
+#Set journal to only keep 512MB of logs
+mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 #Copy BTRFS file defrag service if filesystem is BTRFS
 if [ "$filesystem" = btrfs ] ; then
 	#Move the BTRFS defrag service and timer
 	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
-	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/\
-	#Enable the service ONLY if the filesystem is BTRFS
+	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
+	#Enable the service. "/dev/null 2>&1" at the end hides the output of enabling the service
 	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
 fi
 
 
 ###SYSCTL RULES###
-#Set journal to only keep 512MB of logs
-mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 #Low-level console messages
 mv Arch-Linux-Installer-master/configs/sysctl/00-console-messages.conf /mnt/etc/sysctl.d/
 #Allow unprivileged_userns_clone
@@ -1106,6 +1106,8 @@ mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysc
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 #RAM and storage tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
+#OOM Killer tweaks
+mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
 
 
 ###GRUB INSTALL###
