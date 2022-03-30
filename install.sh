@@ -1051,6 +1051,8 @@ if [ "$chassisType" = laptop ]; then
 	mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
 	#Set PCIE powersave in TLP
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
+	#Mask rfkill for TLP
+	arch-chroot /mnt systemctl mask systemd-rfkill.socket systemd-rfskill.service
 	#Increase dirty writeback time to 30 seconds
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 fi
