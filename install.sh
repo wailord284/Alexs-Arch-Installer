@@ -643,7 +643,14 @@ cat << EOF >> /mnt/etc/pacman.conf
 [multilib]
 Include = /etc/pacman.d/mirrorlist
 
-#Chia archlinux repo with many aur packages
+#wailord284/maintainer custom repo with many aur packages
+#https://wailord284.club/repo/aurmageddon/x86_64/
+[aurmageddon]
+Server = https://wailord284.club/repo/\$repo/\$arch
+Server = https://wailord284.club/repo/\$repo/\$arch
+SigLevel = Never
+
+#China archlinux repo with many aur packages
 [archlinuxcn]
 Server = http://repo.archlinuxcn.org/\$arch
 Server = https://mirror.xtom.com/archlinuxcn/\$arch
@@ -652,12 +659,6 @@ Server = https://cdn.repo.archlinuxcn.org/\$arch
 #Include = /etc/pacman.d/archlinuxcn-mirrorlist
 SigLevel = PackageOptional
 
-#wailord284/maintainer custom repo with many aur packages
-#https://wailord284.club/repo/aurmageddon/x86_64/
-[aurmageddon]
-Server = https://wailord284.club/repo/\$repo/\$arch
-Server = https://wailord284.club/repo/\$repo/\$arch
-SigLevel = Never
 EOF
 #Add the ubuntu keyserver to gpg
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
@@ -1152,7 +1153,7 @@ mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 #https://www.kernel.org/doc/html/v4.18/admin-guide/pm/sleep-states.html
 sleepMode=$(cat /sys/power/mem_sleep)
 if [ "$sleepMode" = "[s2idle] deep" ]; then
-	#If the system has both s2idle and deep but s2idle is currently select, then deep sleep will be used
+	#If the system has both s2idle and deep but s2idle is currently selected, then deep sleep will be used
 	#This will set mem_sleep_default=deep in grub - GRUB_CMDLINE_LINUX
 	grubEnableDeepSleep=mem_sleep_default=deep
 fi
