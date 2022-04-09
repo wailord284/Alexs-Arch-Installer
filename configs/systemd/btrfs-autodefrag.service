@@ -1,10 +1,15 @@
 [Unit]
 Description=Monthly BTRFS defragmentation
 Documentation=man:btrfs
+ConditionACPower=true
 
 [Service]
 ExecStart=btrfs filesystem defragment -r /
 Type=simple
+# performance options
+Nice=19
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
 
 [Install]
 WantedBy=multi-user.target
