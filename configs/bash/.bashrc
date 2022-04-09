@@ -54,11 +54,12 @@ alias cpr='rsync -ah --info=progress2'
 alias mousefix='sudo modprobe -r psmouse && sudo modprobe psmouse'
 alias ipinfo='curl ipinfo.io' #ifconfig.me
 alias cls='clear'
-alias dl='youtube-dl -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 --prefer-ffmpeg --embed-thumbnail -ci -o "%(title)s-%(id)s.%(ext)s"'
+alias dl='yt-dlp -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 --prefer-ffmpeg --embed-thumbnail -ci -o "%(title)s-%(id)s.%(ext)s"'
 alias update-mirror="sudo reflector -f 15 --verbose --latest 25 --protocol https --country US --save /etc/pacman.d/mirrorlist"
 #https://askubuntu.com/questions/627621/no-object-for-d-bus-interface-when-mounting-with-nautilus/1128845
 alias dbusfix='systemctl --user restart gvfs-udisks2-volume-monitor'
 alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+alias youtube-dl='yt-dlp'
 
 ### ARCHIVE EXTRACTION
 # usage: ex <file>
