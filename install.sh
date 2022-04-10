@@ -346,11 +346,10 @@ fi
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
 grubSecurityMitigations=$(curl -s https://make-linux-fast-again.com/)
-grubBootPerformance=random.trust_cpu=on
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations as well as trust CPU RNG?" "Combined, these two options will improve boot time as well as general performance depending on system age." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations $grubBootPerformance")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations as well as trust CPU RNG?" "Combined, these two options will improve boot time as well as general performance depending on system age." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionDisableMitigations=$?
 if [ "$optionDisableMitigations" = 0 ]; then
 	disableMitigations="y"
@@ -1160,9 +1159,9 @@ fi
 if [ "$disableMitigations" = "y" ]; then
 	#First check if grubOptionalSettings is empty. If it is not, add its contents to the overall boot options
 	if [ -z "$grubEnableDeepSleep" ]; then
-		grubCmdlineLinuxOptions="$grubSecurityMitigations $grubBootPerformance"
+		grubCmdlineLinuxOptions="$grubSecurityMitigations"
 	else
-		grubCmdlineLinuxOptions="$grubSecurityMitigations $grubBootPerformance $grubEnableDeepSleep"
+		grubCmdlineLinuxOptions="$grubSecurityMitigations $grubEnableDeepSleep"
 	fi
 fi
 
