@@ -2,6 +2,7 @@
 inode/directory=xfce4-file-manager.desktop;
 x-scheme-handler/trash=xfce4-file-manager.desktop;
 application/xml=org.gnome.gedit.desktop;
+text/x-scheme=org.xfce.mousepad.desktop;
 
 [Default Applications]
 inode/directory=xfce4-file-manager.desktop
@@ -63,8 +64,6 @@ video/mp2t=mpv.desktop
 video/mpeg=mpv.desktop
 video/x-ogm+ogg=mpv.desktop
 video/webm=mpv.desktop
-text/html=org.gnome.gedit.desktop
-text/plain=org.gnome.gedit.desktop
 image/x-tga=geeqie.desktop
 image/x-xpixmap=geeqie.desktop
 image/png=geeqie.desktop
@@ -76,3 +75,6 @@ image/gif=geeqie.desktop
 image/vnd.microsoft.icon=geeqie.desktop
 image/jpeg=geeqie.desktop
 image/bmp=geeqie.desktop
+text/x-scheme=org.xfce.mousepad.desktop
+text/html=org.xfce.mousepad.desktop
+text/plain=org.xfce.mousepad.desktop

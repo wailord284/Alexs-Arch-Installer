@@ -22,4 +22,24 @@
       </property>
     </property>
   </property>
+  <property name="ETPS2_Elantech_Touchpad" type="empty">
+    <property name="Properties" type="empty">
+      <property name="Synaptics_Edge_Scrolling" type="array">
+        <value type="int" value="0"/>
+        <value type="int" value="0"/>
+        <value type="int" value="0"/>
+      </property>
+      <property name="Synaptics_Two-Finger_Scrolling" type="array">
+        <value type="int" value="1"/>
+        <value type="int" value="1"/>
+      </property>
+      <property name="Synaptics_Circular_Scrolling" type="int" value="0"/>
+      <property name="Synaptics_Circular_Scrolling_Trigger" type="int" value="0"/>
+      <property name="libinput_Scroll_Method_Enabled" type="array">
+        <value type="int" value="1"/>
+        <value type="int" value="0"/>
+        <value type="int" value="0"/>
+      </property>
+    </property>
+  </property>
 </channel>
