@@ -349,7 +349,7 @@ grubSecurityMitigations=$(curl -s https://make-linux-fast-again.com/)
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations as well as trust CPU RNG?" "Combined, these two options will improve boot time as well as general performance depending on system age." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations?" "These options will improve boot time as well as general performance depending on system age." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionDisableMitigations=$?
 if [ "$optionDisableMitigations" = 0 ]; then
 	disableMitigations="y"
@@ -1210,7 +1210,7 @@ echo "$green""8$reset - Disable/blacklist bluetooth and webcam"
 echo "$green""9$reset - Enable automatic desktop login in lxdm $green(recommended)"
 echo "$green""10$reset - Enable daily rootkit detection scan"
 echo "$green""11$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
-echo "$green""12$reset - Encrypt and cache DNS requests - Enables DNSCrypt and DNSMasq"
+echo "$green""12$reset - Encrypt and cache DNS requests with dns-over-https"
 
 echo "$reset""Default options are:$green 5 9 11$red q""$reset"
 echo "Enter$green 1-12$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
@@ -1330,30 +1330,18 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		12) #Encrypt DNS - dnscrypt/dnsmasq
-		#https://wiki.archlinux.org/index.php/Dnsmasq
-		#https://wiki.archlinux.org/index.php/NetworkManager#/etc/resolv.conf
-		#https://wiki.archlinux.org/index.php/Dnscrypt-proxy
+		12) #Encrypt DNS - dns-over-https
 		echo "$green""Setting up DNSCrypt and DNSMasq""$reset"
-		arch-chroot /mnt pacman -S dnscrypt-proxy --noconfirm
-		#Remove stock network manager configs (Conflict with dnscrypt)
+		arch-chroot /mnt pacman -S dns-over-https --noconfirm
+		#Remove stock network manager configs and use 127.0.0.1 as the DNS server
 		rm -r /mnt/etc/NetworkManager/dnsmasq.d/*
 		rm -r /mnt/etc/NetworkManager/conf.d/dns-servers.conf
 		rm -r /mnt/etc/NetworkManager/conf.d/dns.conf
 		#Move new network manager dns configs
-		mv Arch-Linux-Installer-master/configs/dns/dns.conf /mnt/etc/NetworkManager/conf.d/
 		mv Arch-Linux-Installer-master/configs/dns/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
-		#Remove stock configs
-		rm -r /mnt/etc/resolv.conf
-		rm -r /mnt/etc/dnscrypt-proxy/dnscrypt-proxy.toml
-		rm -r /mnt/etc/dnsmasq.conf
-		#Move custom dnscrypt, dnsmasq and resolv configs files
-		mv Arch-Linux-Installer-master/configs/dns/dnscrypt-proxy.toml /mnt/etc/dnscrypt-proxy/
-		mv Arch-Linux-Installer-master/configs/dns/dnsmasq.conf /mnt/etc/dnsmasq.conf
-		mv Arch-Linux-Installer-master/configs/dns/resolv.conf /mnt/etc/resolv.conf
+		mv Arch-Linux-Installer-master/configs/dns/dns.conf /mnt/etc/NetworkManager/conf.d/
 		#Enable services
-		arch-chroot /mnt systemctl enable dnscrypt-proxy.service
-		arch-chroot /mnt systemctl enable dnsmasq.service
+		arch-chroot /mnt systemctl enable doh-client.service
 		sleep 3s
 		;;
 
