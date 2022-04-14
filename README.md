@@ -47,6 +47,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Zlib-ng](https://github.com/zlib-ng/zlib-ng) with modern features and optimizations compared to zlib
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
 - [Spectre](https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)) and [Meltdown](https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)) mitigations can be [disabled](https://sleeplessbeastie.eu/2020/03/27/how-to-disable-mitigations-for-cpu-vulnerabilities/)
+- [NTP](https://wiki.archlinux.org/title/Network_Time_Protocol_daemon#Start_ntpd_at_boot) service enabled and initial boot time sync with [ntpdate](https://wiki.archlinux.org/title/Network_Time_Protocol_daemon#Synchronize_time_once_per_boot) which also sets the [hardware clock](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/networkmanager/hwclock.conf)
 - Changes if RAM is over 2GB
     * [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
     * [Prelockd](https://github.com/hakavlad/prelockd) - Daemon to lock desktop in RAM
@@ -108,7 +109,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * [IPv6 privacy extensions](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
     * [DNS caching](https://wiki.archlinux.org/index.php/NetworkManager#DNS_caching_and_conditional_forwarding) with dnsmasq
     * [Secure DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1, 9.9.9.9)
-    * [NTP](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/networkmanager/hwclock.conf) - Automatic hardware clock updates (Updates everytime device connects to internet)
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours.
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
 

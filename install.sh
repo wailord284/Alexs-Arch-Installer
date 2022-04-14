@@ -715,7 +715,7 @@ fi
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager ntpd ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
 #If the user is using BTRFS, enable BTRFS-scrub service
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1002,7 +1002,7 @@ mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/
 mv Arch-Linux-Installer-master/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
 #Create one time ntpdupdate + hwclock to set date
 mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
-mv Arch-Linux-Installer-master/configs/networkmanager/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
+mv Arch-Linux-Installer-master/configs/systemd/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
 
 
 ###UDEV RULES###
@@ -1331,7 +1331,7 @@ selection=${selection:- 5 9 11 q}
 		;;
 
 		12) #Encrypt DNS - dns-over-https
-		echo "$green""Setting up DNSCrypt and DNSMasq""$reset"
+		echo "$green""Setting up dns-over-https""$reset"
 		arch-chroot /mnt pacman -S dns-over-https --noconfirm
 		#Remove stock network manager configs and use 127.0.0.1 as the DNS server
 		rm -r /mnt/etc/NetworkManager/dnsmasq.d/*
