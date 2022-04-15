@@ -678,7 +678,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley ntp openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfat-utils --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfat-utils --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -715,7 +715,7 @@ fi
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager ntpd ntpdate ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
 #If the user is using BTRFS, enable BTRFS-scrub service
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1000,9 +1000,6 @@ mv Arch-Linux-Installer-master/configs/networkmanager/dnssec.conf /mnt/etc/Netwo
 mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 #Set network manager to avoid systemd-resolved. Fixes issue "unit dbus-org.freedesktop.resolve1.service not found" in journal log
 mv Arch-Linux-Installer-master/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
-#Create one time ntpdupdate + hwclock to set date
-mkdir -p /mnt/etc/systemd/system/ntpdate.service.d
-mv Arch-Linux-Installer-master/configs/systemd/hwclock.conf /mnt/etc/systemd/system/ntpdate.service.d/
 
 
 ###UDEV RULES###
