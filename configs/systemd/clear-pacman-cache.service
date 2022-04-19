@@ -4,7 +4,8 @@ Documentation=man:pacman
 ConditionACPower=true
 
 [Service]
-ExecStart=/usr/bin/yes | /usr/bin/pacman -Scc
+#Using yes will output 2 y characters for yes and then fail once the command completes
+ExecStart=/bin/bash -c '/usr/bin/yes | /usr/bin/pacman -Scc'
 Type=oneshot
 
 [Install]
