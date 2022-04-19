@@ -1,0 +1,15 @@
+[Unit]
+Description=Remove unused pacman cache files monthly
+Documentation=man:pacman
+
+[Timer]
+OnCalendar=monthly
+AccuracySec=6h
+Persistent=true
+RandomizedDelaySec=900
+WakeSystem=true
+Unit=clear-pacman-cache.service
+
+[Install]
+WantedBy=timers.target
+

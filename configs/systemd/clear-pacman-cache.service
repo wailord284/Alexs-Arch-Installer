@@ -1,0 +1,11 @@
+[Unit]
+Description=Remove unused pacman cache files
+Documentation=man:pacman
+ConditionACPower=true
+
+[Service]
+ExecStart=/usr/bin/yes | /usr/bin/pacman -Scc
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

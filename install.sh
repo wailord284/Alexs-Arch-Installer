@@ -1080,12 +1080,16 @@ sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/s
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
 #Set journal to only keep 512MB of logs
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
+#Copy and enable the clear-pacman-cache service and timer
+mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.timer /mnt/etc/systemd/system/
+mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/system/
+#Enable the service. "/dev/null 2>&1" at the end hides the output of enabling the service
+arch-chroot /mnt systemctl enable clear-pacman-cache.timer > /dev/null 2>&1
 #Copy BTRFS file defrag service if filesystem is BTRFS
 if [ "$filesystem" = btrfs ] ; then
-	#Move the BTRFS defrag service and timer
+	#Move and enable the BTRFS defrag service and timer
 	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
 	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
-	#Enable the service. "/dev/null 2>&1" at the end hides the output of enabling the service
 	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
 fi
 
