@@ -547,11 +547,11 @@ EOF
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 15 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 20 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 #Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
-
+sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
 
 ###BASE PACKAGE INSTALL#
 #Begin base system install and install zlib-ng from aurmageddon
@@ -1273,6 +1273,9 @@ selection=${selection:- 5 9 11 q}
 		echo "$green""Sorting mirrors""$reset"
 		arch-chroot /mnt pacman -S reflector --noconfirm
 		arch-chroot /mnt reflector -f 15 --verbose --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
+		sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
+		sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
+		sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
 		sleep 3s
 		;;
 
