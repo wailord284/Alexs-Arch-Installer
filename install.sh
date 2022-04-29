@@ -553,6 +553,7 @@ sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
 
+
 ###BASE PACKAGE INSTALL#
 #Begin base system install and install zlib-ng from aurmageddon
 clear
@@ -832,7 +833,7 @@ Defaults passwd_timeout=0
 Defaults env_reset,pwfeedback
 Defaults editor=/usr/bin/rnano 
 Defaults log_host, log_year, logfile="/var/log/sudo.log"
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector"
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector,/usr/bin/psd-overlay-helper"
 EOF
 
 
