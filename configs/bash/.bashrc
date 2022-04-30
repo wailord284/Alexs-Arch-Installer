@@ -2,7 +2,6 @@
 # ~/.bashrc
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
-#cat /usr/share/pokeshell/$(($RANDOM % 151 + 1)).pokemon
 /usr/local/bin/pokemon-colorscripts  -r
 #Colors for ls
 . /usr/share/LS_COLORS/dircolors.sh
@@ -20,10 +19,9 @@ alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
 alias man='tldr'
-export VISUAL="nano"
+export VISUAL="mousepad"
 export BROWSER="firefox"
 export EDITOR="nano"
-export SUDO_EDITOR="nano"
 shopt -s autocd
 shopt -s checkwinsize
 shopt -s cdspell
@@ -52,14 +50,11 @@ alias syncwatch='watch -d grep -e Dirty: -e Writeback: /proc/meminfo'
 alias carp='sudo ip -s -s neigh flush all'
 alias cpr='rsync -ah --info=progress2'
 alias mousefix='sudo modprobe -r psmouse && sudo modprobe psmouse'
-alias ipinfo='curl ipinfo.io' #ifconfig.me
-alias cls='clear'
+alias dbusfix='systemctl --user restart gvfs-udisks2-volume-monitor'
+alias ipinfo='curl ipinfo.io'
 alias dl='yt-dlp -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 --prefer-ffmpeg --embed-thumbnail -ci -o "%(title)s-%(id)s.%(ext)s"'
 alias update-mirror="sudo reflector -f 15 --verbose --latest 25 --protocol https --country US --save /etc/pacman.d/mirrorlist"
-#https://askubuntu.com/questions/627621/no-object-for-d-bus-interface-when-mounting-with-nautilus/1128845
-alias dbusfix='systemctl --user restart gvfs-udisks2-volume-monitor'
 alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
-alias youtube-dl='yt-dlp'
 
 ### ARCHIVE EXTRACTION
 # usage: ex <file>
