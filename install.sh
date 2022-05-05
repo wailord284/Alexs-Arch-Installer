@@ -560,10 +560,10 @@ SigLevel = Never
 EOF
 
 
-###MIRRORLIST SORTING###
+###MIRRORLIST SORTING - INSTALLATION MEDIA###
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Sorting mirrors" \
+--title "Sorting mirrors on installation media" \
 --prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 20 --latest 25 --country $region --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 #Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
