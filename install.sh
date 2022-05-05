@@ -190,6 +190,21 @@ fi
 clear
 
 
+###REFLECTOR REGION###
+unset COUNT MENU_OPTIONS options
+for i in $(reflector --list-countries | sed '1,2d' | cut -c26-28); do
+	COUNT=$((COUNT+1))
+	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+done
+reflectorRegion=(dialog --backtitle "$dialogBacktitle" \
+	--title "Mirror Location" \
+	--scrollbar \
+	--radiolist "Press space to select your region for mirrorlist sorting. This is used to ensure the fastest download possible." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+options=(${MENU_OPTIONS})
+region=$("${reflectorRegion[@]}" "${options[@]}" 2>&1 >/dev/tty)
+clear
+
+
 ###DISK SELECTION###
 declare -a storagePartitions
 while : ; do
@@ -327,7 +342,7 @@ clear
 if [ "$kernel" = y ]; then
 	unset COUNT MENU_OPTIONS options
 	COUNT=-1
-	mapfile -t dialogChaoticKernel < <(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/' )
+	mapfile -t dialogChaoticKernel < <(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/')
 	for i in $(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d') ; do
 		COUNT=$((COUNT+1))
 		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogChaoticKernel[$COUNT]} off"
@@ -366,7 +381,7 @@ clear
 #https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
 dialog --backtitle "$dialogBacktitle" \
 --title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $disableMitigations" "Filesystem: $filesystem")" "$HEIGHT" "$WIDTH"
+--yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $disableMitigations")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
@@ -549,7 +564,7 @@ EOF
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 20 --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 20 --latest 25 --country $region --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 #Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
