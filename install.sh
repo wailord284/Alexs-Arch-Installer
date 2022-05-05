@@ -1022,7 +1022,6 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/00-gparted.rules /mnt/etc/pol
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
 #Allow user in the network group to add/modify/delete networks without a password
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/
-clear
 
 
 ###WACOM TABLET###
@@ -1205,22 +1204,19 @@ clear
 declare -a selection
 echo "$green""Installation complete! Here are some optional things you may want to install:""$reset"
 echo "$green""1$reset - Install Bedrock Linux"
-echo "$green""2$reset - Enable X2Go remote management server"
+echo "$green""2$reset - Enable X2Go remote desktop management server"
 echo "$green""3$reset - Enable sshd"
-echo "$green""4$reset - Route all traffic over Tor"
-echo "$green""5$reset - Sort mirrors with Reflector for new install $green(recommended)"
-echo "$green""6$reset - Enable and install the UFW firewall"
-echo "$green""7$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager"
-echo "$green""8$reset - Disable/blacklist bluetooth and webcam"
-echo "$green""9$reset - Enable automatic desktop login in lxdm $green(recommended)"
-echo "$green""10$reset - Enable daily rootkit detection scan"
-echo "$green""11$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
-echo "$green""12$reset - Encrypt and cache DNS requests with dns-over-https"
+echo "$green""4$reset - Sort mirrors with Reflector for new install $green(recommended)"
+echo "$green""5$reset - Enable and install the UFW firewall"
+echo "$green""6$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager"
+echo "$green""7$reset - Enable automatic desktop login in lxdm $green(recommended)"
+echo "$green""8$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
+echo "$green""9$reset - Encrypt and cache DNS requests with dns-over-https"
 
-echo "$reset""Default options are:$green 5 9 11$red q""$reset"
-echo "Enter$green 1-12$reset (seperated by spaces for multiple options including (q)uit) or$red q$reset to$red quit$reset"
+echo "$reset""Default options are:$green 4 7 8$red q""$reset"
+echo "Enter$green 1-9$reset (seperated by spaces for multiple options) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
-selection=${selection:- 5 9 11 q}
+selection=${selection:- 4 7 8 q}
 	for entry in $selection ;do
 
 	case "${entry[@]}" in
@@ -1248,28 +1244,6 @@ selection=${selection:- 5 9 11 q}
 		3) #SSHD
 		echo "$green""Enabling sshd""$reset" # AllowUsers, PermitRootLogin no
 		arch-chroot /mnt systemctl enable sshd
-		sleep 3s
-		;;
-
-		4) #Tor
-		echo "$green""Routing all traffic over Tor""$reset"
-		arch-chroot /mnt pacman -S tor torsocks --noconfirm
-		#Copy iptables rules
-		mv Arch-Linux-Installer-master/configs/tor/iptables.rules /mnt/etc/iptables/
-		ln -s /mnt/etc/iptables/iptables.rules /mnt/etc/iptables/ip6tables.rules
-		echo -e "nameserver ::1\nnameserver 127.0.0.1" > /mnt/etc/resolv.conf
-		chattr +i /mnt/etc/resolv.conf #lock resolv to prevent overwrites
-		echo -e "DNSPort 9053\nTransPort 9040\nSocksPort 9050" >> /mnt/etc/tor/torrc
-		mkdir -p /mnt/etc/systemd/system/tor.service.d/
-		mv Arch-Linux-Installer-master/configs/tor/netcap.conf /mnt/etc/systemd/system/tor.service.d/
-		arch-chroot /mnt systemctl enable tor
-		arch-chroot /mnt systemctl enable dnsmasq
-		#Delete stock dnsmasq config then copy custom one
-		rm /mnt/etc/dnsmasq.conf
-		mv Arch-Linux-Installer-master/configs/tor/dnsmasq.conf /mnt/etc/dnsmasq.conf
-		arch-chroot /mnt systemctl enable iptables.service
-		arch-chroot /mnt systemctl enable ip6tables.service
-		arch-chroot /mnt usermod -a -G tor "$user"
 		sleep 3s
 		;;
 
@@ -1301,29 +1275,9 @@ selection=${selection:- 5 9 11 q}
 		sleep 3s
 		;;
 
-		8) #Blacklist modules
-		echo "$green""Blacklisting bluetooth and webcam""$reset"
-		#bluetooth
-		arch-chroot /mnt systemctl enable rfkill-block@bluetooth
-		mv Arch-Linux-Installer-master/configs/modprobe/blacklist-bluetooth.conf /mnt/etc/modprobe.d/
-		#webcam
-		mv Arch-Linux-Installer-master/configs/modprobe/blacklist-webcam.conf /mnt/etc/modprobe.d/
-		sleep 3s
-		;;
-
 		9) #Desktop login - LXDM
 		echo "$green""Enabling automatic desktop login""$reset"
 		sed "s,\#\ autologin=dgod,\ autologin=$user,g" -i /mnt/etc/lxdm/lxdm.conf
-		sleep 3s
-		;;
-
-		10) #Rkhunter
-		#https://donatoroque.wordpress.com/2017/08/13/setting-up-rkhunter-using-systemd/
-		echo "$green""Creating and enabling daily rkhunter systemd service""$reset"
-		arch-chroot /mnt pacman -S rkhunter --noconfirm
-		mv Arch-Linux-Installer-master/configs/systemd/rkhunter.service /mnt/etc/systemd/system/
-		mv Arch-Linux-Installer-master/configs/systemd/rkhunter.timer /mnt/etc/systemd/system/
-		arch-chroot /mnt systemctl enable rkhunter.timer
 		sleep 3s
 		;;
 
