@@ -1131,6 +1131,18 @@ mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysct
 mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
 
 
+###MIRRORLIST SORTING - TARGET###
+#Sort mirrors
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Sorting mirrors on target device" \
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 20 --latest 25 --country $region --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+#Remove the following mirrors. For some reason they behave randomly
+sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
+sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
+sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
+clear
+
+
 ###GRUB INSTALL###
 #Grub install - support uefi 64 and 32
 if [ "$boot" = efi ]; then
@@ -1221,17 +1233,16 @@ echo "$green""Installation complete! Here are some optional things you may want 
 echo "$green""1$reset - Install Bedrock Linux"
 echo "$green""2$reset - Enable X2Go remote desktop management server"
 echo "$green""3$reset - Enable sshd"
-echo "$green""4$reset - Sort mirrors with Reflector for new install $green(recommended)"
-echo "$green""5$reset - Enable and install the UFW firewall"
-echo "$green""6$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager"
-echo "$green""7$reset - Enable automatic desktop login in lxdm $green(recommended)"
-echo "$green""8$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
-echo "$green""9$reset - Encrypt and cache DNS requests with dns-over-https"
+echo "$green""4$reset - Enable and install the UFW firewall"
+echo "$green""5$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager"
+echo "$green""6$reset - Enable automatic desktop login in lxdm $green(recommended)"
+echo "$green""7$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
+echo "$green""8$reset - Encrypt and cache DNS requests with dns-over-https"
 
-echo "$reset""Default options are:$green 4 7 8$red q""$reset"
-echo "Enter$green 1-9$reset (seperated by spaces for multiple options) or$red q$reset to$red quit$reset"
+echo "$reset""Default options are:$green 6 7$red q""$reset"
+echo "Enter$green 1-8$reset (seperated by spaces for multiple options) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
-selection=${selection:- 4 7 8 q}
+selection=${selection:- 6 7 q}
 	for entry in $selection ;do
 
 	case "${entry[@]}" in
@@ -1261,17 +1272,7 @@ selection=${selection:- 4 7 8 q}
 		sleep 3s
 		;;
 
-		5) #Mirrors
-		echo "$green""Sorting mirrors""$reset"
-		arch-chroot /mnt pacman -S reflector --noconfirm
-		arch-chroot /mnt reflector -f 15 --verbose --latest 25 --country US --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
-		sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
-		sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
-		sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
-		sleep 3s
-		;;
-
-		6) #UFW
+		4) #UFW
 		echo "$green""Installing and configuring the UFW firewall""$reset"
 		arch-chroot /mnt pacman -S ufw gufw --noconfirm
 		arch-chroot /mnt ufw default deny
@@ -1282,20 +1283,20 @@ selection=${selection:- 4 7 8 q}
 		sleep 3s
 		;;
 
-		7) #IWD
+		5) #IWD
 		echo "$green""Configuring iwd as the default wifi backend in NetworkManager""$reset"
 		arch-chroot /mnt pacman -S iwd --noconfirm
 		mv Arch-Linux-Installer-master/configs/networkmanager/wifi_backend.conf /mnt/etc/NetworkManager/conf.d/
 		sleep 3s
 		;;
 
-		9) #Desktop login - LXDM
+		6) #Desktop login - LXDM
 		echo "$green""Enabling automatic desktop login""$reset"
 		sed "s,\#\ autologin=dgod,\ autologin=$user,g" -i /mnt/etc/lxdm/lxdm.conf
 		sleep 3s
 		;;
 
-		11) #hblock
+		7) #hblock
 		#run hblock to prevent ads
 		echo "$green""Running hblock and enabling hblock.timer - hosts file will be modified""$reset"
 		arch-chroot /mnt pacman -S hblock --noconfirm #installed from Aurmageddon
@@ -1306,7 +1307,7 @@ selection=${selection:- 4 7 8 q}
 		sleep 3s
 		;;
 
-		12) #Encrypt DNS - dns-over-https
+		8) #Encrypt DNS - dns-over-https
 		echo "$green""Setting up dns-over-https""$reset"
 		arch-chroot /mnt pacman -S dns-over-https --noconfirm
 		#Remove stock network manager configs and use 127.0.0.1 as the DNS server
