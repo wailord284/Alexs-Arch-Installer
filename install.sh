@@ -322,8 +322,8 @@ else
 	kernel="n"
 fi
 clear
-#If user wants a custom kernel, linux-tkg (chaotic-aur) kernels.
-#Installation of the kernel will happen at the end
+#If user wants a custom kernel prompt them to choose from all linux-tkg options
+#Installation of the kernel will happen later
 if [ "$kernel" = y ]; then
 	unset COUNT MENU_OPTIONS options
 	COUNT=-1
@@ -340,16 +340,18 @@ if [ "$kernel" = y ]; then
 	installKernel=$("${targetKernel[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	installKernelHeaders=$(echo "$installKernel" | sed 's/$/-headers/')
 fi
+clear
 
 
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-grubSecurityMitigations=$(curl -s https://make-linux-fast-again.com/)
+#https://make-linux-fast-again.com/
+grubSecurityMitigations="noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations?" "These options will improve boot time as well as general performance depending on system age." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations?" "These options will improve performance at the cost of security. This is most impactful on older systems." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionDisableMitigations=$?
 if [ "$optionDisableMitigations" = 0 ]; then
 	disableMitigations="y"
@@ -384,11 +386,11 @@ fi
 if [ "$wipe" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--prgbox "Erasing drive" "shred --verbose --random-source=/dev/urandom -n1 $storage" "$HEIGHT" "$WIDTH"
-	clear
 fi
+clear
 
 
-###UEFI OR BIOS CHECK/SETUP###
+###UEFI AND BIOS CHECK/SETUP###
 #Boot type override. You can manually change this variable to the platform you want to install to.
 #This is useful if youre installing on a 64bit uefi device but want a 32bit uefi boot (Ex. moving the drive to a different computer)
 #Set boot override to 64 or 32
@@ -536,7 +538,7 @@ clear
 ###ADD AURMAGEDDON###
 #Add my repo to pacman.conf
 cat << EOF >> /etc/pacman.conf
-#wailord284 custom repo with many aur packages
+#wailord284 custom repo with many aur packages used by Alexs Arch Linux Installer
 [aurmageddon]
 Server = https://wailord284.club/repo/\$repo/\$arch
 SigLevel = Never
@@ -552,14 +554,15 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
+clear
 
 
 ###BASE PACKAGE INSTALL#
 #Begin base system install and install zlib-ng from aurmageddon
-clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
 --prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft jfsutils nilfs-utils --noconfirm" "$HEIGHT" "$WIDTH"
+clear
 
 
 ###PACMAN SETUP###
@@ -623,6 +626,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 #Set language
 lang=$(echo "$locale" | cut -d ' ' -f 1)
 echo "LANG=$lang" >> /mnt/etc/locale.conf
+clear
 
 
 ###HOSTNAME AND HOST FILE###
@@ -634,7 +638,6 @@ cat << EOF > /mnt/etc/hosts
 ::1		localhost
 127.0.1.1	$host.localdomain	$host
 EOF
-clear
 
 
 ###REPO AND KEY SETUP###
@@ -643,10 +646,9 @@ cat << EOF >> /mnt/etc/pacman.conf
 [multilib]
 Include = /etc/pacman.d/mirrorlist
 
-#wailord284/maintainer custom repo with many aur packages
+#wailord284 custom repo with many aur packages used by Alexs Arch Linux Installer
 #https://wailord284.club/repo/aurmageddon/x86_64/
 [aurmageddon]
-Server = https://wailord284.club/repo/\$repo/\$arch
 Server = https://wailord284.club/repo/\$repo/\$arch
 SigLevel = Never
 
@@ -655,8 +657,6 @@ SigLevel = Never
 Server = http://repo.archlinuxcn.org/\$arch
 Server = https://mirror.xtom.com/archlinuxcn/\$arch
 Server = https://cdn.repo.archlinuxcn.org/\$arch
-#Optional mirrorlists - requires archlinuxcn-mirrorlist-git
-#Include = /etc/pacman.d/archlinuxcn-mirrorlist
 SigLevel = PackageOptional
 
 EOF
@@ -710,6 +710,7 @@ if [ "$kernel" = y ]; then
 	--title "Custom kernel" \
 	--prgbox "Installing custom kernel and headers" "arch-chroot /mnt pacman -S $(echo $installKernel $installKernelHeaders) --noconfirm" "$HEIGHT" "$WIDTH"
 fi
+clear
 
 
 ###CORE SYSTEM SERVICES###
@@ -717,12 +718,14 @@ fi
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target earlyoom zramswap lxdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
+clear
 #If the user is using BTRFS, enable BTRFS-scrub service
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling monthly BTRFS Scrub timer" \
 	--prgbox "Enabling BTRFS Scrub" "arch-chroot /mnt systemctl enable btrfs-scrub@-.timer" "$HEIGHT" "$WIDTH"
 fi
+clear
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
 #This works however, if you install via usb itll detect the usb drive as nonrotational and enable fstrim
 if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
@@ -758,12 +761,12 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S amdvlk vulkan-radeon --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S amdvlk vulkan-radeon radeontop --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S vulkan-intel libva-intel-driver intel-media-driver --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S vulkan-intel libva-intel-driver intel-media-driver intel-gpu-tools --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 #if lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then
 #	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -790,8 +793,8 @@ fi
 
 
 ###ANANICY SETUP###
-#Change the default frequency ananicy checks system programs from 5 to 15 seconds
-sed "s,check_freq=5,check_freq=15,g" -i /mnt/etc/ananicy.d/ananicy.conf
+#Change the default frequency ananicy checks system programs from 10 to 15 seconds
+sed "s,check_freq=10,check_freq=15,g" -i /mnt/etc/ananicy.d/ananicy.conf
 
 
 ###NANO SETUP###
