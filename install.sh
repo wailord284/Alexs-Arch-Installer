@@ -794,9 +794,15 @@ fi
 
 ###AMD RYZEN ZENPOWER KERNEL DRIVER###
 #Checks to see if the current CPU arch from GCC is znver1-3. If it is, install a better temperature kernel driver that supports more values and readouts
-
-
-
+gccCPUArch=$(gcc -march=native -Q --help=target | grep -m1 '\-march=' | grep -Eo 'znver3|znver2|znver1')
+if [[ "$gccCPUArch" = znver3 ]] || [[ "$gccCPUArch" = znver2 ]] || [[ "$gccCPUArch" = znver1 ]]; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting hardware" \
+	--prgbox "Found AMD Ryzen CPU" "arch-chroot /mnt pacman -S zenpower3-dkms zenmonitor3-git --noconfirm" "$HEIGHT" "$WIDTH"
+	#Prevent k10temp from loading and replace it with zenpower
+	echo "blacklist k10temp" > /mnt/etc/modprobe.d/disable-k10temp.conf
+	echo "zenpower" > /mnt/etc/modules-load.d/zenpower.conf
+fi
 
 
 ###TTY NETWORK INTERFACES###
