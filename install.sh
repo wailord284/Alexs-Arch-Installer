@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
-#Automated Arch Linux installation script by Alex "wailord284" Gaudino.
 ###ABOUT###
+#Automated Arch Linux installation script by Alex "wailord284" Gaudino.
 #This script will autodetect a large range of hardware and should automatically configure many systems out of the box.
 #This script will install Arch with mainly vanilla settings plus some programs and features I personally use.
 #To install applications I like, I've created a custom software repository known as "Aurmageddon"
-##Aurmageddon has 1500+ packages that recieve updates every 6 hours. Some software used in this install comes from this repo.
+##Aurmageddon has 1500+ packages that recieve frequent updates. Some software used in this install comes from this repo.
 ##To view this repo, go to https://wailord284.club/repo/aurmageddon/x86_64/
-##This repo is unsigned but personally maintained by me. Package requests go to wailord284 on gmail.
-#Please be aware that some of the changes this script will make are focused on settings I enjoy.
-#All the post install options are optional but may improve your experience. Some options are selected by default.
-#This is an ongoing project of mine and will recieve constant updates and improvements.
+##This repo is unsigned but personally maintained by me.
 
 #Colors
 yellow=$(tput setaf 3)
@@ -271,7 +268,6 @@ clear
 
 ###ENCRYPTION###
 #Ask user if they want disk encryption
-#https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 dialog --title "Disk Encryption" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
@@ -361,7 +357,6 @@ clear
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-#https://make-linux-fast-again.com/
 grubSecurityMitigations="noibrs noibpb nopti nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off"
 dialog --title "Performance Options" \
 	--defaultno \
@@ -378,7 +373,6 @@ clear
 
 ###FINAL CONFIRMATION###
 #Ask the user if they want to continue with the current options
-#https://stackoverflow.com/questions/8467424/echo-newline-in-bash-prints-literal-n
 dialog --backtitle "$dialogBacktitle" \
 --title "Do you want to install with the following options?" \
 --yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $disableMitigations")" "$HEIGHT" "$WIDTH"
@@ -433,6 +427,7 @@ fi
 
 ###DISK PARTITIONING###
 #Begin disk partitioning
+#https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
 if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#Wipe drive - "${storagePartitions[1]}" is boot partition
 	#We use fdisk to write a new partition table, then wipe it all with wipefs. This should unpartition the drive.
@@ -609,8 +604,7 @@ clear
 
 ###ENCRYPTION HOOK - MKINITCPIO###
 #Enable encryption mkinitcpio hooks if needed and set zstd compression
-#ZSTD compression: https://kernelnewbies.org/Linux_5.9#Support_for_ZSTD_compressed_kernel.2C_ramdisk_and_initramfs
-###Arch has now made ZSTD the default (over gzip), but uncommenting zstd doesnt hurt anything. LZ4 is slightly faster but uses more disk space.
+#Arch has now made ZSTD the default (over gzip), but uncommenting zstd doesnt hurt anything. LZ4 is slightly faster but uses more disk space.
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
@@ -750,7 +744,6 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 fi
 clear
 #Enable prelockd, ananicy-cpp preload daemon if ram is over ~2GB
-#https://github.com/hakavlad/prelockd https://wiki.archlinux.org/index.php/Preload
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -759,7 +752,6 @@ if [ "$ramTotal" -gt "2000000" ]; then
 fi
 clear
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
-#https://wiki.archlinux.org/index.php/D-Bus#Alternative_Implementations
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling dbus-broker" "arch-chroot /mnt systemctl disable dbus.service && arch-chroot /mnt systemctl enable dbus-broker.service && arch-chroot /mnt systemctl --global enable dbus-broker.service" "$HEIGHT" "$WIDTH"
@@ -769,7 +761,6 @@ clear
 ###GPU CHECK/SETUP###
 #Determine installed GPU - by default we now install the stuff required for AMD/Intel since those just autoload drivers
 #The below stuff is now set to install vulkan drivers and hardware decoding for correct hardware
-#https://www.cyberciti.biz/faq/linux-tell-which-graphics-vga-card-installed/
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
@@ -839,7 +830,6 @@ echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
 
 ###PULSEAUDIO SETUP###
 #Change pulseaudio to have higher priority and enable realtime priority 
-#https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level
 sed "s,\; high-priority = yes,high-priority = yes,g" -i /mnt/etc/pulse/daemon.conf
 sed "s,\; nice-level = -11,nice-level = -11,g" -i /mnt/etc/pulse/daemon.conf
 sed "s,\; realtime-scheduling = yes,realtime-scheduling = yes,g" -i /mnt/etc/pulse/daemon.conf
@@ -904,7 +894,6 @@ EOF
 #$product - Sets to company that produces the system
 #$hypervisor - Name of hypervisor software (extra check if dmidecode fails)
 #$manufacturer - Systemd has built in tools to check for VM (extra extra check)
-#https://www.ostechnix.com/check-linux-system-physical-virtual-machine/
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Detecting virtual machine" \
 --prgbox "Checking if system is a virtual machine" "pacman -S dmidecode --noconfirm" "$HEIGHT" "$WIDTH"
@@ -967,8 +956,7 @@ mv Arch-Linux-Installer-master/configs/bash/.bash_profile /mnt/etc/skel/
 ###USER AND PASSWORDS###
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
-#reate a temp file to store the password in and delete it when the script finishes using a trap
-#https://www.pixelstech.net/article/1577768087-Create-temp-file-in-Bash-using-mktemp-and-trap
+#Create a temp file to store the password in and delete it when the script finishes using a trap
 TMPFILE=$(mktemp) || exit 1
 trap 'rm -f "$TMPFILE"' EXIT
 #Setup more secure passwd by increasing hashes
@@ -982,9 +970,7 @@ echo "root":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
 #Unset the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
 unset pass1 pass2 pass encpass encpass1 encpass2
-#Setup stronger password security
-#https://wiki.archlinux.org/index.php/Security#User_setup
-#Increase delay between password attempts to 4 seconds
+#Setup stronger password security by increasing delay between password attempts to 4 seconds
 echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
 
 
@@ -1092,8 +1078,7 @@ sed "s,gtk_theme=Adwaita,gtk_theme=Arc-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
 
 
 ###SYSTEMD###
-#Systemd services
-#https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode - packet sniffing/monitoring
+#Systemd service for packet sniffing. Not enabled
 mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
 #Set journal to output log contents to TTY12
 mkdir /mnt/etc/systemd/journald.conf.d
@@ -1172,7 +1157,6 @@ clear
 
 ###GRUB MENUS###
 #Add custom menus to grub
-#https://wiki.archlinux.org/index.php/GRUB#EFI_binaries
 #Move grub boot items
 mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
@@ -1185,7 +1169,6 @@ mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 #Check the output of cat /sys/power/mem_sleep for the systems sleep mode
 #If the system is using s2idle but also has deep sleep mode availible, switch it to deep
 #This is especially needed on the Framework laptop, although others may benefit
-#https://www.kernel.org/doc/html/v4.18/admin-guide/pm/sleep-states.html
 sleepMode=$(cat /sys/power/mem_sleep)
 if [ "$sleepMode" = "[s2idle] deep" ]; then
 	#If the system has both s2idle and deep but s2idle is currently selected, then deep sleep will be used
@@ -1203,8 +1186,6 @@ fi
 
 
 ###GRUB CONFIG###
-#Use CPU Random generation: https://security.stackexchange.com/questions/42164/rdrand-from-dev-random
-#We most likely do not need anything more than mitigations=off, but having all these options (from https://make-linux-fast-again.com/) hurts nothing
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
