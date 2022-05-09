@@ -1,7 +1,7 @@
 [Added Associations]
 inode/directory=xfce4-file-manager.desktop;
 x-scheme-handler/trash=xfce4-file-manager.desktop;
-application/xml=org.gnome.gedit.desktop;
+application/xml=org.xfce.mousepad.desktop;
 text/x-scheme=org.xfce.mousepad.desktop;
 
 [Default Applications]
@@ -44,7 +44,7 @@ application/x-stuffit=org.gnome.FileRoller.desktop
 application/x-rpm=org.gnome.FileRoller.desktop
 application/json=firefox.desktop
 application/pdf=firefox.desktop
-application/xml=org.gnome.gedit.desktop
+application/xml=org.xfce.mousepad.desktop
 application/x-xpinstall=firefox.desktop
 video/vnd.rn-realvideo=mpv.desktop
 video/3gpp=mpv.desktop
