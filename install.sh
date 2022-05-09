@@ -1314,8 +1314,7 @@ selection=${selection:- 6 7 q}
 			umount -R /mnt
 			umount -R /mnt/boot
 			cryptsetup close cryptroot
-		fi
-		if [ "$encrypt" = n ]; then
+		else
 			umount -R /mnt
 			umount -R /mnt/boot
 		fi
