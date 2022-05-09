@@ -55,6 +55,7 @@ alias ipinfo='curl ipinfo.io'
 alias dl='yt-dlp -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 --prefer-ffmpeg --embed-thumbnail -ci -o "%(title)s-%(id)s.%(ext)s"'
 alias update-mirror="sudo reflector -f 15 --verbose --latest 25 --protocol https --country US --save /etc/pacman.d/mirrorlist"
 alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+alias topproc='ps --sort -rss -eo pid,pcpu,pmem,rss,vsz,comm | head -15'
 
 ### ARCHIVE EXTRACTION
 # usage: ex <file>
