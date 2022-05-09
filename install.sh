@@ -688,7 +688,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfat-utils gsmartcontrol remmina libvncserver freerdp nmap --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager libnm xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme memtest86+ xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-intel xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libgsf libopenraw libgepub gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfat-utils gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -736,7 +736,7 @@ if [ "$filesystem" = btrfs ] ; then
 fi
 clear
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
-#This works however, if you install via usb itll detect the usb drive as nonrotational and enable fstrim
+#This works however if you install via usb itll detect the usb drive as nonrotational and enable fstrim
 if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling FSTrim timer" \
@@ -748,7 +748,7 @@ ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Performance Services" \
-	--prgbox "Enabling ananicy, prelock, preload, irqbalance and uresourced" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service irqbalance uresourced" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling ananicy, prelock, preload, irqbalance and uresourced" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service irqbalance uresourced && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
@@ -846,7 +846,10 @@ Defaults passwd_timeout=0
 Defaults env_reset,pwfeedback
 Defaults editor=/usr/bin/rnano 
 Defaults log_host, log_year, logfile="/var/log/sudo.log"
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector,/usr/bin/psd-overlay-helper"
+#Required for profile-sync-daemon when using overlayfs
+$user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
+#Uncomment to allow some commands to be executed without entering the sudo password
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector"
 EOF
 
 
@@ -928,11 +931,13 @@ mkdir -p /mnt/etc/skel/.config/readline/
 mkdir -p /mnt/etc/skel/.config/kitty/
 mkdir -p /mnt/etc/skel/.config/screen
 mkdir -p /mnt/etc/skel/.config/wezterm/
+mkdir -p /mnt/etc/skel/.config/psd/
 mkdir -p /mnt/etc/skel/.local/share/xfce4/
-#Move configs files to /etc/skel
+#Move profile-sync-daemon config
+mv Arch-Linux-Installer-master/configs/psd.conf /mnt/etc/skel/.config/psd/
 #Move kitty config
 mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel/.config/kitty/
-#Move wezterm config/ We dont install wezterm by default
+#Move wezterm config. We dont install wezterm by default
 mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm/
 #Move picom config. We don't use picom, but maybe in the future
 mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
@@ -940,7 +945,7 @@ mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
 mv Arch-Linux-Installer-master/configs/gtk-2.0/gtkrc /mnt/etc/skel/.config/gtk-2.0/
 #Create gtk-3.0 disable recents
 mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
-#Create the xfce configs for a wayyy better desktop setup than the xfconfs
+#Create the xfce configs
 mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/etc/skel/.config/
 #Move mimelist - sets some default apps for file types
 mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
