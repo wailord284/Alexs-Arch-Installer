@@ -63,7 +63,7 @@ EOF
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop --noconfirm
+pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop reflector lshw --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -564,7 +564,7 @@ EOF
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors on installation media" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 20 --latest 25 --country $region --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && reflector --verbose -f 20 --latest 25 --country $region --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 #Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
@@ -769,9 +769,6 @@ clear
 ###GPU CHECK/SETUP###
 #Determine installed GPU - by default we now install the stuff required for AMD/Intel since those just autoload drivers
 #The below stuff is now set to install vulkan drivers and hardware decoding for correct hardware
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Detecting hardware" \
---prgbox "Finding system graphics card" "pacman -S lshw --noconfirm" "$HEIGHT" "$WIDTH"
 #https://www.cyberciti.biz/faq/linux-tell-which-graphics-vga-card-installed/
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -783,11 +780,6 @@ if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915" > /dev/
 	--title "Detecting hardware" \
 	--prgbox "Found Intel Graphics card" "arch-chroot /mnt pacman -S vulkan-intel libva-intel-driver intel-media-driver intel-gpu-tools --noconfirm" "$HEIGHT" "$WIDTH"
 fi
-#if lshw -class display | grep "Nvidia Corporation" || dmesg | grep "nouveau" > /dev/null 2>&1 ; then
-#	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-#	--title "Detecting hardware" \
-#	--prgbox "Found NVidia Graphics card" "arch-chroot /mnt pacman -S nvidia nvidia-utils nvidia-settings libxnvctrl --noconfirm" "$HEIGHT" "$WIDTH"
-#fi
 clear
 
 
@@ -798,6 +790,13 @@ if dmesg | grep -q 'b43-phy0 ERROR'; then
 	--title "Detecting hardware" \
 	--prgbox "Found B43 Broadcom Wireless card" "arch-chroot /mnt pacman -S b43-firmware --noconfirm" "$HEIGHT" "$WIDTH"
 fi
+
+
+###AMD RYZEN ZENPOWER KERNEL DRIVER###
+#Checks to see if the current CPU arch from GCC is znver1-3. If it is, install a better temperature kernel driver that supports more values and readouts
+
+
+
 
 
 ###TTY NETWORK INTERFACES###
@@ -1135,7 +1134,7 @@ mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors on target device" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && pacman -S --needed reflector --noconfirm && reflector --verbose -f 20 --latest 25 --country $region --protocol https --age 12 --sort rate --save /mnt/etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "reflector --verbose -f 20 --latest 25 --country $region --protocol https --age 12 --sort rate --save /mnt/etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 #Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
