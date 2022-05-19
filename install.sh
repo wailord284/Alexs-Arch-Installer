@@ -1065,11 +1065,13 @@ if [ "$chassisType" = laptop ]; then
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
 	arch-chroot /mnt systemctl mask systemd-rfkill.socket systemd-rfskill.service
-	#Increase dirty writeback time to 30 seconds
+	#Increase dirty writeback time to 60 seconds
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 	#Disable wake on lan - may help with power
 	mv Arch-Linux-Installer-master/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
 	mv Arch-Linux-Installer-master/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
+	#Enable wifi powersave
+	mv Arch-Linux-Installer-master/configs/udev/81-wifi-powersave.rules /mnt/etc/udev/rules.d/
 fi
 clear
 
