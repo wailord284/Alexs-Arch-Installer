@@ -56,6 +56,7 @@ alias dl='yt-dlp -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 
 alias update-mirror="sudo reflector -f 15 --verbose --latest 25 --protocol https --country US --save /etc/pacman.d/mirrorlist"
 alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
 alias topproc='ps --sort -rss -eo pid,pcpu,pmem,rss,vsz,comm | head -15'
+alias reboot-uefi='sudo systemctl reboot --firmware-setup'
 
 ### ARCHIVE EXTRACTION
 # usage: ex <file>
