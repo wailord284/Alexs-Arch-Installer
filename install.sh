@@ -1067,6 +1067,8 @@ if [ "$chassisType" = laptop ]; then
 	arch-chroot /mnt systemctl mask systemd-rfkill.socket systemd-rfskill.service
 	#Increase dirty writeback time to 30 seconds
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
+	#Disable wake on lan - may help with power
+	mv Arch-Linux-Installer-master/configs/udev/70-disable_wol.rules /mnt/etc/udev/rules.d/
 fi
 clear
 
