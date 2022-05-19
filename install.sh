@@ -1069,6 +1069,7 @@ if [ "$chassisType" = laptop ]; then
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 	#Disable wake on lan - may help with power
 	mv Arch-Linux-Installer-master/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
+	mv Arch-Linux-Installer-master/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
 fi
 clear
 
