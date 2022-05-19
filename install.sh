@@ -1068,7 +1068,7 @@ if [ "$chassisType" = laptop ]; then
 	#Increase dirty writeback time to 30 seconds
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 	#Disable wake on lan - may help with power
-	mv Arch-Linux-Installer-master/configs/udev/70-disable_wol.rules /mnt/etc/udev/rules.d/
+	mv Arch-Linux-Installer-master/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
 fi
 clear
 
