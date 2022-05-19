@@ -950,8 +950,6 @@ mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.confi
 mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/etc/skel/.config/
 #Move mimelist - sets some default apps for file types
 mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
-#Default wallpaper from manjaro forum
-mv Arch-Linux-Installer-master/configs/ArchWallpaper.jpeg /mnt/usr/share/backgrounds/xfce/
 #Bash stuff and screenrc
 mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/.config/readline/
 mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/.config/screen/
