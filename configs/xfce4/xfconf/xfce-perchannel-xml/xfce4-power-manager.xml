@@ -10,5 +10,8 @@
     <property name="general-notification" type="bool" value="true"/>
     <property name="presentation-mode" type="bool" value="false"/>
     <property name="brightness-step-count" type="uint" value="5"/>
+    <property name="lid-action-on-battery" type="uint" value="1"/>
+    <property name="logind-handle-lid-switch" type="bool" value="false"/>
+    <property name="lid-action-on-ac" type="uint" value="1"/>
   </property>
 </channel>

@@ -1,5 +1,5 @@
 favorites=xfce4-web-browser.desktop,xfce4-mail-reader.desktop,xfce4-file-manager.desktop,xfce4-terminal-emulator.desktop
-recent=org.xfce.mousepad.desktop,galculator.desktop,xfce4-file-manager.desktop,kitty.desktop,xfce4-terminal-emulator.desktop,org.gnome.DiskUtility.desktop,xfce4-web-browser.desktop
+recent=xfce4-file-manager.desktop,org.gnome.DiskUtility.desktop,palemoon.desktop,org.xfce.mousepad.desktop,galculator.desktop,kitty.desktop,xfce4-terminal-emulator.desktop,xfce4-web-browser.desktop
 button-icon=xfce4-whiskermenu
 button-single-row=false
 show-button-title=false

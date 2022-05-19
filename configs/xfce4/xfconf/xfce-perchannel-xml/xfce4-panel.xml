@@ -72,6 +72,7 @@
         <value type="string" value="networkmanager applet"/>
       </property>
       <property name="known-legacy-items" type="array">
+        <value type="string" value="no network connection"/>
         <value type="string" value="requesting an ethernet network address for “wired connection 1”…"/>
         <value type="string" value="thunar"/>
         <value type="string" value="networkmanager applet"/>
@@ -80,6 +81,7 @@
     <property name="plugin-8" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
       <property name="show-notifications" type="bool" value="true"/>
+      <property name="mpris-players" type="string" value="firefox.instance2040;firefox.instance2310;firefox.instance2355"/>
     </property>
     <property name="plugin-9" type="string" value="power-manager-plugin"/>
     <property name="plugin-11" type="string" value="separator">
