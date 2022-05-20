@@ -1062,7 +1062,8 @@ if [ "$chassisType" = laptop ]; then
 	#Set PCIE powersave in TLP
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
-	arch-chroot /mnt systemctl mask systemd-rfkill.socket systemd-rfskill.service
+	arch-chroot /mnt systemctl mask systemd-rfkill.socket
+	arch-chroot /mnt systemctl mask systemd-rfkill.service
 	#Increase dirty writeback time to 60 seconds
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 	#Disable wake on lan - may help with power
