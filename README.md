@@ -56,9 +56,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system
     * [Uresourced](https://gitlab.freedesktop.org/benzea/uresourced) - Dynamically allocate resources to the active user
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM
-    * [Ananicy-cpp](https://gitlab.com/ananicy-cpp/ananicy-cpp) - Daemon to automatically set the NICe value of programs
-    * [Ananicy rules](https://aur.archlinux.org/packages/ananicy-rules-git/) - Extra program support for ananicy
-    * Ananicy check frequency changed from 10 to 15 seconds
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
     * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
@@ -129,6 +126,7 @@ The user will now be prompted to supply basic information such as hostname, user
 
 # Todos
  - xsuspender?
+ - Finish working on implementing dialog prompts as functions
  - x86 V3 support
     * /lib/ld-linux-x86-64.so.2 --help | grep supported
  - Combine filesystem setup

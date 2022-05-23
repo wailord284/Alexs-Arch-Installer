@@ -691,7 +691,7 @@ clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk ananicy-cpp ananicy-rules-git uresourced pacman-updatedb-hook ntfsprogs-ntfs3 firefox-clearurls graphite-gtk-theme-nord-rimless-compact-git --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git archlinux-lxdm-theme-full bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk uresourced pacman-updatedb-hook ntfsprogs-ntfs3 firefox-clearurls graphite-gtk-theme-nord-rimless-compact-git --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -741,12 +741,12 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
 fi
 clear
-#Enable prelockd, ananicy-cpp preload daemon if ram is over ~2GB
+#Enable prelockd and preload daemon if ram is over ~2GB
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Performance Services" \
-	--prgbox "Enabling ananicy, prelock, preload, irqbalance and uresourced" "arch-chroot /mnt systemctl enable ananicy-cpp.service prelockd.service preload.service irqbalance uresourced && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling prelock, preload, irqbalance and uresourced" "arch-chroot /mnt systemctl enable prelockd.service preload.service irqbalance uresourced && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
@@ -799,11 +799,6 @@ fi
 #for interface in $(netstat -i | cut -d" " -f 1 | sed -e 's/Kernel//g' -e 's/Iface//g' -e '/^$/d' | sort -u) ; do
 #	echo "IP Address for $interface: \4{$interface}" >> /mnt/etc/issue
 #done
-
-
-###ANANICY SETUP###
-#Change the default frequency ananicy checks system programs from 10 to 15 seconds
-sed "s,check_freq=10,check_freq=15,g" -i /mnt/etc/ananicy.d/ananicy.conf
 
 
 ###NANO SETUP###
