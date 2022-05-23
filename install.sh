@@ -940,8 +940,6 @@ mv Arch-Linux-Installer-master/configs/psd.conf /mnt/etc/skel/.config/psd/
 mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel/.config/kitty/
 #Move wezterm config. We dont install wezterm by default
 mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm/
-#Move picom config. We don't use picom, but maybe in the future
-mv Arch-Linux-Installer-master/configs/picom.conf /mnt/etc/skel/.config/
 #Create gtk-2.0 disable recents
 mv Arch-Linux-Installer-master/configs/gtk-2.0/gtkrc /mnt/etc/skel/.config/gtk-2.0/
 #Create gtk-3.0 disable recents
