@@ -602,11 +602,11 @@ clear
 
 ###ENCRYPTION HOOK - MKINITCPIO###
 #Enable encryption mkinitcpio hooks if needed and set zstd compression
-#Arch has now made ZSTD the default (over gzip), but uncommenting zstd doesnt hurt anything. LZ4 is slightly faster but uses more disk space.
+#Arch has now made ZSTD the default (over gzip). LZ4 is slightly faster but uses more disk space.
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
-sed "s,\#\COMPRESSION=\"zstd\",COMPRESSION=\"zstd\",g" -i /mnt/etc/mkinitcpio.conf
+sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
 
 
