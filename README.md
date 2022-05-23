@@ -32,7 +32,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Kernel Modules hook](https://github.com/saber-nyan/kernel-modules-hook) to restore functionality when the running kernel updates
 - [Pacman cleanup hook](https://aur.archlinux.org/packages/pacman-cleanup-hook/) to minimize the pacman cache size when updating
 - [FSTrim timer](https://wiki.archlinux.org/index.php/Solid_state_drive#Periodic_TRIM) if a SSD is detected
-- [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 20% of total ram)
+- [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 10% of total ram)
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SSDs and NVME drives
 - Change [mkinitcpio compression to LZ4](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION)
 - Support for [wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)

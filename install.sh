@@ -801,6 +801,11 @@ fi
 #done
 
 
+###ZRAM###
+#Changes the default amount of zram from 20% to 10% of total system RAM
+sed "s,20,10,g" -i /mnt/etc/zramswap.conf
+
+
 ###NANO SETUP###
 #Setup nano config
 sed "s,\#\ set linenumbers, set linenumbers,g" -i /mnt/etc/nanorc
