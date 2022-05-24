@@ -91,7 +91,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Systemd changes:
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) - Systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
-    * [Journald logs](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) - Keep only 512MB of logs
+    * [Journald logs](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) - Keep only 1024MB of logs
     * Systemd service timeout changed from 90 seconds to 45 seconds
 - Password changes (How the password is stored):
     * [Increased hashing rounds](https://wiki.archlinux.org/title/SHA_password_hashes)
