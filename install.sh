@@ -82,16 +82,18 @@ clear
 
 ###KEYMAP###
 #We do this right at the start in case the user needs a different layout to operate the next prompts
-for i in $(reflector --list-countries | sed '1,2d' | cut -c26-28); do
+for i in $(localectl list-keymaps --no-pager); do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
-reflectorRegion=(dialog --backtitle "$dialogBacktitle" \
-	--title "Mirror Location" \
+consoleKeymap=(dialog --backtitle "$dialogBacktitle" \
+	--title "Keymap" \
 	--scrollbar \
-	--radiolist "Press space to select your region for mirrorlist sorting. This is used to ensure the fastest download possible." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	--radiolist "Press space to select your keymap for your keyboard. This is used to ensure all menus can be operated using your keyboard and so all keys actually work as intended." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 options=(${MENU_OPTIONS})
-region=$("${reflectorRegion[@]}" "${options[@]}" 2>&1 >/dev/tty)
+keymap=$("${consoleKeymap[@]}" "${options[@]}" 2>&1 >/dev/tty)
+#Set the keymap locally before continuing
+loadkeys $keymap
 clear
 
 
@@ -390,7 +392,7 @@ clear
 #Ask the user if they want to continue with the current options
 dialog --backtitle "$dialogBacktitle" \
 --title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $disableMitigations")" "$HEIGHT" "$WIDTH"
+--yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Keymap: $keymap" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $disableMitigations")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
@@ -651,6 +653,10 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 lang=$(echo "$locale" | cut -d ' ' -f 1)
 echo "LANG=$lang" >> /mnt/etc/locale.conf
 clear
+
+
+###KEYMAP###
+echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 
 
 ###HOSTNAME AND HOST FILE###
