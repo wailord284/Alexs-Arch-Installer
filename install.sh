@@ -877,7 +877,10 @@ cat << EOF >> /mnt/etc/profile
 export XDG_CONFIG_HOME="\$HOME/.config"
 export XDG_DATA_HOME="\$HOME/.local/share"
 export XDG_CACHE_HOME="\$HOME/.cache"
+export XDG_STATE_HOME="\$HOME/.local/state"
 
+export ICEAUTHORITY="\${XDG_CACHE_HOME}/ICEauthority"
+export HISTFILE="\${XDG_STATE_HOME}/bash/history"
 export ERRFILE="\${XDG_CACHE_HOME}/X11/xsession-errors"
 export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="\${XDG_CONFIG_HOME}/java"
 export ICEAUTHORITY="\${XDG_CACHE_HOME}/ICEauthority"
