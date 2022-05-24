@@ -79,6 +79,22 @@ dialog --title "Welcome!" \
 clear
 
 
+
+###KEYMAP###
+#We do this right at the start in case the user needs a different layout to operate the next prompts
+for i in $(reflector --list-countries | sed '1,2d' | cut -c26-28); do
+	COUNT=$((COUNT+1))
+	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+done
+reflectorRegion=(dialog --backtitle "$dialogBacktitle" \
+	--title "Mirror Location" \
+	--scrollbar \
+	--radiolist "Press space to select your region for mirrorlist sorting. This is used to ensure the fastest download possible." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+options=(${MENU_OPTIONS})
+region=$("${reflectorRegion[@]}" "${options[@]}" 2>&1 >/dev/tty)
+clear
+
+
 ###USERNAME###
 #Loop until the username passes the regex check
 #Username must only be lowercase with numbers. Anything else fails
@@ -128,6 +144,7 @@ clear
 
 
 ###LOCALE###
+unset COUNT MENU_OPTIONS options
 COUNT=0
 #Replace space with '+' to avoid splitting, then remove leading the #
 for i in $(cat /etc/locale.gen | tail -n+24 | sed -e 's/  $//' -e 's, ,+,g' -e 's,#,,g') ; do
@@ -667,7 +684,7 @@ Server = https://cdn.repo.archlinuxcn.org/\$arch
 SigLevel = PackageOptional
 
 EOF
-#Add the ubuntu keyserver to gpg
+#Add the ubuntu and MIT keyserver to gpg. This works a lot better than the default ones
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 #Sign the chaotic-aur key
@@ -1150,15 +1167,14 @@ if [ "$boot" = efi ]; then
 	if [ "$bootArch" = 64 ]; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "GRUB installation" \
-		--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
+		--prgbox "Installing grub for UEFI" "arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck" "$HEIGHT" "$WIDTH"
 	else
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "GRUB installation" \
-		--prgbox "Installing grub for 32 bit UEFI" "arch-chroot /mnt grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=Arch --removable --recheck" "$HEIGHT" "$WIDTH"
+		--prgbox "Installing grub for 32 bit UEFI" "arch-chroot /mnt grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck" "$HEIGHT" "$WIDTH"
 	fi
 fi
-
-if [[ "$boot" = bios ]]; then
+if [ "$boot" = bios ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "GRUB installation" \
 	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc $storage --recheck" "$HEIGHT" "$WIDTH"
@@ -1180,6 +1196,7 @@ mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
 #Check the output of cat /sys/power/mem_sleep for the systems sleep mode
 #If the system is using s2idle but also has deep sleep mode availible, switch it to deep
 #This is especially needed on the Framework laptop, although others may benefit
+#This setting does make the laptop take longer to wake from sleep, but reduces power consumption a decent bit
 sleepMode=$(cat /sys/power/mem_sleep)
 if [ "$sleepMode" = "[s2idle] deep" ]; then
 	#If the system has both s2idle and deep but s2idle is currently selected, then deep sleep will be used
