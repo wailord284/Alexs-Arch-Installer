@@ -1,21 +1,21 @@
 # Alex's Arch Linux Installer
-A simple script to automatically install a highly tuned (under the hood) Arch Linux with the XFCE desktop, custom repositories, better performance and many post install options. Add me on Discord for any thoughts/comments/concerns/issues: wailord284#3794
+A script to install a highly tuned Arch Linux desktop with XFCE, custom repositories, better performance and many Arch Wiki configurations with easy to use dialog prompts.
 
 # How to use
-To use this script, you first need to [create a bootable USB](https://www.howtogeek.com/howto/linux/create-a-bootable-ubuntu-usb-flash-drive-the-easy-way/) with the [Arch Linux ISO.](https://archlinux.org/download/) It is recommended to use the latest availible version of the ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date. Make sure you run the script using bash, otherwise zsh will interpret the script and error.
+To use this script, you first need to [create a bootable USB](https://www.howtogeek.com/howto/linux/create-a-bootable-ubuntu-usb-flash-drive-the-easy-way/) with the [Arch Linux ISO.](https://archlinux.org/download/) It is recommended to use the latest availible version of the ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date.
 To use the script, do the following:
 ```
 curl https://wailord284.club/repo/install.sh -o install.sh
 bash install.sh
 ```
-The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, disk encryption and full disk wipe. Make sure to press space before pressing enter on options that require selecting something from a list.
-# Features! (in no particular order)
-- Works with both UEFI (64 and 32 bit) and Legacy BIOS
+The user will now be prompted to supply basic information such as hostname, username, password, timezone, disk to install to, etc... Make sure to press space before pressing enter on options that require selecting something from a list.
+# Features!
+- Works with both UEFI and Legacy BIOS
 - Automatic detection for Intel and AMD graphics
-- Automatically detect if running in VirtualBox, KVM or VMware and install appropriate guest additions
+- Automatically detect if running in VirtualBox, QEMU/KVM or VMware and install appropriate guest additions
 - Optional disk encryption for the root partition
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
-- Custom nanorc file to include syntax highlighting
+- Nanorc files to include syntax highlighting
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Display all network interface IP Addresses on TTY logins
 - Monthly systemd timer to clean the pacman cache (pacman -Scc)
@@ -35,7 +35,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 10% of total ram)
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SSDs and NVME drives
 - Change [mkinitcpio compression to LZ4](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION)
-- Support for [wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
+- Support for [Wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) found in most file managers
 - LXDM display manager with [Archlinux theme](https://aur.archlinux.org/packages/archlinux-lxdm-theme/)
 - Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
@@ -68,8 +68,8 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Gsmartcontrol](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in storage group)
 - Bash changes:
     * [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) - Add color and improve tab completion
-    * [ASCII Pokemon](https://aur.archlinux.org/packages/pokeshell/) - Display a pokemon in terminal
-    * Add colored output to ls and file extensions
+    * [ASCII Pokemon](https://gitlab.com/phoneybadger/pokemon-colorscripts) - Display a pokemon in terminal
+    * Add colored output to ls, ip, grep and file extensions
     * Custom aliases for yay/pacman and other system tasks
 - Laptop changes (If detected):
     * [Tackpad](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) - More comfortable defaults
@@ -81,12 +81,12 @@ The user will now be prompted to supply basic information such as hostname, user
     * [UEFI games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
     * Arch Linux [theme](https://github.com/fghibellini/arch-silence)
 - Makepkg changes:
-    * [Makeflags](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) - Set makeflags to use all cores
+    * Set makeflags to use all cores when compiling
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
     * Change RUSTFLAGS to build [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) binaries
     * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (No compression) when building AUR packages
-    * Add [multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
-    * Enable [max compression](https://wiki.archlinux.org/title/Makepkg#Utilizing_multiple_cores_on_compression) when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
+    * [Multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
+    * [Max compression](https://wiki.archlinux.org/title/Makepkg#Utilizing_multiple_cores_on_compression) when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
     * LTO optimizations enabled
 - Systemd changes:
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) - Systemd service to make packet sniffing easier (disabled by default)
@@ -99,17 +99,18 @@ The user will now be prompted to supply basic information such as hostname, user
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
+    * Users must be in the wheel group to [run su](https://wiki.archlinux.org/title/Su#su_and_wheel)
     * Commented line to run specific commands without requiring sudo password
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
     * Log file of elevated commands at /var/log/sudo.log
     * Five password tries instead of three
-    * Password displayed with * instead of invisible
+    * Password displayed with * instead of being invisible
 - NetworkManager changes:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
     * [IPv6 privacy extensions](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
     * [DNS caching](https://wiki.archlinux.org/index.php/NetworkManager#DNS_caching_and_conditional_forwarding) with dnsmasq
     * [Secure DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1, 9.9.9.9)
-- [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains 1500+ packages updated every 6 hours
+- [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains ~1500 packages
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
 
 # Things to consider when using this installer
@@ -127,7 +128,7 @@ The user will now be prompted to supply basic information such as hostname, user
 # Todos
  - xsuspender?
  - Finish working on implementing dialog prompts as functions
- - x86 V3 support
+ - x86 V3 support?
     * /lib/ld-linux-x86-64.so.2 --help | grep supported
  - Combine filesystem setup
  - fix TTY ip address
