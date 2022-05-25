@@ -980,7 +980,7 @@ mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
 mv Arch-Linux-Installer-master/configs/bash/.bash_profile /mnt/etc/skel/
 
 
-###USER AND PASSWORDS###
+###USER, PASSWORDS and PAM###
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
 #Create a temp file to store the password in and delete it when the script finishes using a trap
@@ -999,6 +999,9 @@ arch-chroot /mnt chpasswd < "$TMPFILE"
 unset pass1 pass2 pass encpass encpass1 encpass2
 #Setup stronger password security by increasing delay between password attempts to 4 seconds
 echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
+#Require users to be in the wheel group to run su
+echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su
+echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su-l
 
 
 ###FONTS###
@@ -1070,7 +1073,7 @@ fi
 #Use hostnamectl to check the chassis type for laptop
 chassisType=$(hostnamectl chassis)
 if [ "$chassisType" = laptop ]; then
-	#Move the powertop config so it can be enabled
+	#Move the powertop auto tune service so it can be enabled
 	mv Arch-Linux-Installer-master/configs/systemd/powertop.service /mnt/etc/systemd/system/
 	#Install power saving tools and enable tlp, powertop and other power saving tweaks
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
