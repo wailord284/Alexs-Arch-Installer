@@ -31,8 +31,8 @@
         <value type="int" value="16"/>
         <value type="int" value="14"/>
       </property>
-      <property name="enter-opacity" type="int" value="85"/>
-      <property name="leave-opacity" type="uint" value="85"/>
+      <property name="enter-opacity" type="int" value="100"/>
+      <property name="leave-opacity" type="uint" value="100"/>
     </property>
     <property name="panel-2" type="empty">
       <property name="autohide-behavior" type="uint" value="1"/>
