@@ -44,6 +44,7 @@ alias ysn='yay -Syua --noconfirm'
 alias orphan='sudo pacman -Rns $(pacman -Qtdq)'
 
 #Other alias commands
+alias su='su -l'
 alias entropy='cat /proc/sys/kernel/random/entropy_avail'
 alias cpuwatch='watch grep \"cpu MHz\" /proc/cpuinfo'
 alias syncwatch='watch -d grep -e Dirty: -e Writeback: /proc/meminfo'
