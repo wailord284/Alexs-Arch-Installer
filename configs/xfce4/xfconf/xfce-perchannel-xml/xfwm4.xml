@@ -82,8 +82,6 @@
     <property name="workspace_names" type="array">
       <value type="string" value="Workspace 1"/>
       <value type="string" value="Workspace 2"/>
-      <value type="string" value="Workspace 3"/>
-      <value type="string" value="Workspace 4"/>
     </property>
     <property name="sync_to_vblank" type="int" value="1"/>
     <property name="rezise_opacity" type="int" value="85"/>
