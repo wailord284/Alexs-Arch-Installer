@@ -1334,8 +1334,8 @@ selection=${selection:- 6 7 q}
 		rm -r /mnt/etc/NetworkManager/conf.d/dns-servers.conf
 		rm -r /mnt/etc/NetworkManager/conf.d/dns.conf
 		#Move new network manager dns configs
-		mv Arch-Linux-Installer-master/configs/dns/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
-		mv Arch-Linux-Installer-master/configs/dns/dns.conf /mnt/etc/NetworkManager/conf.d/
+		mv Arch-Linux-Installer-master/configs/dns-https/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
+		mv Arch-Linux-Installer-master/configs/dns-https/dns.conf /mnt/etc/NetworkManager/conf.d/
 		#Enable services
 		arch-chroot /mnt systemctl enable doh-client.service
 		sleep 3s
