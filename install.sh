@@ -1209,14 +1209,11 @@ sleepMode=$(cat /sys/power/mem_sleep)
 if [ "$sleepMode" = "[s2idle] deep" ]; then
 	#If the system has both s2idle and deep but s2idle is currently selected, then deep sleep will be used
 	#This will set mem_sleep_default=deep in grub - GRUB_CMDLINE_LINUX
-	grubEnableDeepSleep=mem_sleep_default=deep
+	grubCmdlineLinuxOptions=mem_sleep_default=deep
 fi
+#If mitigations are wanted, add them as well as grubCmdlineLinuxOptions. If deep sleep was selected it will be added
 if [ "$disableMitigations" = "y" ]; then
-	if [ -z "$grubEnableDeepSleep" ]; then
-		grubCmdlineLinuxOptions="$grubSecurityMitigations"
-	else
-		grubCmdlineLinuxOptions="$grubSecurityMitigations $grubEnableDeepSleep"
-	fi
+	grubCmdlineLinuxOptions="$grubSecurityMitigations $grubCmdlineLinuxOptions"
 fi
 
 
