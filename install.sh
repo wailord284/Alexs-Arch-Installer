@@ -28,8 +28,8 @@ echo "$yellow""Please wait while the system clock and keyring are configured. Th
 
 
 ###CONFIGURE PACMAN###
-#Stop the reflector.service as it sometimes fails. We sort mirrors later
-systemctl stop reflector.service
+#Stop the following services as it sometimes fails and prints messages over the dialog prompts. We sort mirrors later
+systemctl stop reflector.service qemu-guest-agent.service choose-mirror.service
 #Set ArchISO to no siglevel. Needed for weird GPG errors or outdated Arch ISO
 sed "s,SigLevel    = Required DatabaseOptional,SigLevel    = Never,g" -i /etc/pacman.conf
 #Start the pacman key service
@@ -93,7 +93,7 @@ consoleKeymap=(dialog --backtitle "$dialogBacktitle" \
 options=(${MENU_OPTIONS})
 keymap=$("${consoleKeymap[@]}" "${options[@]}" 2>&1 >/dev/tty)
 #Set the keymap locally before continuing
-loadkeys $keymap
+loadkeys "$keymap"
 clear
 
 
@@ -958,7 +958,6 @@ mkdir -p /mnt/etc/skel/.config/kitty/
 mkdir -p /mnt/etc/skel/.config/screen
 mkdir -p /mnt/etc/skel/.config/wezterm/
 mkdir -p /mnt/etc/skel/.config/psd/
-mkdir -p /mnt/etc/skel/.local/share/xfce4/
 #Move profile-sync-daemon config
 mv Arch-Linux-Installer-master/configs/psd.conf /mnt/etc/skel/.config/psd/
 #Move kitty config
@@ -977,7 +976,6 @@ mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
 mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/.config/readline/
 mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/.config/screen/
 mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
-mv Arch-Linux-Installer-master/configs/bash/.bash_profile /mnt/etc/skel/
 
 
 ###USER, PASSWORDS and PAM###
@@ -1078,7 +1076,7 @@ if [ $? = 0 ]; then sysBattery=yes; fi
 modelType=$(hostnamectl | sed 's/ //g' | grep "HardwareModel" | cut -d":" -f2)
 #There are a lot of options dmidecode chassis can provide. Will consider using it in the future as it does provide good results but needs more if statements
 #https://docs.microsoft.com/en-us/previous-versions/tn-archive/ee156537(v=technet.10)?redirectedfrom=MSDN
-chassisType=$(dmidecode --string chassis-type)
+#chassisType=$(dmidecode --string chassis-type)
 if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
 	#Move the powertop auto tune service so it can be enabled
 	mv Arch-Linux-Installer-master/configs/systemd/powertop.service /mnt/etc/systemd/system/
