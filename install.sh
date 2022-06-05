@@ -60,7 +60,7 @@ EOF
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring glibc ntp ncurses unzip wget dialog htop iotop reflector lshw --noconfirm
+pacman -S archlinux-keyring acpi glibc ntp ncurses unzip wget dialog htop iotop reflector lshw --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -1070,9 +1070,16 @@ fi
 
 ###LAPTOP SETUP###
 #Check and setup laptop features
-#Use hostnamectl to check the chassis type for laptop
-chassisType=$(hostnamectl chassis)
-if [ "$chassisType" = laptop ]; then
+#We used to check chassis type but that no longer works. Added additional checks as well
+acpi -V | grep -iq Battery
+if [ $? = 0 ]; then acpiBattery=yes; fi
+ls /sys/class/power_supply/ | grep -iq BAT
+if [ $? = 0 ]; then sysBattery=yes; fi
+modelType=$(hostnamectl | sed 's/ //g' | grep "HardwareModel" | cut -d":" -f2)
+#There are a lot of options dmidecode chassis can provide. Will consider using it in the future as it does provide good results but needs more if statements
+#https://docs.microsoft.com/en-us/previous-versions/tn-archive/ee156537(v=technet.10)?redirectedfrom=MSDN
+chassisType=$(dmidecode --string chassis-type)
+if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
 	#Move the powertop auto tune service so it can be enabled
 	mv Arch-Linux-Installer-master/configs/systemd/powertop.service /mnt/etc/systemd/system/
 	#Install power saving tools and enable tlp, powertop and other power saving tweaks
