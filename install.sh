@@ -1095,7 +1095,7 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	#Mask rfkill for TLP
 	arch-chroot /mnt systemctl mask systemd-rfkill.socket
 	arch-chroot /mnt systemctl mask systemd-rfkill.service
-	#Increase dirty writeback time to 60 seconds
+	#Increase dirty writeback time to 15 seconds
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 	#Disable wake on lan - may help with power
 	mv Arch-Linux-Installer-master/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
