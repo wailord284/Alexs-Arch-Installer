@@ -34,7 +34,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [FSTrim timer](https://wiki.archlinux.org/index.php/Solid_state_drive#Periodic_TRIM) if a SSD is detected
 - [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 10% of total ram)
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SSDs and NVME drives
-- Change [mkinitcpio compression to LZ4](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION)
+- Change [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to lz4 for faster speeds
 - Support for [Wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) found in most file managers
 - LXDM display manager with [Archlinux theme](https://aur.archlinux.org/packages/archlinux-lxdm-theme/)
@@ -132,5 +132,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * /lib/ld-linux-x86-64.so.2 --help | grep supported
  - Combine filesystem setup
  - fix TTY ip address
+ - nvme.noacpi=1 for framework
  - optionally allow people to upload hw-probe
  - optionally allow people to upload pkgstats
