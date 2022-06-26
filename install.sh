@@ -24,7 +24,7 @@ dialogHeight=20
 dialogWidth=80
 
 #Welcome message
-echo "$yellow""Please wait while the system clock and keyring are configured. This can take a moment.""$reset"
+echo -e "$yellow""Please wait while the system clock and keyring are configured.\nThis can take a moment especially on older and low power systems.""$reset"
 
 
 ###CONFIGURE PACMAN###
@@ -45,7 +45,7 @@ SigLevel = Never
 EOF
 #Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?)
 cat << EOF > /etc/pacman.d/mirrorlist
-Server = https://mirror.sfo12.us.leaseweb.net/archlinux/\$repo/os/\$arch
+Server = https://mirrors.xtom.com/archlinux/\$repo/os/\$arch
 Server = https://mirror.arizona.edu/archlinux/\$repo/os/\$arch
 Server = https://arch.hu.fo/archlinux/\$repo/os/\$arch
 Server = https://mirrors.radwebhosting.com/archlinux/\$repo/os/\$arch
@@ -60,7 +60,7 @@ EOF
 timedatectl set-ntp true
 #Set hwclock as well in case system has no battery for RTC
 pacman -Syy
-pacman -S archlinux-keyring acpi gcc glibc ntp ncurses unzip wget dialog htop iotop reflector lshw --noconfirm
+pacman -S archlinux-keyring acpi glibc ntp ncurses unzip wget dialog reflector lshw --noconfirm
 ntpd -qg
 hwclock --systohc
 gpg --refresh-keys
@@ -576,7 +576,7 @@ EOF
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors on installation media" \
---prgbox "Please wait while mirrors are sorted" "pacman -Syy && reflector --verbose -f 10 --latest 15 --country $region --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "pacman -Syy && reflector --download-timeout 10 --connection-timeout 10 --verbose -f 10 --latest 20 --country $region --protocol https --age 24 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 #Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
@@ -709,7 +709,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g lsscsi --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g ghex lsscsi --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -806,8 +806,8 @@ fi
 
 ###AMD RYZEN ZENPOWER KERNEL DRIVER###
 #Checks to see if the current CPU arch from GCC is znver1-3. If it is, install a better temperature kernel driver that supports more values and readouts
-gccCPUArch=$(gcc -march=native -Q --help=target | grep -m1 '\-march=' | grep -Eo 'znver3|znver2|znver1')
-if [[ "$gccCPUArch" = znver3 ]] || [[ "$gccCPUArch" = znver2 ]] || [[ "$gccCPUArch" = znver1 ]]; then
+CPUModel=$(lscpu | grep -io ryzen)
+if [[ "$CPUModel" = Ryzen ]] || [[ "$CPUModel" = ryzen ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
 	--prgbox "Found AMD Ryzen CPU" "arch-chroot /mnt pacman -S zenpower3-dkms zenmonitor3-git --noconfirm" "$HEIGHT" "$WIDTH"
@@ -1166,7 +1166,7 @@ mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors on target device" \
---prgbox "Please wait while mirrors are sorted" "reflector --verbose -f 10 --latest 15 --country $region --protocol https --age 12 --sort rate --save /mnt/etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+--prgbox "Please wait while mirrors are sorted" "reflector --download-timeout 10 --connection-timeout 10 --verbose -f 10 --latest 20 --country $region --protocol https --age 24 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
 #Remove the following mirrors. For some reason they behave randomly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
