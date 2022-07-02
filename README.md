@@ -77,7 +77,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Powertop](https://wiki.archlinux.org/title/Powertop) - With --auto-tune enabled
 - Grub changes:
     * [File Manager](https://github.com/a1ive/grub2-filemanager), Reboot and Shutdown - Available as additional grub menus
-    * [UEFI tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor, Memtest86, Super Grub Disk
+    * [UEFI tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor, Memtest86, Super Grub Disk 2, OneFile Linux
     * [UEFI games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
     * Arch Linux [theme](https://github.com/fghibellini/arch-silence)
 - Makepkg changes:
