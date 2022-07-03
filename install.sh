@@ -709,7 +709,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g ghex lsscsi --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog lxdm network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu otf-symbola ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-netload-plugin xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart peek tldr compsize kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill arandr f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g wxhexeditor lsscsi --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -904,7 +904,7 @@ export XDG_STATE_HOME="\$HOME/.local/state"
 
 export ICEAUTHORITY="\${XDG_CACHE_HOME}/ICEauthority"
 export ERRFILE="\${XDG_CACHE_HOME}/X11/xsession-errors"
-export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="\${XDG_CONFIG_HOME}/java"
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="\$XDG_CONFIG_HOME"/java
 export ICEAUTHORITY="\${XDG_CACHE_HOME}/ICEauthority"
 export GTK2_RC_FILES="\${XDG_CONFIG_HOME}/gtk-2.0/gtkrc"
 export GNUPGHOME="\${XDG_DATA_HOME}/gnupg"
@@ -912,9 +912,13 @@ export INPUTRC="\${XDG_CONFIG_HOME}/readline/inputrc"
 export LESSHISTFILE="\${XDG_CACHE_HOME}/less/history"
 export LESSKEY="\${XDG_CONFIG_HOME}/less/lesskey"
 export npm_config_cache="\${XDG_CACHE_HOME}/npm"
-export SCREENRC="\${XDG_CONFIG_HOME}/screen/screenrc"
+export SCREENRC="\$XDG_CONFIG_HOME/screen/screenrc"
 export CARGO_HOME="\${XDG_CACHE_HOME}/cargo"
 export GIMP2_DIRECTORY="\${XDG_CONFIG_HOME}/gimp"
+export HISTFILE"\${XDG_STATE_HOME}/bash/history"
+export ICEAUTHORITY="\$XDG_CACHE_HOME"/ICEauthority
+export ERRFILE="\$XDG_CACHE_HOME/X11/xsession-errors"
+export ANDROID_HOME="\$XDG_DATA_HOME"/android
 EOF
 
 
