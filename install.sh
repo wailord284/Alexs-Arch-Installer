@@ -980,7 +980,7 @@ mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
 
 ###USER, PASSWORDS and PAM###
 #Add user here to get /etc/skel configs
-arch-chroot /mnt useradd -m -G network,input,kvm,floppy,audio,storage,uucp,wheel,optical,scanner,sys,video,disk -s /bin/bash "$user"
+arch-chroot /mnt useradd -m -G network,kvm,floppy,disk,storage,uucp,wheel,optical,video -s /bin/bash "$user"
 #Create a temp file to store the password in
 TMPFILE=$(mktemp)
 #Setup more secure passwd by increasing hashes
