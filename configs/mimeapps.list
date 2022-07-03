@@ -10,9 +10,14 @@ x-scheme-handler/https=xfce4-web-browser.desktop;
 application/x-shellscript=org.xfce.mousepad.desktop;
 text/html=firefox.desktop;
 application/x-desktop=org.xfce.mousepad.desktop;
-application/rtf=libreoffice-writer.desktop;org.xfce.mousepad.desktop;
+application/rtf=org.xfce.mousepad.desktop;libreoffice-writer.desktop;
 image/jpeg=pinta.desktop;
 image/png=pinta.desktop;
+application/octet-stream=org.xfce.mousepad.desktop;org.xfce.mousepad-settings.desktop;
+application/json=org.xfce.mousepad.desktop;
+application/schema+json=org.xfce.mousepad.desktop;
+application/x-executable=org.xfce.mousepad.desktop;
+image/heif=geeqie.desktop;
 
 [Default Applications]
 inode/directory=xfce4-file-manager.desktop
