@@ -1112,10 +1112,11 @@ echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 
 ###LXDM - DISPLAY MANAGER###
-#Set LXDM theme and session
+#Set LXDM theme, session and move .xauthority out of home
 sed "s,\#\ session=/usr/bin/startlxde,\ session=/usr/bin/startxfce4,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,theme=Industrial,theme=Archlinux,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,gtk_theme=Adwaita,gtk_theme=Arc-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
+sed "s,\#\ xauth_path=/tmp,\ xauth_path=/tmp,g" -i /mnt/etc/lxdm/lxdm.conf
 
 
 ###SYSTEMD###
