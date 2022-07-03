@@ -902,10 +902,9 @@ export XDG_DATA_HOME="\$HOME/.local/share"
 export XDG_CACHE_HOME="\$HOME/.cache"
 export XDG_STATE_HOME="\$HOME/.local/state"
 
-export ICEAUTHORITY="\${XDG_CACHE_HOME}/ICEauthority"
+export ICEAUTHORITY="\$XDG_CACHE_HOME"/ICEauthority
 export ERRFILE="\${XDG_CACHE_HOME}/X11/xsession-errors"
 export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="\$XDG_CONFIG_HOME"/java
-export ICEAUTHORITY="\${XDG_CACHE_HOME}/ICEauthority"
 export GTK2_RC_FILES="\${XDG_CONFIG_HOME}/gtk-2.0/gtkrc"
 export GNUPGHOME="\${XDG_DATA_HOME}/gnupg"
 export INPUTRC="\${XDG_CONFIG_HOME}/readline/inputrc"
@@ -915,10 +914,7 @@ export npm_config_cache="\${XDG_CACHE_HOME}/npm"
 export SCREENRC="\$XDG_CONFIG_HOME/screen/screenrc"
 export CARGO_HOME="\${XDG_CACHE_HOME}/cargo"
 export GIMP2_DIRECTORY="\${XDG_CONFIG_HOME}/gimp"
-export HISTFILE"\${XDG_STATE_HOME}/bash/history"
-export ICEAUTHORITY="\$XDG_CACHE_HOME"/ICEauthority
-export ERRFILE="\$XDG_CACHE_HOME/X11/xsession-errors"
-export ANDROID_HOME="\$XDG_DATA_HOME"/android
+export ANDROID_HOME="\$XDG_DATA_HOME/android"
 EOF
 
 
