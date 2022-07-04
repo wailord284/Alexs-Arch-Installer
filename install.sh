@@ -785,7 +785,7 @@ clear
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S amdvlk vulkan-radeon radeontop --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S vulkan-radeon radeontop --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -955,7 +955,7 @@ mkdir -p /mnt/etc/skel/.config/gtk-3.0/
 mkdir -p /mnt/etc/skel/.config/gtk-2.0/
 mkdir -p /mnt/etc/skel/.config/readline/
 mkdir -p /mnt/etc/skel/.config/kitty/
-mkdir -p /mnt/etc/skel/.config/screen
+mkdir -p /mnt/etc/skel/.config/screen/
 mkdir -p /mnt/etc/skel/.config/wezterm/
 mkdir -p /mnt/etc/skel/.config/psd/
 #Move profile-sync-daemon config
