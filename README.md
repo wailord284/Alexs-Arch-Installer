@@ -100,6 +100,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
     * Users must be in the wheel group to [run su](https://wiki.archlinux.org/title/Su#su_and_wheel)
+    * Disable [Systemd-homed not available](https://www.reddit.com/r/archlinux/comments/ie3cvj/pam_systemd_home_spamming_the_journal_everytime_i/) log message everytime sudo is run
     * Commented line to run specific commands without requiring sudo password
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
     * Log file of elevated commands at /var/log/sudo.log

@@ -1007,6 +1007,8 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 #Require users to be in the wheel group to run su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su-l
+#Remove annoying systemd-homed messages anytime sudo is used
+sed "s/success=2/success=1/g" -i /mnt/etc/pam.d/system-auth
 
 
 ###FONTS###
