@@ -662,11 +662,17 @@ echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 ###HOSTNAME AND HOST FILE###
 #Set hostname
 echo "$host" >> /mnt/etc/hostname
-#Set hostname and ip stuffs to /etc/hosts
+#Set hostname and ip stuffs to /etc/hosts, this is from hblock
 cat << EOF > /mnt/etc/hosts
-127.0.0.1	localhost
-::1		localhost
-127.0.1.1	$host.localdomain	$host
+127.0.0.1       localhost $host
+255.255.255.255 broadcasthost
+::1             localhost $host
+::1             ip6-localhost ip6-loopback
+fe00::0         ip6-localnet
+ff00::0         ip6-mcastprefix
+ff02::1         ip6-allnodes
+ff02::2         ip6-allrouters
+ff02::3         ip6-allhosts
 EOF
 
 
