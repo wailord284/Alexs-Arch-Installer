@@ -684,8 +684,9 @@ SigLevel = Never
 
 #China archlinux repo with many aur packages
 [archlinuxcn]
-Server = http://repo.archlinuxcn.org/\$arch
-Server = https://mirror.xtom.com/archlinuxcn/\$arch
+Server = https://mirrors.ocf.berkeley.edu/archlinuxcn/\$arch
+Server = https://mirrors.xtom.us/archlinuxcn/\$arch
+Server = https://repo.archlinuxcn.org/\$arch
 Server = https://cdn.repo.archlinuxcn.org/\$arch
 SigLevel = PackageOptional
 
