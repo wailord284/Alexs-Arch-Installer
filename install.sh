@@ -812,7 +812,7 @@ fi
 
 
 ###AMD RYZEN ZENPOWER KERNEL DRIVER###
-#Checks to see if the current CPU arch from GCC is znver1-3. If it is, install a better temperature kernel driver that supports more values and readouts
+#Checks to see if the current CPU is ryzen. If it is, install a better temperature kernel driver that supports more values and readouts
 CPUModel=$(lscpu | grep -io ryzen)
 if [[ "$CPUModel" = Ryzen ]] || [[ "$CPUModel" = ryzen ]]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -922,6 +922,10 @@ export SCREENRC="\$XDG_CONFIG_HOME/screen/screenrc"
 export CARGO_HOME="\${XDG_CACHE_HOME}/cargo"
 export GIMP2_DIRECTORY="\${XDG_CONFIG_HOME}/gimp"
 export ANDROID_HOME="\$XDG_DATA_HOME/android"
+export CCACHE_DIR="\${XDG_CACHE_HOME}/ccache"
+export MPLAYER_HOME="\$XDG_CONFIG_HOME/mplayer"
+export PLATFORMIO_CORE_DIR="\$XDG_DATA_HOME/platformio"
+export SQLITE_HISTORY="\$XDG_CACHE_HOME/sqlite_history"
 EOF
 
 
