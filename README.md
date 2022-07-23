@@ -54,7 +54,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
     * [Prelockd](https://github.com/hakavlad/prelockd) - Daemon to lock desktop in RAM
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system
-    * [Uresourced](https://gitlab.freedesktop.org/benzea/uresourced) - Dynamically allocate resources to the active user
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM
 - Firefox changes (All installed with package manager):
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
