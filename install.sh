@@ -721,7 +721,7 @@ clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk uresourced pacman-updatedb-hook firefox-clearurls archlinux-lxdm-theme graphite-gtk-theme-nord-rimless-compact-git --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk uresourced pacman-updatedb-hook firefox-clearurls graphite-gtk-theme-nord-rimless-compact-git lxdm-themes --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -1032,7 +1032,7 @@ sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export 
 mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 
 
-###NETWORKMANAGER###
+###NETWORK MANAGER###
 #NetworkManager/Network startup scripts
 mkdir -p /mnt/etc/NetworkManager/conf.d/
 mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
@@ -1130,8 +1130,8 @@ echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 ###LXDM - DISPLAY MANAGER###
 #Set LXDM theme, session and move .xauthority out of home
 sed "s,\#\ session=/usr/bin/startlxde,\ session=/usr/bin/startxfce4,g" -i /mnt/etc/lxdm/lxdm.conf
-sed "s,theme=Industrial,theme=Archlinux,g" -i /mnt/etc/lxdm/lxdm.conf
-sed "s,gtk_theme=Adwaita,gtk_theme=Arc-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
+sed "s,theme=Industrial,theme=Arch-Dark,g" -i /mnt/etc/lxdm/lxdm.conf
+sed "s,gtk_theme=Adwaita,gtk_theme=Nordic,g" -i /mnt/etc/lxdm/lxdm.conf
 sed "s,\#\ xauth_path=/tmp,\ xauth_path=/tmp,g" -i /mnt/etc/lxdm/lxdm.conf
 
 
