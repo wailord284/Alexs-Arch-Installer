@@ -926,6 +926,8 @@ export CCACHE_DIR="\${XDG_CACHE_HOME}/ccache"
 export MPLAYER_HOME="\$XDG_CONFIG_HOME/mplayer"
 export PLATFORMIO_CORE_DIR="\$XDG_DATA_HOME/platformio"
 export SQLITE_HISTORY="\$XDG_CACHE_HOME/sqlite_history"
+export WINEPREFIX="\$XDG_DATA_HOME/wine"
+export HISTFILE="\${XDG_STATE_HOME}/bash/history"
 EOF
 
 
