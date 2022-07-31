@@ -599,7 +599,7 @@ sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 
 
-###KERNEL, FIRMWARE AND MICROCODE INSTALLATION###
+###KERNEL, FIRMWARE, BASE-DEVEL AND MICROCODE INSTALLATION###
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
@@ -1077,7 +1077,7 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/50-networkmanager.rules /mnt/
 
 ###PACMAN HOOKS###
 #Add the needrestart pacman hook
-mkdir -p /etc/pacman.d/hooks/
+mkdir -p /mnt/etc/pacman.d/hooks/
 mv Arch-Linux-Installer-master/configs/pacman-hooks/needrestart.hook /mnt/etc/pacman.d/hooks/
 clear
 
