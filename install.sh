@@ -713,7 +713,7 @@ clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk pacman-updatedb-hook firefox-clearurls graphite-gtk-theme-nord-rimless-compact-git lxdm-themes --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk pacman-updatedb-hook firefox-clearurls graphite-gtk-theme-nord-rimless-compact-git lxdm-themes needrestart --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
