@@ -668,6 +668,13 @@ ff02::3         ip6-allhosts
 EOF
 
 
+###PACMAN CONFIG###
+#Enable some options in pacman.conf
+sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
+sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
+sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
+
+
 ###REPO AND KEY SETUP###
 #Install repos to target - multilib, aurmageddon, archlinuxcn
 cat << EOF >> /mnt/etc/pacman.conf
@@ -1068,11 +1075,7 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/50-gsmartcontrol.rules /mnt/e
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/
 
 
-###PACMAN SETUP###
-#Enable some options in pacman.conf
-sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
-sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
-sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
+###PACMAN HOOKS###
 #Add the needrestart pacman hook
 mkdir -p /etc/pacman.d/hooks/
 mv Arch-Linux-Installer-master/configs/pacman-hooks/needrestart.hook /mnt/etc/pacman.d/hooks/
