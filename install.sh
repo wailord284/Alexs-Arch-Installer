@@ -592,14 +592,6 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 clear
 
 
-###PACMAN SETUP###
-#Enable some options in pacman.conf
-sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
-sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
-sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
-clear
-
-
 ###KERNEL, FIRMWARE AND MICROCODE INSTALLATION###
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1074,6 +1066,17 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/00-gparted.rules /mnt/etc/pol
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
 #Allow user in the network group to add/modify/delete networks without a password
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/
+
+
+###PACMAN SETUP###
+#Enable some options in pacman.conf
+sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
+sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
+sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
+#Add the needrestart pacman hook
+mkdir -p /etc/pacman.d/hooks/
+mv Arch-Linux-Installer-master/configs/pacman-hooks/needrestart.hook /mnt/etc/pacman.d/hooks/
+clear
 
 
 ###WACOM TABLET###
