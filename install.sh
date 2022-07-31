@@ -588,15 +588,22 @@ clear
 #Begin base system install and install zlib-ng from aurmageddon
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel zlib-ng iptables-nft jfsutils nilfs-utils --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "pacstrap /mnt base --noconfirm" "$HEIGHT" "$WIDTH"
 clear
+
+
+###PACMAN CONFIG###
+#Enable some options in pacman.conf
+sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
+sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
+sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 
 
 ###KERNEL, FIRMWARE AND MICROCODE INSTALLATION###
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -S linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -S base-devel zlib-ng iptables-nft jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
 vendor=$(cat /proc/cpuinfo | grep -m 1 "vendor" | grep -o "Intel")
 if [ "$vendor" = Intel ]; then
@@ -666,13 +673,6 @@ ff02::1         ip6-allnodes
 ff02::2         ip6-allrouters
 ff02::3         ip6-allhosts
 EOF
-
-
-###PACMAN CONFIG###
-#Enable some options in pacman.conf
-sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
-sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
-sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 
 
 ###REPO AND KEY SETUP###
