@@ -593,16 +593,6 @@ sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 
 
-###ADD AURMAGEDDON###
-#Add my repo to pacman.conf
-cat << EOF >> /mnt/etc/pacman.conf
-#wailord284 custom repo with many aur packages used by Alexs Arch Linux Installer
-[aurmageddon]
-Server = https://wailord284.club/repo/\$repo/\$arch
-SigLevel = Never
-EOF
-
-
 ###KERNEL, FIRMWARE, BASE-DEVEL AND MICROCODE INSTALLATION###
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
