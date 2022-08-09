@@ -4,7 +4,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart=/opt/aali/scripts/int.sh
+ExecStart=/opt/scripts/int.sh
 RemainAfterExit=no
 Type=oneshot
 
