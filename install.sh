@@ -42,6 +42,10 @@ cat << EOF >> /etc/pacman.conf
 [chaotic-aur]
 Server = https://random-mirror.chaotic.cx/\$repo/\$arch
 SigLevel = Never
+#wailord284 custom repo with many aur packages used by Alexs Arch Linux Installer
+[aurmageddon]
+Server = https://wailord284.club/repo/\$repo/\$arch
+SigLevel = Never
 EOF
 #Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?)
 cat << EOF > /etc/pacman.d/mirrorlist
@@ -562,16 +566,6 @@ fi
 clear
 
 
-###ADD AURMAGEDDON###
-#Add my repo to pacman.conf
-cat << EOF >> /etc/pacman.conf
-#wailord284 custom repo with many aur packages used by Alexs Arch Linux Installer
-[aurmageddon]
-Server = https://wailord284.club/repo/\$repo/\$arch
-SigLevel = Never
-EOF
-
-
 ###MIRRORLIST SORTING - INSTALLATION MEDIA###
 #Sort mirrors
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -597,6 +591,16 @@ clear
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
+
+
+###ADD AURMAGEDDON###
+#Add my repo to pacman.conf
+cat << EOF >> /mnt/etc/pacman.conf
+#wailord284 custom repo with many aur packages used by Alexs Arch Linux Installer
+[aurmageddon]
+Server = https://wailord284.club/repo/\$repo/\$arch
+SigLevel = Never
+EOF
 
 
 ###KERNEL, FIRMWARE, BASE-DEVEL AND MICROCODE INSTALLATION###
