@@ -1,0 +1,13 @@
+[Unit]
+Description=Add interface IP addresses to TTY login prompts
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/opt/aali/scripts/int.sh
+RemainAfterExit=no
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=default.target

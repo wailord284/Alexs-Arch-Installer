@@ -822,13 +822,6 @@ if [[ "$CPUModel" = Ryzen ]] || [[ "$CPUModel" = ryzen ]]; then
 fi
 
 
-###TTY NETWORK INTERFACES###
-#Find all network interfaces, and add them to /etc/issue to display IP address
-#for interface in $(netstat -i | cut -d" " -f 1 | sed -e 's/Kernel//g' -e 's/Iface//g' -e '/^$/d' | sort -u) ; do
-#	echo "IP Address for $interface: \4{$interface}" >> /mnt/etc/issue
-#done
-
-
 ###ZRAM###
 #Changes the default amount of zram from 20% to 10% of total system RAM
 sed "s,20,10,g" -i /mnt/etc/zramswap.conf
@@ -1130,8 +1123,12 @@ mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/sys
 #Copy and enable the clear-pacman-cache service and timer
 mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.timer /mnt/etc/systemd/system/
 mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/system/
-#Enable the clear-pacman-cache service
-arch-chroot /mnt systemctl enable clear-pacman-cache.timer > /dev/null 2>&1
+#Add the TTY Interfaces service to output interface IP addresses to the TTY login screen
+mkdir -p /mnt/opt/scripts/
+mv Arch-Linux-Installer-master/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
+mv Arch-Linux-Installer-master/configs/Scripts/ttyinterfaces.sh /mnt/opt/scripts/
+#Enable the clear-pacman-cache service and ttyinterfaces.service
+arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service > /dev/null 2>&1
 #Copy BTRFS file defrag service if filesystem is BTRFS
 if [ "$filesystem" = btrfs ] ; then
 	#Move and enable the BTRFS defrag service and timer
