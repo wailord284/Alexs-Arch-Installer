@@ -1123,7 +1123,7 @@ mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.service /mnt/e
 #Add the TTY Interfaces service to output interface IP addresses to the TTY login screen
 mkdir -p /mnt/opt/scripts/
 mv Arch-Linux-Installer-master/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
-mv Arch-Linux-Installer-master/configs/Scripts/ttyinterfaces.sh /mnt/opt/scripts/
+mv Arch-Linux-Installer-master/configs/scripts/ttyinterfaces.sh /mnt/opt/scripts/
 #Enable the clear-pacman-cache service and ttyinterfaces.service
 arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service > /dev/null 2>&1
 #Copy BTRFS file defrag service if filesystem is BTRFS
