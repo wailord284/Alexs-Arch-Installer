@@ -926,6 +926,7 @@ mkdir -p /mnt/etc/skel/.config/screen/
 mkdir -p /mnt/etc/skel/.config/wezterm/
 mkdir -p /mnt/etc/skel/.config/psd/
 mkdir -p /mnt/etc/skel/.config/htop/
+mkdir -p /mnt/etc/skel/.config/dconf/
 #Move profile-sync-daemon config
 mv Arch-Linux-Installer-master/configs/psd.conf /mnt/etc/skel/.config/psd/
 #Move kitty config
@@ -938,6 +939,8 @@ mv Arch-Linux-Installer-master/configs/gtk-2.0/gtkrc /mnt/etc/skel/.config/gtk-2
 mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
 #Create the xfce configs
 mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/etc/skel/.config/
+#Add the mousepad config in dconf
+mv Arch-Linux-Installer-master/configs/dconf/user /mnt/etc/skel/.config/dconf/
 #Move mimelist - sets some default apps for file types
 mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
 #Move htoprc
