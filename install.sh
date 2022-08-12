@@ -395,6 +395,7 @@ clear
 ###FINAL CONFIRMATION###
 #Ask the user if they want to continue with the current options
 dialog --backtitle "$dialogBacktitle" \
+--defaultno \
 --title "Do you want to install with the following options?" \
 --yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Keymap: $keymap" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $disableMitigations")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
