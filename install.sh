@@ -254,16 +254,10 @@ while : ; do
 	#Remove '|'
 	storage=$(echo "$installDisk" | sed 's/|.*//')
 	#Determine storage type for partitions - nvme0n1p1, sda1, vda1 or mmcblk0p1 - $storagePartitions
-	if [[ "$storage" = /dev/nvme* ]]; then
+	if [[ "$storage" = /dev/nvme* ]] || [[ "$storage" = /dev/mmcblk* ]]; then
 		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
 		break
-	elif [[ "$storage" = /dev/mmcblk* ]]; then
-		storagePartitions=([1]="$storage"p1 [2]="$storage"p2)
-		break
-	elif [[ "$storage" = /dev/vd* ]]; then
-		storagePartitions=([1]="$storage"1 [2]="$storage"2)
-		break
-	elif [[ "$storage" = /dev/sd* ]]; then
+	elif [[ "$storage" = /dev/vd* ]] || [[ "$storage" = /dev/sd* ]]; then
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	else
