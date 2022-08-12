@@ -2,7 +2,7 @@
 A script to install a highly tuned Arch Linux desktop with XFCE, custom repositories, better performance and many Arch Wiki configurations with easy to use dialog prompts.
 
 # How to use
-To use this script, you first need to [create a bootable USB](https://www.howtogeek.com/howto/linux/create-a-bootable-ubuntu-usb-flash-drive-the-easy-way/) with the [Arch Linux ISO.](https://archlinux.org/download/) It is recommended to use the latest availible version of the ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date.
+To use this script, you first need to [create a bootable USB](https://www.howtogeek.com/howto/linux/create-a-bootable-ubuntu-usb-flash-drive-the-easy-way/) with the [Arch Linux ISO.](https://archlinux.org/download/) It is recommended to use the latest available version of the ISO. Once the ISO is booted and connected to the internet (which is required), you can download the script either from github or my website using curl. Both options will be kept up to date.
 To use the script, do the following:
 ```
 curl https://wailord284.club/repo/install.sh -o install.sh
