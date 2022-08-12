@@ -23,14 +23,23 @@ dialogBacktitle="Alex's Arch Linux Installer"
 dialogHeight=20
 dialogWidth=80
 
-#Welcome message
+
+###INTERNET CHECK###
+wget -q --spider http://google.com
+if [ $? -eq 1 ]; then
+	echo -e "$red""No internet connection was found.\nPlease connect the device to the Internet and try again."
+	exit 1
+fi
+
+
+###WELCOME MESSAGE###
 echo -e "$yellow""Please wait while the system clock and keyring are configured.\nThis can take a moment especially on older and low power systems.""$reset"
 
 
 ###CONFIGURE PACMAN###
 #Stop the following services as it sometimes fails and prints messages over the dialog prompts. We sort mirrors later
 systemctl stop reflector.service qemu-guest-agent.service choose-mirror.service
-#Set ArchISO to no siglevel. Needed for weird GPG errors or outdated Arch ISO
+#Set Arch ISO to no siglevel. Needed for weird GPG errors or outdated Arch ISO
 sed "s,SigLevel    = Required DatabaseOptional,SigLevel    = Never,g" -i /etc/pacman.conf
 #Start the pacman key service
 systemctl start pacman-init
