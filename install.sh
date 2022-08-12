@@ -25,7 +25,7 @@ dialogWidth=80
 
 
 ###INTERNET CHECK###
-wget -q --spider http://google.com
+curl -s -o /dev/null http://google.com
 if [ $? -eq 1 ]; then
 	echo -e "$red""No internet connection was found.\nPlease connect the device to the Internet and try again."
 	exit 1
@@ -106,7 +106,8 @@ consoleKeymap=(dialog --backtitle "$dialogBacktitle" \
 	--title "Keymap" \
 	--scrollbar \
 	--radiolist "Press space to select your keymap for your keyboard. This is used to ensure all menus can be operated using your keyboard and so all keys actually work as intended." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-options=(${MENU_OPTIONS})
+IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
+#options=(${MENU_OPTIONS})
 keymap=$("${consoleKeymap[@]}" "${options[@]}" 2>&1 >/dev/tty)
 #Set the keymap locally before continuing
 loadkeys "$keymap"
@@ -165,7 +166,7 @@ clear
 unset COUNT MENU_OPTIONS options
 COUNT=0
 #Replace space with '+' to avoid splitting, then remove leading the #
-for i in $(cat /etc/locale.gen | tail -n+24 | sed -e 's/  $//' -e 's, ,+,g' -e 's,#,,g') ; do
+for i in $(tail -n+24 /etc/locale.gen | sed -e 's/  $//' -e 's, ,+,g' -e 's,#,,g') ; do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -174,7 +175,7 @@ syslocale=(dialog --backtitle "$dialogBacktitle" \
 	--scrollbar \
 	--radiolist "Press space to select your locale." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 
-options=(${MENU_OPTIONS})
+IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
 locale=$("${syslocale[@]}" "${options[@]}" 2>&1 >/dev/tty)
 locale=$(echo "${locale//+/ }")
 clear
@@ -193,7 +194,7 @@ systimezone=(dialog --backtitle "$dialogBacktitle" \
 	--title "Timezone" \
 	--scrollbar \
 	--radiolist "Press space to select your timezone." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-options=(${MENU_OPTIONS})
+IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
 countryTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
 
@@ -212,7 +213,7 @@ systimezone=(dialog --backtitle "$dialogBacktitle" \
 	--title "Timezone" \
 	--scrollbar \
 	--radiolist "Press space to select the region in your timezone." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-options=(${MENU_OPTIONS})
+IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
 cityTimezone=$("${systimezone[@]}" "${options[@]}" 2>&1 >/dev/tty)
 fi
 clear
@@ -228,7 +229,7 @@ reflectorRegion=(dialog --backtitle "$dialogBacktitle" \
 	--title "Mirror Location" \
 	--scrollbar \
 	--radiolist "Press space to select your region for mirrorlist sorting. This is used to ensure the fastest download possible." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-options=(${MENU_OPTIONS})
+IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
 region=$("${reflectorRegion[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
 
@@ -249,7 +250,7 @@ while : ; do
 		--scrollbar \
 		--title "Target installation drive" \
 		--radiolist "Press space to select your drive. No data will be written at this point." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-	options=(${MENU_OPTIONS})
+	IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
 	installDisk=$("${targetDisk[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	#Remove '|'
 	storage=$(echo "$installDisk" | sed 's/|.*//')
@@ -287,7 +288,7 @@ sysfilesystem=(dialog --backtitle "$dialogBacktitle" \
 	--title "Filesystem" \
 	--scrollbar \
 	--radiolist "Press space to select your filesystem. EXT4 is the recommended choice if you are unsure." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-options=(${MENU_OPTIONS})
+IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
 filesystem=$("${sysfilesystem[@]}" "${options[@]}" 2>&1 >/dev/tty)
 clear
 
@@ -374,7 +375,7 @@ if [ "$kernel" = y ]; then
 	--scrollbar \
 	--title "Custom Kernel" \
 	--radiolist "Press space to select your Kernel." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-	options=(${MENU_OPTIONS})
+	IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
 	installKernel=$("${targetKernel[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	installKernelHeaders=$(echo "$installKernel" | sed 's/$/-headers/')
 fi
@@ -571,7 +572,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
 --prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
-vendor=$(cat /proc/cpuinfo | grep -m 1 "vendor" | grep -o "Intel")
+vendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
 if [ "$vendor" = Intel ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Autodetected Intel CPU" \
@@ -949,7 +950,7 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 #Require users to be in the wheel group to run su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su-l
-#Remove annoying systemd-homed messages anytime sudo is used
+#Remove annoying systemd-homed log messages anytime sudo is used
 sed "s/success=2/success=1/g" -i /mnt/etc/pam.d/system-auth
 
 
@@ -1031,15 +1032,9 @@ fi
 
 ###LAPTOP SETUP###
 #Check and setup laptop features
-#We used to check chassis type but that no longer works. Added additional checks as well
-acpi -V | grep -iq Battery
-if [ $? = 0 ]; then acpiBattery=yes; fi
-ls /sys/class/power_supply/ | grep -iq BAT
-if [ $? = 0 ]; then sysBattery=yes; fi
+if acpi -V | grep -iq Battery ; then acpiBattery=yes; fi
+if [ -d "/sys/class/power_supply/BAT0" ] || [ -d "/sys/class/power_supply/BAT1" ]; then sysBattery=yes; fi
 modelType=$(hostnamectl | sed 's/ //g' | grep "HardwareModel" | cut -d":" -f2)
-#There are a lot of options dmidecode chassis can provide. Will consider using it in the future as it does provide good results but needs more if statements
-#https://docs.microsoft.com/en-us/previous-versions/tn-archive/ee156537(v=technet.10)?redirectedfrom=MSDN
-#chassisType=$(dmidecode --string chassis-type)
 if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
 	#Move the powertop auto tune service so it can be enabled
 	mv Arch-Linux-Installer-master/configs/systemd/powertop.service /mnt/etc/systemd/system/
