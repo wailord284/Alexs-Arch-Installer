@@ -482,45 +482,44 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	else
 		#If encryption is not set, make this set to ${storagePartitions[2]}
 		rootTargetDisk="${storagePartitions[2]}"
-		#Filesystem creation
-		if [ "$filesystem" = ext4 ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = xfs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = jfs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = nilfs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = f2fs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.f2fs -f -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt $rootTargetDisk" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = btrfs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.btrfs -f -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
-		fi
-
-		#Mount the BTRFS root partition using -o compress=zstd
-		if [ "$filesystem" = btrfs ] ; then
-			mount -o compress-force=zstd,noatime "$rootTargetDisk" /mnt
-		#Mount F2FS root partition using -o compress_algorithm=zstd
-		elif [ "$filesystem" = f2fs ] ; then
-			mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
-		#Standard mount for everything else
-		else
-			mount -o noatime "$rootTargetDisk" /mnt
-		fi
+	fi
+	#Filesystem creation
+	if [ "$filesystem" = ext4 ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Patitioning Disk" \
+		--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
+	elif [ "$filesystem" = xfs ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Patitioning Disk" \
+		--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
+	elif [ "$filesystem" = jfs ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Patitioning Disk" \
+		--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
+	elif [ "$filesystem" = nilfs ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Patitioning Disk" \
+		--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
+	elif [ "$filesystem" = f2fs ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Patitioning Disk" \
+		--prgbox "Formatting root partition" "mkfs.f2fs -f -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt $rootTargetDisk" "$HEIGHT" "$WIDTH"
+	elif [ "$filesystem" = btrfs ] ; then
+		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Patitioning Disk" \
+		--prgbox "Formatting root partition" "mkfs.btrfs -f -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 	fi
 
+	#Mount the BTRFS root partition using -o compress=zstd
+	if [ "$filesystem" = btrfs ] ; then
+		mount -o compress-force=zstd,noatime "$rootTargetDisk" /mnt
+	#Mount F2FS root partition using -o compress_algorithm=zstd
+	elif [ "$filesystem" = f2fs ] ; then
+		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
+	#Standard mount for everything else
+	else
+		mount -o noatime "$rootTargetDisk" /mnt
+	fi
 
 	#Mount and partition the boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -549,7 +548,7 @@ clear
 #Begin base system install and install zlib-ng from aurmageddon
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap /mnt base --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -564,7 +563,7 @@ sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
 vendor=$(cat /proc/cpuinfo | grep -m 1 "vendor" | grep -o "Intel")
 if [ "$vendor" = Intel ]; then
