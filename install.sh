@@ -69,13 +69,16 @@ EOF
 
 ###SET TIME###
 #Set time before init
-#This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it.
+#This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it
 timedatectl set-ntp true
-#Set hwclock as well in case system has no battery for RTC
+#Sync repos and reinstall/install critical applications. Reinstalling glibc and the keyring helps fix errors if the ISO is outdated
 pacman -Syy
 pacman -S archlinux-keyring acpi glibc ntp ncurses unzip wget dialog reflector lshw --noconfirm
+#Sync time with NTP
 ntpd -qg
+#Set hwclock as well in case system has no battery for RTC
 hwclock --systohc
+#Refresh all keys to make sure they are up to date
 gpg --refresh-keys
 pacman-key --init
 pacman-key --populate
