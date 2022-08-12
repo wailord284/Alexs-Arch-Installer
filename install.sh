@@ -514,11 +514,12 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 			mount -o compress-force=zstd,noatime "$rootTargetDisk" /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
-			mount -o compress_algorithm=zstd "$rootTargetDisk" /mnt
+			mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
 		#Standard mount for everything else
 		else
 			mount -o noatime "$rootTargetDisk" /mnt
 		fi
+	fi
 
 
 	#Mount and partition the boot partition
