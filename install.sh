@@ -592,6 +592,10 @@ sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 ###FSTAB###
 #Create FSTAB
 genfstab -U /mnt >> /mnt/etc/fstab
+#If the filesystem is F2FS remove the relatime mount option as it also adds lazytime which is better
+if [ "$filesystem" = f2fs ] ; then
+	sed 's/relatime,//' -i /mnt/etc/fstab
+fi
 
 
 ###TIMEZONE###
