@@ -130,7 +130,6 @@ The user will now be prompted to supply basic information such as hostname, user
  - Finish working on implementing dialog prompts as functions
  - x86 V3 support?
     * /lib/ld-linux-x86-64.so.2 --help | grep supported
- - Combine filesystem setup
  - fix TTY ip address
  - nvme.noacpi=1 for framework
  - optionally allow people to upload hw-probe

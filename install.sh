@@ -469,92 +469,57 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	parted -s "$storage" set 1 boot on
 	#Create ext4 root partition
 	parted -a optimal -s "$storage" mkpart primary "$filesystem" 512MiB 100%
+	clear
 
 	#Format partitions for encryption
 	if [ "$encrypt" = y ]; then
-		clear
+		#If encryption is set, make rootTargetDisk the cryptroot mapper. Otherwise, set it to ${storagePartitions[2]}
+		rootTargetDisk=/dev/mapper/cryptroot
 		#Run cryptsetup just in terminal, password will be piped in from $encpass
 		echo "$green""Setting up disk encryption. Please wait.""$reset"
 		echo "$encpass" | cryptsetup --iter-time 5000 --use-random --type luks2 --cipher aes-xts-plain64 --key-size 512 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
 		echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
+	else
+		#If encryption is not set, make this set to ${storagePartitions[2]}
+		rootTargetDisk="${storagePartitions[2]}"
 		#Filesystem creation
 		if [ "$filesystem" = ext4 ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = xfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = jfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = nilfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 		elif [ "$filesystem" = f2fs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.f2fs -f -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
-		else
-			#BTRFS
+			--prgbox "Formatting root partition" "mkfs.f2fs -f -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt $rootTargetDisk" "$HEIGHT" "$WIDTH"
+		elif [ "$filesystem" = btrfs ] ; then
 			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.btrfs -f -L ArchRoot /dev/mapper/cryptroot" "$HEIGHT" "$WIDTH"
+			--prgbox "Formatting root partition" "mkfs.btrfs -f -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 		fi
 
 		#Mount the BTRFS root partition using -o compress=zstd
 		if [ "$filesystem" = btrfs ] ; then
-			mount -o compress-force=zstd,noatime /dev/mapper/cryptroot /mnt
+			mount -o compress-force=zstd,noatime "$rootTargetDisk" /mnt
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		elif [ "$filesystem" = f2fs ] ; then
-			mount -o compress_algorithm=zstd /dev/mapper/cryptroot /mnt
+			mount -o compress_algorithm=zstd "$rootTargetDisk" /mnt
 		#Standard mount for everything else
 		else
-			mount -o noatime /dev/mapper/cryptroot /mnt
-		fi
-	else
-		#Format partitions for no encyption
-		if [ "$filesystem" = ext4 ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = xfs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = jfs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = nilfs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-		elif [ "$filesystem" = f2fs ] ; then
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.f2fs -f -l ArchRoot -O extra_attr,inode_checksum,sb_checksum,compression,encrypt ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
-		else
-			#BTRFS
-			dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-			--title "Patitioning Disk" \
-			--prgbox "Formatting root partition" "mkfs.btrfs -f -L ArchRoot ${storagePartitions[2]}" "$HEIGHT" "$WIDTH"
+			mount -o noatime "$rootTargetDisk" /mnt
 		fi
 
-		#Mount the BTRFS root partition using -o compress=zstd
-		if [ "$filesystem" = btrfs ] ; then
-			mount -o compress-force=zstd,noatime "${storagePartitions[2]}" /mnt
-		#Mount F2FS root partition using -o compress_algorithm=zstd
-		elif [ "$filesystem" = f2fs ] ; then
-			mount -o compress_algorithm=zstd "${storagePartitions[2]}" /mnt
-		#Standard mount for everything else
-		else
-			mount -o noatime "${storagePartitions[2]}" /mnt
-		fi
-	fi
 
 	#Mount and partition the boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1219,7 +1184,7 @@ fi
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
-	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=/dev/mapper/cryptroot audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
+	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Generate grubcfg if no encryption
 if [ "$encrypt" = n ]; then
