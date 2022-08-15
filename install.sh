@@ -691,7 +691,7 @@ clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap prelockd preload firefox-extension-user-agent-switcher skeuos-gtk pacman-updatedb-hook firefox-clearurls graphite-gtk-theme-nord-rimless-compact-git lxdm-themes needrestart --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap preload firefox-extension-user-agent-switcher skeuos-gtk pacman-updatedb-hook firefox-clearurls graphite-gtk-theme-nord-rimless-compact-git lxdm-themes needrestart --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -741,12 +741,12 @@ if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
 	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
 fi
 clear
-#Enable prelockd and preload daemon if ram is over ~2GB
+#Enable performance services if RAM is over ~2GB
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2000000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Performance Services" \
-	--prgbox "Enabling prelock, preload and irqbalance" "arch-chroot /mnt systemctl enable prelockd.service preload.service irqbalance && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling prelock, preload and irqbalance" "arch-chroot /mnt systemctl enable preload.service irqbalance && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users

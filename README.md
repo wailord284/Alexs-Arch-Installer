@@ -52,7 +52,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Zenpower3](https://github.com/Ta180m/zenpower3) temperature kernel driver for AMD Ryzen processors (replaces k10temp)
 - Changes if RAM is over 2GB
     * [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
-    * [Prelockd](https://github.com/hakavlad/prelockd) - Daemon to lock desktop in RAM
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM
 - Firefox changes (All installed with package manager):
