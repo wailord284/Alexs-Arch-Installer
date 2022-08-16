@@ -1234,7 +1234,7 @@ selection=${selection:- 6 7 q}
 
 		1) #Bedrock Linux
 		#https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
-		bedrockVersion="0.7.27"
+		bedrockVersion="0.7.28"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
