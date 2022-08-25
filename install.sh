@@ -1053,7 +1053,7 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	#Mask rfkill for TLP
 	arch-chroot /mnt systemctl mask systemd-rfkill.socket
 	arch-chroot /mnt systemctl mask systemd-rfkill.service
-	#Increase dirty writeback time to 15 seconds
+	#Increase dirty writeback time to 60 seconds - same as TLP
 	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 	#Disable wake on lan - may help with power
 	mv Arch-Linux-Installer-master/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
@@ -1115,14 +1115,14 @@ mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/e
 mv Arch-Linux-Installer-master/configs/sysctl/00-ipv6-privacy.conf /mnt/etc/sysctl.d/
 #Kernel hardening
 mv Arch-Linux-Installer-master/configs/sysctl/00-kernel-hardening.conf /mnt/etc/sysctl.d/
+#OOM Killer tweaks
+mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
 #System tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
 #Network tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 #RAM and storage tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
-#OOM Killer tweaks
-mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
 
 
 ###MIRRORLIST SORTING - TARGET###

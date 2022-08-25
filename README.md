@@ -63,7 +63,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the KVM group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
     * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) - Allow gparted to run without a password (users in storage group)
-    * [Gsmartcontrol](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in storage group)
+    * [Gsmartcontrol rule](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in storage group)
 - Bash changes:
     * [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) - Add color and improve tab completion
     * [ASCII Pokemon](https://gitlab.com/phoneybadger/pokemon-colorscripts) - Display a pokemon in terminal
@@ -117,7 +117,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - NO automatic updates or GUI package manager. You are expected to update the system regularly!
 - NO manual partitioning (you can only select the drive)
 - NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)
-- NO Snapshots or backup system enabled even if BTRFS is selected
+- NO snapshots or backup system enabled even if BTRFS is selected
 - Third party repositories enabled by default (archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 - Some aspects are optimized for performance/convenience over security
