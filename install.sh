@@ -1012,7 +1012,7 @@ mv -f Arch-Linux-Installer-master/configs/polkit-1/00-gparted.rules /mnt/etc/pol
 #Add gsmartcontrol rule for storage group, allow users to not enter a password to view smart data
 mv -f Arch-Linux-Installer-master/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
 #Allow user in the network group to add/modify/delete networks without a password
-mv -f Arch-Linux-Installer-master/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/
+mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
 
 
 ###PACMAN HOOKS###
