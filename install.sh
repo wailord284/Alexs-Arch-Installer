@@ -421,8 +421,8 @@ if [ "$finalInstall" = 0 ]; then
 	clear
 else
 	dialog --backtitle "$dialogBacktitle" \
-	--title "Install canceled" \
-	--msgbox "Press enter to quit." "$dialogHeight" "$dialogWidth"
+	--title "Install canceled!" \
+	--msgbox "Press enter to quit and return to the Arch CLI." "$dialogHeight" "$dialogWidth"
 	exit 1
 fi
 
@@ -437,10 +437,6 @@ clear
 
 
 ###UEFI AND BIOS CHECK/SETUP###
-#Boot type override. You can manually change this variable to the platform you want to install to.
-#This is useful if youre installing on a 64bit uefi device but want a 32bit uefi boot (Ex. moving the drive to a different computer)
-#Set boot override to 64 or 32
-bootOverride=""
 #Start the install - detect efi/uefi bios
 #If efi is present in /sys/firmware/ then system is UEFI
 if [ -d /sys/firmware/efi/ ]; then
@@ -451,14 +447,6 @@ fi
 #Also detect the boot arch. Some platforms have a 32bit uefi (NOT to be confused with 32bit cpu)
 if [ "$boot" = "efi" ]; then
 	bootArch="$(cat /sys/firmware/efi/fw_platform_size)"
-fi
-#Change boot arch if manually set above
-if [ "$bootOverride" = 64 ]; then
-	bootArch="64"
-	boot="efi"
-elif [ "$bootOverride" = 32 ]; then
-	bootArch="32"
-	boot="efi"
 fi
 
 
