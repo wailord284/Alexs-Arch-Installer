@@ -98,19 +98,27 @@ clear
 
 ###KEYMAP###
 #We do this right at the start in case the user needs a different layout to operate the next prompts
-for i in $(localectl list-keymaps --no-pager); do
-	COUNT=$((COUNT+1))
-	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+while : ; do
+	for i in $(localectl list-keymaps --no-pager); do
+		COUNT=$((COUNT+1))
+		MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
+	done
+	consoleKeymap=(dialog --backtitle "$dialogBacktitle" \
+		--title "Keymap" \
+		--scrollbar \
+		--radiolist "Press space to select your keymap for your keyboard. This is used to ensure all menus can be operated using your keyboard and so all keys actually work as intended." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
+	IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
+	#options=(${MENU_OPTIONS})
+	keymap=$("${consoleKeymap[@]}" "${options[@]}" 2>&1 >/dev/tty)
+	#Check if the value is set
+	if [[ -z $keymap ]]; then
+		dialog --msgbox "Please select an item from the list by pressing space then enter." "$dialogHeight" "$dialogWidth"  && clear
+	else
+		#Set the keymap locally before continuing
+		loadkeys "$keymap"
+		break
+	fi
 done
-consoleKeymap=(dialog --backtitle "$dialogBacktitle" \
-	--title "Keymap" \
-	--scrollbar \
-	--radiolist "Press space to select your keymap for your keyboard. This is used to ensure all menus can be operated using your keyboard and so all keys actually work as intended." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
-#options=(${MENU_OPTIONS})
-keymap=$("${consoleKeymap[@]}" "${options[@]}" 2>&1 >/dev/tty)
-#Set the keymap locally before continuing
-loadkeys "$keymap"
 clear
 
 
