@@ -682,7 +682,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart tldr kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g wxhexeditor lsscsi lightdm lightdm-gtk-greeter --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools speedtest-cli neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart tldr kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils firefox-decentraleyes xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g wxhexeditor lsscsi lightdm lightdm-gtk-greeter xorg --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -926,7 +926,7 @@ mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
 
 ###USER, PASSWORDS and PAM###
 #Create autologin group
-groupadd -r autologin
+arch-chroot /mnt groupadd -r autologin
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G network,kvm,floppy,disk,storage,uucp,wheel,optical,video,autologin -s /bin/bash "$user"
 #Create a temp file to store the password in
@@ -1069,13 +1069,13 @@ echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 ###LGIHTDM - DISPLAY MANAGER###
 #Set greeter
-sed "s,\#\greeter-session=example-gtk-gnome,greeter-session=lightdm-gtk-greeter,g" -i /mnt/etc/lightdm/lightdm.conf
+sed "s,\#greeter-session=example-gtk-gnome,greeter-session=lightdm-gtk-greeter,g" -i /mnt/etc/lightdm/lightdm.conf
 #Background
-sed "s,\#\background=,background=\#\2b303c,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
+sed "s,\#background=,background=\#2b303c,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
 #Icons
-sed "s,\#\icon-theme-name=,icon-theme-name=zafiro-dark,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
+sed "s,\#icon-theme-name=,icon-theme-name=zafiro-dark,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
 #Theme
-sed "s,\#\theme-name=,theme-name=Matcha-dark-azul,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
+sed "s,\#theme-name=,theme-name=Matcha-dark-azul,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
 
 
 
@@ -1280,8 +1280,8 @@ selection=${selection:- 6 7 q}
 
 		6) #Desktop login - Lightdm
 		echo "$green""Enabling automatic desktop login""$reset"
-		sed "s,\#\autologin-user=,autologin-user=$user,g" -i /mnt/etc/lightdm/lightdm.conf
-		sed "s,\#\autologin-session=,autologin-session=xfce,g" -i /mnt/etc/lightdm/lightdm.conf
+		sed "s,\#autologin-user=,autologin-user=$user,g" -i /mnt/etc/lightdm/lightdm.conf
+		sed "s,\#autologin-session=,autologin-session=xfce,g" -i /mnt/etc/lightdm/lightdm.conf
 		sleep 3s
 		;;
 
