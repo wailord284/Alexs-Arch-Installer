@@ -568,8 +568,8 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
 --prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
-vendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
-if [ "$vendor" = Intel ]; then
+cpuVendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
+if [ "$cpuVendor" = Intel ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Autodetected Intel CPU" \
 	--prgbox "Installing Intel Microcode" "arch-chroot /mnt pacman -S intel-ucode --noconfirm" "$HEIGHT" "$WIDTH"
