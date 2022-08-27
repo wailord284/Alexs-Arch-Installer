@@ -18,6 +18,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Nanorc files to include syntax highlighting
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Display all network interface IP Addresses on TTY logins
+- Lightdm display manager with optional autologin
 - Monthly systemd timer to clean the pacman cache (pacman -Scc)
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [JFS](https://wiki.archlinux.org/title/JFS), [NILFS2](https://en.wikipedia.org/wiki/NILFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
     * BTRFS will use [compress-force=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression
@@ -38,7 +39,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Change [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to lz4 for faster speeds
 - Support for [Wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) found in most file managers
-- LXDM display manager with [Archlinux theme](https://aur.archlinux.org/packages/archlinux-lxdm-theme/)
 - Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
 - Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to kill the running desktop and return to the login manager
 - [Archlinuxcn](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn) and [chaotic-aur](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#chaotic-aur) repository for additional software
