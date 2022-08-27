@@ -873,7 +873,7 @@ if [ "$product" = "VirtualBox" ] || [ "$hypervisor" = "VirtualBox" ] || [ "$manu
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting virtual machine" \
 	--prgbox "Running in VirtualBox - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm" "$HEIGHT" "$WIDTH"
-elif [ "$product" = "Standard PC (i440FX + PIIX, 1996)" ] || [ "$hypervisor" = "KVM" ] || [ "$manufacturer" = "kvm" ]; then
+elif [ "$product" = "Standard PC (Q35 + ICH9, 2009)" ] || [ "$hypervisor" = "KVM" ] || [ "$manufacturer" = "kvm" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting virtual machine" \
 	--prgbox "Running in KVM - Installing guest additions" "arch-chroot /mnt pacman -S qemu-guest-agent --noconfirm && arch-chroot /mnt systemctl enable qemu-guest-agent.service" "$HEIGHT" "$WIDTH"
