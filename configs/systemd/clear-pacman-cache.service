@@ -4,7 +4,7 @@ Documentation=man:pacman
 ConditionACPower=true
 
 [Service]
-ExecStart=/usr/bin/paccache -rk1
+ExecStart=/usr/bin/paccache -rk0
 Type=oneshot
 
 [Install]
