@@ -968,7 +968,7 @@ mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d
 
 ###ENVIRONMENT VARIABLES###
 #These variables help enforce config files out of the home directory
-mv Arch-Linux-Installer-master/configs/xdg.sh /etc/profile.d/
+mv Arch-Linux-Installer-master/configs/xdg.sh /mnt/etc/profile.d/
 
 
 ###NETWORK MANAGER###
@@ -1077,14 +1077,14 @@ echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 ###LGIHTDM - DISPLAY MANAGER###
 #Set greeter
 sed "s,\#greeter-session=example-gtk-gnome,greeter-session=lightdm-gtk-greeter,g" -i /mnt/etc/lightdm/lightdm.conf
+#Remove xauth from .home
+sed "s,\#user-authority-in-system-dir=false,user-authority-in-system-dir=true,g" -i /mnt/etc/lightdm/lightdm.conf
 #Background
 sed "s,\#background=,background=\#2b303c,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
 #Icons
 sed "s,\#icon-theme-name=,icon-theme-name=zafiro-dark,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
 #Theme
 sed "s,\#theme-name=,theme-name=Matcha-dark-azul,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
-
-
 
 
 ###SYSTEMD###
