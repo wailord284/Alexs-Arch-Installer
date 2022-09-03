@@ -1052,7 +1052,7 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	#Laptop mode
 	mv Arch-Linux-Installer-master/configs/sysctl/00-laptop-mode.conf /mnt/etc/sysctl.d/
 	#Disable watchdog - may help with power
-	mv Arch-Linux-Installer-master/configs/sysctl/00-disable-watchdog.conf /mnt/etc/sysctl.d/
+	mv Arch-Linux-Installer-master/configs/sysctl/10-disable-watchdog.conf /mnt/etc/sysctl.d/
 	#Set PCIE powersave in TLP
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
@@ -1115,16 +1115,18 @@ fi
 
 
 ###SYSCTL RULES###
-#Low-level console messages
-mv Arch-Linux-Installer-master/configs/sysctl/00-console-messages.conf /mnt/etc/sysctl.d/
-#Allow unprivileged_userns_clone
+#Provide the ability to allow unprivileged_userns_clone for programs like Zoom
 mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
-#IPv6 privacy
-mv Arch-Linux-Installer-master/configs/sysctl/00-ipv6-privacy.conf /mnt/etc/sysctl.d/
-#Kernel hardening
-mv Arch-Linux-Installer-master/configs/sysctl/00-kernel-hardening.conf /mnt/etc/sysctl.d/
 #OOM Killer tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
+#Low-level console messages
+mv Arch-Linux-Installer-master/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
+#Protect symbolic links
+mv Arch-Linux-Installer-master/configs/sysctl/10-link-restrictions.conf /mnt/etc/sysctl.d/
+#IPv6 privacy
+mv Arch-Linux-Installer-master/configs/sysctl/10-ipv6-privacy.conf /mnt/etc/sysctl.d/
+#Kernel hardening
+mv Arch-Linux-Installer-master/configs/sysctl/10-kernel-hardening.conf /mnt/etc/sysctl.d/
 #System tweaks
 mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
 #Network tweaks
