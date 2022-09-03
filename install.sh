@@ -1121,8 +1121,6 @@ mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/e
 mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
 #Low-level console messages
 mv Arch-Linux-Installer-master/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
-#Protect symbolic links
-mv Arch-Linux-Installer-master/configs/sysctl/10-link-restrictions.conf /mnt/etc/sysctl.d/
 #IPv6 privacy
 mv Arch-Linux-Installer-master/configs/sysctl/10-ipv6-privacy.conf /mnt/etc/sysctl.d/
 #Kernel hardening
