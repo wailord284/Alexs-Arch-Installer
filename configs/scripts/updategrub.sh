@@ -5,7 +5,11 @@ echo "Grub update found! Reinstalling and updating grub config..."
 #If efi is present in /sys/firmware/ then system is UEFI
 #Find the root disk for reinstalling with BIOS. UEFI uses /boot in the install script and is always mounted
 if [ -d /sys/firmware/efi/ ]; then
-	grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck
+	if [ "$(cat /sys/firmware/efi/fw_platform_size)" = 64 ]; then
+		grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck
+	else
+		grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck
+	fi
 else
 	rootDisk=$(df -hT | grep /$ | cut -d" " -f1)
 	grub-install --target=i386-pc "$rootDisk" --recheck
