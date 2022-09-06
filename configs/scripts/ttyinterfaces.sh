@@ -18,7 +18,7 @@ while : ; do
 		if [ "$counter" = 10 ]; then
 			echo "No Internet connection established after 10 minutes." >> /etc/issue
 			echo "Unable to get IP addresses." >> /etc/issue
-			exit 1
+			break && exit 1
 		fi
 	else
 		#Output a list of all interfaces to /etc/issue
