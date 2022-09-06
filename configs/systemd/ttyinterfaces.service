@@ -1,6 +1,7 @@
 [Unit]
 Description=Add interface IP addresses to TTY login prompts
-Wants=network-online.target
+#Start after the network service, but do not want it
+#This way it does not get stuck on the boot screen waiting
 After=network-online.target
 
 [Service]
@@ -10,4 +11,3 @@ Type=oneshot
 
 [Install]
 WantedBy=multi-user.target
-WantedBy=default.target
