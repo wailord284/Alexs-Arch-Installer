@@ -25,7 +25,7 @@ dialogWidth=80
 
 
 ###INTERNET CHECK###
-curl -s -o /dev/null http://google.com
+curl -s -o /dev/null http://archlinux.com
 if [ $? -eq 1 ]; then
 	echo -e "$red""No internet connection was found.\nPlease connect the device to the Internet and try again."
 	exit 1
@@ -51,7 +51,7 @@ cat << EOF >> /etc/pacman.conf
 [chaotic-aur]
 Server = https://random-mirror.chaotic.cx/\$repo/\$arch
 SigLevel = Never
-#wailord284 custom repo with many aur packages used by Alexs Arch Linux Installer
+#wailord284 custom repo with many aur packages used by Alex's Arch Linux Installer
 [aurmageddon]
 Server = https://wailord284.club/repo/\$repo/\$arch
 SigLevel = Never
@@ -108,7 +108,6 @@ while : ; do
 		--scrollbar \
 		--radiolist "Press space to select your keymap for your keyboard. This is used to ensure all menus can be operated using your keyboard and so all keys actually work as intended." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
 	IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
-	#options=(${MENU_OPTIONS})
 	keymap=$("${consoleKeymap[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	#Check if the value is set
 	if [[ -z $keymap ]]; then
@@ -1096,7 +1095,7 @@ mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/jo
 #Set a lower systemd timeout
 sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
-#Set journal to only keep 512MB of logs
+#Set journal to only keep 1024MB of logs
 mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 #Copy and enable the clear-pacman-cache service and timer
 mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.timer /mnt/etc/systemd/system/
