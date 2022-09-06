@@ -71,7 +71,7 @@ EOF
 timedatectl set-ntp true
 #Sync repos and reinstall/install critical applications. Reinstalling glibc and the keyring helps fix errors if the ISO is outdated
 pacman -Syy
-pacman -S archlinux-keyring acpi glibc ntp ncurses unzip wget dialog reflector lshw --noconfirm
+pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector lshw --noconfirm
 #Sync time with NTP
 ntpd -qg
 #Set hwclock as well in case system has no battery for RTC
@@ -860,9 +860,6 @@ sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 #$product - Sets to company that produces the system
 #$hypervisor - Name of hypervisor software (extra check if dmidecode fails)
 #$manufacturer - Systemd has built in tools to check for VM (extra extra check)
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Detecting virtual machine" \
---prgbox "Checking if system is a virtual machine" "pacman -S dmidecode --noconfirm" "$HEIGHT" "$WIDTH"
 product=$(dmidecode -s system-product-name)
 hypervisor=$(dmesg | grep "Hypervisor detected" | cut -d ":" -f 2 | tr -d ' ')
 manufacturer=$(systemd-detect-virt)
