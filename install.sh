@@ -39,8 +39,6 @@ echo -e "$yellow""Please wait while the system clock and keyring are configured.
 ###CONFIGURE PACMAN###
 #Stop the following services as it sometimes fails and prints messages over the dialog prompts. We sort mirrors later
 systemctl stop reflector.service qemu-guest-agent.service choose-mirror.service
-#Set Arch ISO to no siglevel. Needed for weird GPG errors or outdated Arch ISO
-sed "s,SigLevel    = Required DatabaseOptional,SigLevel    = Never,g" -i /etc/pacman.conf
 #Start the pacman key service
 systemctl start pacman-init
 
