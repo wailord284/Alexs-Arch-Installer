@@ -4,7 +4,7 @@ Type = Package
 Target = grub
 
 [Action]
-Description = Update grub after grub update
+Description = Update GRUB
 Exec = /opt/scripts/updategrub.sh
 When = PostTransaction
 Depends = grub

@@ -80,6 +80,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Packagecleanup hook](https://aur.archlinux.org/packages/pacman-cleanup-hook/) to minimize the pacman cache size when updating
     * [Needrestart hook](https://github.com/liske/needrestart) to restart outdated libraries
     * Update and reinstall grub hook after grub updates
+    * Verbose Package changes, Color, Parallel downloads
 - Makepkg changes:
     * Set makeflags to use all cores when compiling
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
