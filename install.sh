@@ -884,6 +884,7 @@ clear
 
 ###USER CONFIG SETUP - /etc/skel###
 #Download config files from github
+configFiles=Alexs-Arch-Installer-master
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Alexs-Arch-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
@@ -898,27 +899,27 @@ mkdir -p /mnt/etc/skel/.config/psd/
 mkdir -p /mnt/etc/skel/.config/htop/
 mkdir -p /mnt/etc/skel/.config/dconf/
 #Move profile-sync-daemon config
-mv Arch-Linux-Installer-master/configs/psd.conf /mnt/etc/skel/.config/psd/
+mv "$configFiles"/configs/psd.conf /mnt/etc/skel/.config/psd/
 #Move kitty config
-mv Arch-Linux-Installer-master/configs/kitty.conf /mnt/etc/skel/.config/kitty/
+mv "$configFiles"/configs/kitty.conf /mnt/etc/skel/.config/kitty/
 #Move wezterm config. We dont install wezterm by default
-mv Arch-Linux-Installer-master/configs/wezterm.lua /mnt/etc/skel/.config/wezterm/
+mv "$configFiles"/configs/wezterm.lua /mnt/etc/skel/.config/wezterm/
 #Create gtk-2.0 disable recents
-mv Arch-Linux-Installer-master/configs/gtk-2.0/gtkrc /mnt/etc/skel/.config/gtk-2.0/
+mv "$configFiles"/configs/gtk-2.0/gtkrc /mnt/etc/skel/.config/gtk-2.0/
 #Create gtk-3.0 disable recents
-mv Arch-Linux-Installer-master/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
+mv "$configFiles"/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
 #Create the xfce configs
-mv Arch-Linux-Installer-master/configs/xfce4/ /mnt/etc/skel/.config/
+mv "$configFiles"/configs/xfce4/ /mnt/etc/skel/.config/
 #Add the mousepad config in dconf
-mv Arch-Linux-Installer-master/configs/dconf/user /mnt/etc/skel/.config/dconf/
+mv "$configFiles"/configs/dconf/user /mnt/etc/skel/.config/dconf/
 #Move mimelist - sets some default apps for file types
-mv Arch-Linux-Installer-master/configs/mimeapps.list /mnt/etc/skel/.config/
+mv "$configFiles"/configs/mimeapps.list /mnt/etc/skel/.config/
 #Move htoprc
-mv Arch-Linux-Installer-master/configs/htoprc /mnt/etc/skel/.config/htop/
+mv "$configFiles"/configs/htoprc /mnt/etc/skel/.config/htop/
 #Bash stuff and screenrc
-mv Arch-Linux-Installer-master/configs/bash/inputrc /mnt/etc/skel/.config/readline/
-mv Arch-Linux-Installer-master/configs/bash/screenrc /mnt/etc/skel/.config/screen/
-mv Arch-Linux-Installer-master/configs/bash/.bashrc /mnt/etc/skel/
+mv "$configFiles"/configs/bash/inputrc /mnt/etc/skel/.config/readline/
+mv "$configFiles"/configs/bash/screenrc /mnt/etc/skel/.config/screen/
+mv "$configFiles"/configs/bash/.bashrc /mnt/etc/skel/
 
 
 ###USER, PASSWORDS and PAM###
@@ -960,12 +961,12 @@ sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export 
 
 ###XORG###
 #Add xorg file that allows the user to press control + alt + backspace to kill xorg (returns to login manager)
-mv Arch-Linux-Installer-master/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
+mv "$configFiles"/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 
 
 ###ENVIRONMENT VARIABLES###
 #These variables help enforce config files out of the home directory
-mv Arch-Linux-Installer-master/configs/xdg.sh /mnt/etc/profile.d/
+mv "$configFiles"/configs/xdg.sh /mnt/etc/profile.d/
 
 
 ###NETWORK MANAGER###
@@ -973,7 +974,7 @@ mv Arch-Linux-Installer-master/configs/xdg.sh /mnt/etc/profile.d/
 mkdir -p /mnt/etc/NetworkManager/conf.d/
 mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
 #Configure mac address spoofing on startup via networkmanager. Only wireless interfaces are randomized
-mv Arch-Linux-Installer-master/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
+mv "$configFiles"/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
 #IPv6 privacy and managed connection
 cat << EOF >> /mnt/etc/NetworkManager/NetworkManager.conf
 [connection]
@@ -982,45 +983,45 @@ ipv6.ip6-privacy=2
 managed=true
 EOF
 #Use dnsmasq for dns - this is currently disabled - networkmanager sets resolv.conf to 127.0.0.1 when dns=dnsmasq
-mv Arch-Linux-Installer-master/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
+mv "$configFiles"/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
 echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
 echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
-mv Arch-Linux-Installer-master/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
+mv "$configFiles"/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
 #Set default DNS to cloudflare and quad9
-mv Arch-Linux-Installer-master/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
+mv "$configFiles"/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 #Set network manager to avoid systemd-resolved. Fixes issue "unit dbus-org.freedesktop.resolve1.service not found" in journal log
-mv Arch-Linux-Installer-master/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
+mv "$configFiles"/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
 
 
 ###UDEV RULES###
 #IOschedulers for storage that supposedly increase perfomance
-mv Arch-Linux-Installer-master/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
+mv "$configFiles"/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
 #HDParm rule to spin down drives after 20 idle minutes
-mv Arch-Linux-Installer-master/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
+mv "$configFiles"/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
 
 
 ###POLKIT RULES###
 #Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
-mv -f Arch-Linux-Installer-master/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
+mv -f "$configFiles"/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
 #Add gparted polkit rule for storage group, allow users to not enter a password
-mv -f Arch-Linux-Installer-master/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
+mv -f "$configFiles"/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
 #Add gsmartcontrol rule for storage group, allow users to not enter a password to view smart data
-mv -f Arch-Linux-Installer-master/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
+mv -f "$configFiles"/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
 #Allow user in the network group to add/modify/delete networks without a password
-mv -f Arch-Linux-Installer-master/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
+mv -f "$configFiles"/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
 
 
 ###SCRIPTS###
 mkdir -p /mnt/opt/scripts/
-mv Arch-Linux-Installer-master/configs/scripts/ttyinterfaces.sh /mnt/opt/scripts/
-mv Arch-Linux-Installer-master/configs/scripts/updategrub.sh /mnt/opt/scripts/
+mv "$configFiles"/configs/scripts/ttyinterfaces.sh /mnt/opt/scripts/
+mv "$configFiles"/configs/scripts/updategrub.sh /mnt/opt/scripts/
 
 
 ###PACMAN HOOKS###
 #Add the needrestart pacman hook
 mkdir -p /mnt/etc/pacman.d/hooks/
-mv Arch-Linux-Installer-master/configs/pacman-hooks/needrestart.hook /mnt/etc/pacman.d/hooks/
-mv Arch-Linux-Installer-master/configs/pacman-hooks/update-grub.hook /mnt/etc/pacman.d/hooks/
+mv "$configFiles"/configs/pacman-hooks/needrestart.hook /mnt/etc/pacman.d/hooks/
+mv "$configFiles"/configs/pacman-hooks/update-grub.hook /mnt/etc/pacman.d/hooks/
 clear
 
 
@@ -1028,7 +1029,7 @@ clear
 #Change to and if -d /proc/bus/input/devices/wacom
 #Check and setup touchscreen - like x201T/x220T
 if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
-	mv Arch-Linux-Installer-master/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
+	mv "$configFiles"/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
 
 
@@ -1039,29 +1040,29 @@ if [ -d "/sys/class/power_supply/BAT0" ] || [ -d "/sys/class/power_supply/BAT1" 
 modelType=$(hostnamectl | sed 's/ //g' | grep "HardwareModel" | cut -d":" -f2)
 if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
 	#Move the powertop auto tune service so it can be enabled
-	mv Arch-Linux-Installer-master/configs/systemd/powertop.service /mnt/etc/systemd/system/
+	mv "$configFiles"/configs/systemd/powertop.service /mnt/etc/systemd/system/
 	#Install power saving tools and enable tlp, powertop and other power saving tweaks
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
 	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S powertop x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service powertop.service" "$HEIGHT" "$WIDTH"
 	#Add touchpad config
-	mv Arch-Linux-Installer-master/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
+	mv "$configFiles"/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#Laptop mode
-	mv Arch-Linux-Installer-master/configs/sysctl/00-laptop-mode.conf /mnt/etc/sysctl.d/
+	mv "$configFiles"/configs/sysctl/00-laptop-mode.conf /mnt/etc/sysctl.d/
 	#Disable watchdog - may help with power
-	mv Arch-Linux-Installer-master/configs/sysctl/10-disable-watchdog.conf /mnt/etc/sysctl.d/
+	mv "$configFiles"/configs/sysctl/10-disable-watchdog.conf /mnt/etc/sysctl.d/
 	#Set PCIE powersave in TLP
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
 	arch-chroot /mnt systemctl mask systemd-rfkill.socket
 	arch-chroot /mnt systemctl mask systemd-rfkill.service
 	#Increase dirty writeback time to 60 seconds - same as TLP
-	mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
+	mv "$configFiles"/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
 	#Disable wake on lan - may help with power
-	mv Arch-Linux-Installer-master/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
-	mv Arch-Linux-Installer-master/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
+	mv "$configFiles"/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
+	mv "$configFiles"/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
 	#Enable wifi powersave
-	mv Arch-Linux-Installer-master/configs/udev/81-wifi-powersave.rules /mnt/etc/udev/rules.d/
+	mv "$configFiles"/configs/udev/81-wifi-powersave.rules /mnt/etc/udev/rules.d/
 fi
 clear
 
@@ -1086,48 +1087,48 @@ sed "s,\#theme-name=,theme-name=Matcha-dark-azul,g" -i /mnt/etc/lightdm/lightdm-
 
 ###SYSTEMD###
 #Systemd service for packet sniffing. Not enabled
-mv Arch-Linux-Installer-master/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
+mv "$configFiles"/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
 #Set journal to output log contents to TTY12
 mkdir /mnt/etc/systemd/journald.conf.d
-mv Arch-Linux-Installer-master/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
+mv "$configFiles"/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
 #Set a lower systemd timeout
 sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
 #Set journal to only keep 1024MB of logs
-mv Arch-Linux-Installer-master/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
+mv "$configFiles"/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 #Copy and enable the clear-pacman-cache service and timer
-mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.timer /mnt/etc/systemd/system/
-mv Arch-Linux-Installer-master/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/system/
+mv "$configFiles"/configs/systemd/clear-pacman-cache.timer /mnt/etc/systemd/system/
+mv "$configFiles"/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/system/
 #Add the TTY Interfaces service to output interface IP addresses to the TTY login screen
-mv Arch-Linux-Installer-master/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
+mv "$configFiles"/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
 #Enable the clear-pacman-cache service and ttyinterfaces.service
 arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service > /dev/null 2>&1
 #Copy BTRFS file defrag service if filesystem is BTRFS
 if [ "$filesystem" = btrfs ] ; then
 	#Move and enable the BTRFS defrag service and timer
-	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
-	mv Arch-Linux-Installer-master/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
+	mv "$configFiles"/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
+	mv "$configFiles"/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
 fi
 
 
 ###SYSCTL RULES###
 #Provide the ability to allow unprivileged_userns_clone for programs like Zoom
-mv Arch-Linux-Installer-master/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
 #OOM Killer tweaks
-mv Arch-Linux-Installer-master/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
 #Low-level console messages
-mv Arch-Linux-Installer-master/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
 #IPv6 privacy
-mv Arch-Linux-Installer-master/configs/sysctl/10-ipv6-privacy.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/10-ipv6-privacy.conf /mnt/etc/sysctl.d/
 #Kernel hardening
-mv Arch-Linux-Installer-master/configs/sysctl/10-kernel-hardening.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/10-kernel-hardening.conf /mnt/etc/sysctl.d/
 #System tweaks
-mv Arch-Linux-Installer-master/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
 #Network tweaks
-mv Arch-Linux-Installer-master/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 #RAM and storage tweaks
-mv Arch-Linux-Installer-master/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
+mv "$configFiles"/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
 
 
 ###MIRRORLIST SORTING - TARGET###
@@ -1168,9 +1169,9 @@ clear
 #Move grub boot items
 mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
-mv Arch-Linux-Installer-master/configs/grub/tools/* /mnt/boot/EFI/tools/
-mv Arch-Linux-Installer-master/configs/grub/games/*.efi /mnt/boot/EFI/games/
-mv Arch-Linux-Installer-master/configs/grub/custom.cfg /mnt/boot/grub/
+mv "$configFiles"/configs/grub/tools/* /mnt/boot/EFI/tools/
+mv "$configFiles"/configs/grub/games/*.efi /mnt/boot/EFI/games/
+mv "$configFiles"/configs/grub/custom.cfg /mnt/boot/grub/
 
 
 ###GRUB BOOT OPTIONS###
@@ -1276,7 +1277,7 @@ selection=${selection:- 6 7 q}
 		5) #IWD
 		echo "$green""Configuring iwd as the default wifi backend in NetworkManager""$reset"
 		arch-chroot /mnt pacman -S iwd --noconfirm
-		mv Arch-Linux-Installer-master/configs/networkmanager/wifi_backend.conf /mnt/etc/NetworkManager/conf.d/
+		mv "$configFiles"/configs/networkmanager/wifi_backend.conf /mnt/etc/NetworkManager/conf.d/
 		sleep 3s
 		;;
 
@@ -1306,8 +1307,8 @@ selection=${selection:- 6 7 q}
 		rm -r /mnt/etc/NetworkManager/conf.d/dns-servers.conf
 		rm -r /mnt/etc/NetworkManager/conf.d/dns.conf
 		#Move new network manager dns configs
-		mv Arch-Linux-Installer-master/configs/dns-https/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
-		mv Arch-Linux-Installer-master/configs/dns-https/dns.conf /mnt/etc/NetworkManager/conf.d/
+		mv "$configFiles"/configs/dns-https/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
+		mv "$configFiles"/configs/dns-https/dns.conf /mnt/etc/NetworkManager/conf.d/
 		#Enable services
 		arch-chroot /mnt systemctl enable doh-client.service
 		sleep 3s
