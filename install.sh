@@ -518,18 +518,18 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		btrfs subvolume create /mnt/@var
 		btrfs subvolume create /mnt/@opt
 		btrfs subvolume create /mnt/@tmp
-		btrfs subvolume create /mnt/@snapshots
+		btrfs subvolume create /mnt/@.snapshots
 		#Unmount the root partition
 		umount /mnt
 		#Remount everything using subvolumes
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@ "$rootTargetDisk" /mnt
 		#Make the subvolume directories to mount
-		mkdir /mnt/{var,opt,tmp,snapshots}
+		mkdir /mnt/{var,opt,tmp,.snapshots}
 		#Mount the remaining subvoulmes
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@var "$rootTargetDisk" /mnt/var
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@opt "$rootTargetDisk" /mnt/opt
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@tmp "$rootTargetDisk" /mnt/tmp
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@snapshots "$rootTargetDisk" /mnt/snapshots
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@.snapshots "$rootTargetDisk" /mnt/.snapshots
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
@@ -1123,6 +1123,19 @@ if [ "$filesystem" = btrfs ] ; then
 	mv "$configFiles"/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
 	mv "$configFiles"/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
+fi
+
+
+###FILESYSTEM - BTRFS###
+#If we have a BTRFS filesystem, add some extra software and configs
+if [ "$filesystem" = btrfs ] ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Installing Additional Software" \
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snapper snap-pac --noconfirm" "$HEIGHT" "$WIDTH"
+	#Add snapper config
+	mkdir -p /mnt/etc/snapper/configs/
+	mv "$configFiles"/configs/snapperconfig /mnt/etc/snapper/configs/root
+	arch-chroot /mnt systemctl enable snapper-cleanup.timer snapper-timeline.timer > /dev/null 2>&1
 fi
 
 
