@@ -518,7 +518,6 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		btrfs subvolume create /mnt/@var
 		btrfs subvolume create /mnt/@opt
 		btrfs subvolume create /mnt/@tmp
-		btrfs subvolume create /mnt/@.snapshots
 		#Unmount the root partition
 		umount /mnt
 		#Remount everything using subvolumes
@@ -529,7 +528,6 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@var "$rootTargetDisk" /mnt/var
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@opt "$rootTargetDisk" /mnt/opt
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@tmp "$rootTargetDisk" /mnt/tmp
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@.snapshots "$rootTargetDisk" /mnt/.snapshots
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
@@ -611,14 +609,6 @@ genfstab -U /mnt >> /mnt/etc/fstab
 #If the filesystem is F2FS remove the relatime mount option as it also adds lazytime which is better
 if [ "$filesystem" = f2fs ]; then
 	sed 's/relatime,//' -i /mnt/etc/fstab
-fi
-if [ "$filesystem" = btrfs ]; then
-	#For some reason, genfstab ignores the -U flag and does NOT use UUID for mounting
-	#Instead, we remove the device and replace it to mount with the UUID
-	#Get the UUID for the storage device
-	btrfsuuid=$(lsblk -dno UUID "${storagePartitions[2]}")
-	#Replace the rootTargetDisk with a UUID
-	sed "s,$rootTargetDisk,UUID=$btrfsuuid,g" -i /mnt/etc/fstab
 fi
 
 
@@ -1089,6 +1079,16 @@ fi
 clear
 
 
+###FILESYSTEM - BTRFS###
+#If we have a BTRFS filesystem, add some extra software and configs
+if [ "$filesystem" = btrfs ] ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Installing Additional Software" \
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	clear
+fi
+
+
 ###MODULES###
 #Load the tcp_bbr module for better network stuffs. This is utilized in the network sysctl config
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
@@ -1151,18 +1151,6 @@ mv "$configFiles"/configs/sysctl/30-system-tweak.conf /mnt/etc/sysctl.d/
 mv "$configFiles"/configs/sysctl/30-network.conf /mnt/etc/sysctl.d/
 #RAM and storage tweaks
 mv "$configFiles"/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
-
-
-###MIRRORLIST SORTING - TARGET###
-#Sort mirrors
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Sorting mirrors on target device" \
---prgbox "Please wait while mirrors are sorted" "reflector --download-timeout 10 --connection-timeout 10 --verbose -f 10 --latest 20 --country $region --protocol https --age 24 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
-#Remove the following mirrors. For some reason they behave randomly
-sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
-sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
-sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
-clear
 
 
 ###GRUB INSTALL###
@@ -1239,19 +1227,16 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 clear
 
 
-###FILESYSTEM - BTRFS###
-#This needs to be installed after grub for grub-btrfs to work
-#If we have a BTRFS filesystem, add some extra software and configs
-if [ "$filesystem" = btrfs ] ; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snapper snap-pac --noconfirm" "$HEIGHT" "$WIDTH"
-	#Add snapper config
-	mkdir -p /mnt/etc/snapper/configs/
-	mv "$configFiles"/configs/snapperconfig /mnt/etc/snapper/configs/root
-	arch-chroot /mnt systemctl enable snapper-cleanup.timer snapper-timeline.timer > /dev/null 2>&1
-	clear
-fi
+###MIRRORLIST SORTING - TARGET###
+#Sort mirrors
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Sorting mirrors on target device" \
+--prgbox "Please wait while mirrors are sorted" "reflector --download-timeout 10 --connection-timeout 10 --verbose -f 10 --latest 20 --country $region --protocol https --age 24 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
+#Remove the following mirrors. For some reason they behave randomly
+sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
+sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
+sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
+clear
 
 
 ###POST INSTALL###

@@ -24,7 +24,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * BTRFS will use [compress-force=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression
     * BTRFS scrub timer (monthly) will be enabled for the root directory if selected
     * BTRFS autodefrag timer (monthly) will be enabled for the root directory if selected
-    * BTRFS subvolumes and snapshots with snapper/snap-pac
     * All filesystems will use an *atime (usually noatime) mount option
 - GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)
 - Preconfigured GPU Accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
