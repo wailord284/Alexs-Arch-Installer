@@ -523,7 +523,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Remount everything using subvolumes
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@ "$rootTargetDisk" /mnt
 		#Make the subvolume directories to mount
-		mkdir /mnt/{var,opt,tmp,.snapshots}
+		mkdir /mnt/{var,opt,tmp}
 		#Mount the remaining subvoulmes
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@var "$rootTargetDisk" /mnt/var
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@opt "$rootTargetDisk" /mnt/opt
@@ -901,15 +901,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Alexs-Arch-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 #Create /etc/skel dirs for configs to be applied to our new user
-mkdir -p /mnt/etc/skel/.config/gtk-3.0/
-mkdir -p /mnt/etc/skel/.config/gtk-2.0/
-mkdir -p /mnt/etc/skel/.config/readline/
-mkdir -p /mnt/etc/skel/.config/kitty/
-mkdir -p /mnt/etc/skel/.config/screen/
-mkdir -p /mnt/etc/skel/.config/wezterm/
-mkdir -p /mnt/etc/skel/.config/psd/
-mkdir -p /mnt/etc/skel/.config/htop/
-mkdir -p /mnt/etc/skel/.config/dconf/
+mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf}
 #Move profile-sync-daemon config
 mv "$configFiles"/configs/psd.conf /mnt/etc/skel/.config/psd/
 #Move kitty config
