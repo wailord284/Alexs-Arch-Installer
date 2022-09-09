@@ -511,8 +511,6 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	fi
 
 	if [ "$filesystem" = btrfs ] ; then
-		#Get the UUID for the storage device
-		btrfsuuid=$(lsblk -dno UUID "${storagePartitions[2]}")
 		#Mount the root partition
 		mount -o compress-force=zstd:3,space_cache=v2,noatime "$rootTargetDisk" /mnt
 		#Create the subvolumes
@@ -611,8 +609,16 @@ sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #Create FSTAB
 genfstab -U /mnt >> /mnt/etc/fstab
 #If the filesystem is F2FS remove the relatime mount option as it also adds lazytime which is better
-if [ "$filesystem" = f2fs ] ; then
+if [ "$filesystem" = f2fs ]; then
 	sed 's/relatime,//' -i /mnt/etc/fstab
+fi
+if [ "$filesystem" = btrfs ]; then
+	#For some reason, genfstab ignores the -U flag and does NOT use UUID for mounting
+	#Instead, we remove the device and replace it to mount with the UUID
+	#Get the UUID for the storage device
+	btrfsuuid=$(lsblk -dno UUID "${storagePartitions[2]}")
+	#Replace the rootTargetDisk with a UUID
+	sed "s,$rootTargetDisk,UUID=$btrfsuuid,g" -i /mnt/etc/fstab
 fi
 
 
