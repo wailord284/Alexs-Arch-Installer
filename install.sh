@@ -511,6 +511,8 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	fi
 
 	if [ "$filesystem" = btrfs ] ; then
+		#Get the UUID for the storage device
+		btrfsuuid=$(lsblk -dno UUID "${storagePartitions[2]}")
 		#Mount the root partition
 		mount -o compress-force=zstd:3,space_cache=v2,noatime "$rootTargetDisk" /mnt
 		#Create the subvolumes
@@ -1126,19 +1128,6 @@ if [ "$filesystem" = btrfs ] ; then
 fi
 
 
-###FILESYSTEM - BTRFS###
-#If we have a BTRFS filesystem, add some extra software and configs
-if [ "$filesystem" = btrfs ] ; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snapper snap-pac --noconfirm" "$HEIGHT" "$WIDTH"
-	#Add snapper config
-	mkdir -p /mnt/etc/snapper/configs/
-	mv "$configFiles"/configs/snapperconfig /mnt/etc/snapper/configs/root
-	arch-chroot /mnt systemctl enable snapper-cleanup.timer snapper-timeline.timer > /dev/null 2>&1
-fi
-
-
 ###SYSCTL RULES###
 #Provide the ability to allow unprivileged_userns_clone for programs like Zoom
 mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
@@ -1242,6 +1231,21 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
 --prgbox "Generating grubcfg" "arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg" "$HEIGHT" "$WIDTH"
 clear
+
+
+###FILESYSTEM - BTRFS###
+#This needs to be installed after grub for grub-btrfs to work
+#If we have a BTRFS filesystem, add some extra software and configs
+if [ "$filesystem" = btrfs ] ; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Installing Additional Software" \
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snapper snap-pac --noconfirm" "$HEIGHT" "$WIDTH"
+	#Add snapper config
+	mkdir -p /mnt/etc/snapper/configs/
+	mv "$configFiles"/configs/snapperconfig /mnt/etc/snapper/configs/root
+	arch-chroot /mnt systemctl enable snapper-cleanup.timer snapper-timeline.timer > /dev/null 2>&1
+	clear
+fi
 
 
 ###POST INSTALL###
