@@ -1084,7 +1084,7 @@ clear
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	clear
 fi
 
