@@ -14,4 +14,4 @@ sed "s,TIMELINE_LIMIT_YEARLY=\"10\",TIMELINE_LIMIT_YEARLY=\"0\",g" -i /etc/snapp
 #Enable snapper system services. Cleanup and time based snapshots
 systemctl enable snapper-cleanup.timer snapper-timeline.timer
 #Disable the snapper config script
-systemctl disable snapper-frstboot.service
+systemctl disable snapper-firstboot.service
