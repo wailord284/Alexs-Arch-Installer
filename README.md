@@ -15,7 +15,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Automatically detect if running in VirtualBox, QEMU/KVM or VMware and install appropriate guest additions
 - Optional disk encryption for the root partition
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
-- Nanorc files to include syntax highlighting
+- Nano syntax highlighting
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Display all network interface IP Addresses on TTY logins
 - Lightdm display manager with optional autologin
@@ -24,7 +24,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * BTRFS will use [compress-force=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression
     * BTRFS scrub timer (monthly) will be enabled for the root directory if selected
     * BTRFS autodefrag timer (monthly) will be enabled for the root directory if selected
-    * BTRFS timeline snapshots with Snapper and snap-pac
+    * BTRFS timeline snapshots with [Snapper](https://wiki.archlinux.org/title/Snapper) and [snap-pac](https://github.com/wesbarnett/snap-pac)
     * All filesystems will use an *atime (usually noatime) mount option
 - GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)
 - Preconfigured GPU Accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
@@ -36,7 +36,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SSDs and NVME drives
 - Change [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to lz4 for faster speeds
 - Support for [Wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
-- Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) found in most file managers
+- Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) tab found in most file managers
 - Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
 - Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to kill the running desktop and return to the login manager
 - [Archlinuxcn](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn) and [chaotic-aur](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#chaotic-aur) repository for additional software
@@ -58,7 +58,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent
     * [Decentral Eyes](https://decentraleyes.org/) - Local emulation of Content Delivery Networks
 - Polkit changes:
-    * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the KVM group)
+    * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the kvm group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
     * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) - Allow gparted to run without a password (users in storage group)
     * [Gsmartcontrol rule](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in storage group)
