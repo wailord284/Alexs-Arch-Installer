@@ -1,0 +1,9 @@
+[Unit]
+Description=One time boot script to configure Snapper
+
+[Service]
+Type=simple
+ExecStart=/opt/scripts/snapperfristboot.sh
+
+[Install]
+WantedBy=multi-user.target

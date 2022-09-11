@@ -1017,8 +1017,7 @@ mv -f "$configFiles"/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /m
 
 ###SCRIPTS###
 mkdir -p /mnt/opt/scripts/
-mv "$configFiles"/configs/scripts/ttyinterfaces.sh /mnt/opt/scripts/
-mv "$configFiles"/configs/scripts/updategrub.sh /mnt/opt/scripts/
+mv "$configFiles"/configs/scripts/* /mnt/opt/scripts/
 
 
 ###PACMAN HOOKS###
@@ -1076,8 +1075,13 @@ clear
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	clear
+	#Make locate not index .snapshots directory
+	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
+	#Add the fristboot systemd script for snapper
+	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
+	arch-chroot /mnt systemctl enable snapper-firstboot.service > /dev/null 2>&1
 fi
 
 
