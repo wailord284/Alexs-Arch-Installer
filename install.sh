@@ -512,7 +512,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 	if [ "$filesystem" = btrfs ] ; then
 		#Mount the root partition
-		mount -o compress-force=zstd:3,space_cache=v2,noatime "$rootTargetDisk" /mnt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 "$rootTargetDisk" /mnt
 		#Create the subvolumes
 		btrfs subvolume create /mnt/@
 		btrfs subvolume create /mnt/@var
@@ -521,13 +521,13 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Unmount the root partition
 		umount /mnt
 		#Remount everything using subvolumes
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@ "$rootTargetDisk" /mnt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@ "$rootTargetDisk" /mnt
 		#Make the subvolume directories to mount
 		mkdir /mnt/{var,opt,tmp}
 		#Mount the remaining subvoulmes
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@var "$rootTargetDisk" /mnt/var
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@opt "$rootTargetDisk" /mnt/opt
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,subvol=@tmp "$rootTargetDisk" /mnt/tmp
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var "$rootTargetDisk" /mnt/var
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt "$rootTargetDisk" /mnt/opt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@tmp "$rootTargetDisk" /mnt/tmp
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
