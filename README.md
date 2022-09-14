@@ -52,11 +52,12 @@ The user will now be prompted to supply basic information such as hostname, user
     * [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM
-- Firefox changes (All installed with package manager):
+- Firefox changes:
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
-    * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - URL Tracker blocker
-    * [User Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/?utm_source=gitlab) - Change browser user agent
+    * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - Blocks URL tracking elements
+    * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Prevents Javascript canvas tracking
     * [Decentral Eyes](https://decentraleyes.org/) - Local emulation of Content Delivery Networks
+    * A privacy oriented prefs.js focused on compatibility made with [ffprofile](https://ffprofile.com/)
 - Polkit changes:
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the kvm group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
