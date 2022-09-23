@@ -19,7 +19,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Display all network interface IP Addresses on TTY logins
 - Lightdm display manager with optional autologin
-- Monthly systemd timer to clean the pacman cache (pacman -Scc)
+- Monthly systemd timer to clean the pacman cache
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [JFS](https://wiki.archlinux.org/title/JFS), [NILFS2](https://en.wikipedia.org/wiki/NILFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
     * BTRFS will use [compress-force=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression
     * BTRFS scrub timer (monthly) will be enabled for the root directory if selected

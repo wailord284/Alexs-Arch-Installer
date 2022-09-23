@@ -285,7 +285,7 @@ fi
 
 ###FILESYSTEM###
 unset COUNT MENU_OPTIONS options
-for i in $(echo "ext4 xfs f2fs jfs nilfs btrfs"); do
+for i in $(echo "ext4 xfs btrfs f2fs jfs nilfs"); do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -642,7 +642,7 @@ echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 ###HOSTNAME AND HOST FILE###
 #Set hostname
 echo "$host" >> /mnt/etc/hostname
-#Set hostname and ip stuffs to /etc/hosts, this is from hblock
+#Set hostname and ip stuffs to /etc/hosts. This is from hblock
 cat << EOF > /mnt/etc/hosts
 127.0.0.1       localhost $host
 255.255.255.255 broadcasthost
@@ -701,19 +701,19 @@ clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont layan-gtk-theme-git lscolors-git zramswap preload skeuos-gtk pacman-updatedb-hook graphite-gtk-theme-nord-rimless-compact-git needrestart --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont lscolors-git zramswap preload skeuos-gtk pacman-updatedb-hook graphite-gtk-theme-nord-rimless-compact-git needrestart --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
 ###SETUP CHAOTIC-AUR REPO###
-#Add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants custom kernel
+#Add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants a custom kernel
 cat << EOF >> /mnt/etc/pacman.conf
 #Chaotic-aur repo with many packages
 [chaotic-aur]
 SigLevel = PackageOptional
 Include = /etc/pacman.d/chaotic-mirrorlist
 EOF
-#Update repos
+#Update repos on the ISO and the target
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Updating repos" \
 --prgbox "Updating pacman repos for chaotic-aur" "arch-chroot /mnt pacman -Syy && pacman -Syy" "$HEIGHT" "$WIDTH"
@@ -721,7 +721,7 @@ clear
 
 
 ###INSTALL CUSTOM KERNEL###
-#If user wants a custom kernel, install it here - for some reason, we need to echo the variables otherwise it doesnt work with pacman
+#If user wants a custom kernel, install it here. For some reason, we need to echo the variables otherwise it doesnt work with pacman
 if [ "$kernel" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Custom kernel" \
@@ -735,13 +735,6 @@ clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
-clear
-#If the user is using BTRFS, enable BTRFS-scrub service
-if [ "$filesystem" = btrfs ] ; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Enabling monthly BTRFS Scrub timer" \
-	--prgbox "Enabling BTRFS Scrub" "arch-chroot /mnt systemctl enable btrfs-scrub@-.timer" "$HEIGHT" "$WIDTH"
-fi
 clear
 #Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
 #This works however if you install via usb itll detect the usb drive as nonrotational and enable fstrim
@@ -771,7 +764,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S vulkan-radeon radeontop --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S opencl-mesa vulkan-radeon nvtop --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -928,11 +921,11 @@ mv "$configFiles"/configs/bash/inputrc /mnt/etc/skel/.config/readline/
 mv "$configFiles"/configs/bash/screenrc /mnt/etc/skel/.config/screen/
 mv "$configFiles"/configs/bash/.bashrc /mnt/etc/skel/
 #Move Firefox config
-mv "$configFiles"/configs/firefox /mnt/etc/skel/.mozilla/
+mv "$configFiles"/configs/firefox/ /mnt/etc/skel/.mozilla/
 
 
 ###USER, PASSWORDS and PAM###
-#Create autologin group
+#Create autologin group for lightdm
 arch-chroot /mnt groupadd -r autologin
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G network,kvm,floppy,disk,storage,uucp,wheel,optical,video,autologin -s /bin/bash "$user"
@@ -991,12 +984,12 @@ ipv6.ip6-privacy=2
 [ifupdown]
 managed=true
 EOF
-#Use dnsmasq for dns - this is currently disabled - networkmanager sets resolv.conf to 127.0.0.1 when dns=dnsmasq
+#Use dnsmasq for dns - networkmanager sets dns in resolv.conf to 127.0.0.1 when dns=dnsmasq
 mv "$configFiles"/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
 echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
 echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
 mv "$configFiles"/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
-#Set default DNS to cloudflare and quad9
+#Set default DNS to cloudflare and dns.sb
 mv "$configFiles"/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 #Set network manager to avoid systemd-resolved. Fixes issue "unit dbus-org.freedesktop.resolve1.service not found" in journal log
 mv "$configFiles"/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
@@ -1084,9 +1077,9 @@ if [ "$filesystem" = btrfs ] ; then
 	clear
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
-	#Add the fristboot systemd script for snapper
+	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
-	arch-chroot /mnt systemctl enable snapper-firstboot.service > /dev/null 2>&1
+	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
 fi
 
 
@@ -1244,7 +1237,7 @@ clear
 #Optional post install settings
 declare -a selection
 echo "$green""Installation complete! Here are some optional things you may want to install:""$reset"
-echo "$green""1$reset - Install Bedrock Linux"
+echo "$green""1$reset - Install Bedrock Linux (Advanced users only!)"
 echo "$green""2$reset - Enable X2Go remote desktop management server"
 echo "$green""3$reset - Enable sshd"
 echo "$green""4$reset - Enable and install the UFW firewall"
