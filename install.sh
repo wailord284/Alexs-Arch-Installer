@@ -1045,7 +1045,7 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	#Install power saving tools and enable tlp, powertop and other power saving tweaks
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
-	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S powertop x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service powertop.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S powertop x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
 	#Add touchpad config
 	mv "$configFiles"/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#Laptop mode
