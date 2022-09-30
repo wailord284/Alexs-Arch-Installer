@@ -33,7 +33,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
 - [FSTrim timer](https://wiki.archlinux.org/index.php/Solid_state_drive#Periodic_TRIM) if a SSD is detected
 - [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 10% of total ram)
-- [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SSDs and NVME drives
+- [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SATA SSDs and NVME drives
 - Change [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to lz4 for faster speeds
 - Support for [Wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) tab found in most file managers
@@ -93,7 +93,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Systemd changes:
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) - Systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
-    * [Journald logs](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) - Keep only 1024MB of logs
+    * Keep only [1024MB](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) of Journald logs and compress them
     * Systemd service timeout changed from 90 seconds to 45 seconds
 - Password changes (How the password is stored):
     * [Increased hashing rounds](https://wiki.archlinux.org/title/SHA_password_hashes)

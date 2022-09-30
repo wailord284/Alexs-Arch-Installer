@@ -38,6 +38,7 @@ alias gdb='gdb -nh -x "$XDG_CONFIG_HOME"/gdb/init'
 alias gpg='gpg2 --homedir "$XDG_DATA_HOME"/gnupg'
 alias gpg2='gpg2 --homedir "$XDG_DATA_HOME"/gnupg'
 alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME"/yarn/config'
+alias x2goclient='x2goclient --home=$XDG_CONFIG_HOME'
 
 #Personal pacman/yay commands
 alias ys='yay'
