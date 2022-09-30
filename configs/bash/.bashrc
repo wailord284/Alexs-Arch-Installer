@@ -1,33 +1,43 @@
 #Alexs custom bash stuff
-# ~/.bashrc
-# If not running interactively, don't do anything
+#If not running interactively, don't do anything
 [[ $- != *i* ]] && return
-/usr/local/bin/pokemon-colorscripts  -r
-#Colors for ls
-. /usr/share/LS_COLORS/dircolors.sh
+#Bash completion
+[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 #Do not save cmds with " " in front or duplicate commands run after eachother
 HISTSIZE=2500
 HISTFILESIZE=10000
 HISTCONTROL="erasedups:ignoreboth"
 #Add date formatting to .bash_history
 export HISTTIMEFORMAT="%h %d %H:%M:%S "
-
-#Alias stuff
-alias ls='ls --color=auto --group-directories-first'
-alias ip='ip -c'
-alias dir='dir --color=auto'
-alias vdir='vdir --color=auto'
-alias grep='grep --color=auto'
-alias man='tldr'
-export VISUAL="mousepad"
-export BROWSER="firefox"
-export EDITOR="nano"
+#Bash changes
 shopt -s autocd
 shopt -s checkwinsize
 shopt -s cdspell
 shopt -s dirspell
 shopt -s histappend
 shopt -s cmdhist
+#Editors
+export VISUAL="mousepad"
+export BROWSER="firefox"
+export EDITOR="nano"
+
+#Colors
+alias ls='ls --color=auto --group-directories-first'
+alias ip='ip -c'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto'
+alias man='tldr'
+. /usr/share/LS_COLORS/dircolors.sh
+/usr/local/bin/pokemon-colorscripts  -r
+
+#XDG stuff
+alias wget='wget --hsts-file="$XDG_CACHE_HOME"/wget-hsts'
+alias svn='svn --config-dir "$XDG_CONFIG_HOME"/subversion'
+alias gdb='gdb -nh -x "$XDG_CONFIG_HOME"/gdb/init'
+alias gpg='gpg2 --homedir "$XDG_DATA_HOME"/gnupg'
+alias gpg2='gpg2 --homedir "$XDG_DATA_HOME"/gnupg'
+alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME"/yarn/config'
 
 #Personal pacman/yay commands
 alias ys='yay'
@@ -45,7 +55,6 @@ alias orphan='sudo pacman -Rns $(pacman -Qtdq)'
 
 #Other alias commands
 alias su='su -l'
-alias entropy='cat /proc/sys/kernel/random/entropy_avail'
 alias cpuwatch='watch grep \"cpu MHz\" /proc/cpuinfo'
 alias syncwatch='watch -d grep -e Dirty: -e Writeback: /proc/meminfo'
 alias carp='sudo ip -s -s neigh flush all'
@@ -58,7 +67,7 @@ alias update-mirror="sudo reflector --download-timeout 10 --connection-timeout 1
 alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
 alias topproc='ps --sort -rss -eo pid,pcpu,pmem,rss,vsz,comm | head -15'
 alias reboot-uefi='sudo systemctl reboot --firmware-setup'
-alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
+alias man='tldr'
 
 ### ARCHIVE EXTRACTION
 # usage: ex <file>
