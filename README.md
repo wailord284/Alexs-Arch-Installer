@@ -58,6 +58,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Prevents Javascript canvas tracking
     * [Decentral Eyes](https://decentraleyes.org/) - Local emulation of Content Delivery Networks
     * A privacy oriented prefs.js focused on compatibility made with [ffprofile](https://ffprofile.com/)
+    * A custom user.js with some changes based on [BetterFox](https://github.com/yokoffing/Betterfox)
 - Polkit changes:
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the kvm group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
