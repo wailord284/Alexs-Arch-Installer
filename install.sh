@@ -93,7 +93,6 @@ dialog --title "Welcome!" \
 clear
 
 
-
 ###KEYMAP###
 #We do this right at the start in case the user needs a different layout to operate the next prompts
 while : ; do
@@ -267,7 +266,7 @@ while : ; do
 		storagePartitions=([1]="$storage"1 [2]="$storage"2)
 		break
 	else
-		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sd[a-z], /dev/vd[a-z], /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth" && exit 1
+		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sd[a-z], /dev/vd[a-z], /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth"
 	fi
 done
 clear
@@ -511,8 +510,9 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	fi
 
 	if [ "$filesystem" = btrfs ] ; then
-		#Mount the root partition
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 "$rootTargetDisk" /mnt
+		rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
+		#Mount the root partition by UUID
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 UUID="$rootTargetDiskUUID" /mnt
 		#Create the subvolumes
 		btrfs subvolume create /mnt/@
 		btrfs subvolume create /mnt/@var_log
@@ -522,14 +522,14 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Unmount the root partition
 		umount /mnt
 		#Remount everything using subvolumes
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@ "$rootTargetDisk" /mnt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@ UUID="$rootTargetDiskUUID" /mnt
 		#Make the subvolume directories to mount
 		mkdir -p /mnt/{var/log,var/cache,opt,tmp}
 		#Mount the remaining subvoulmes
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_log "$rootTargetDisk" /mnt/var/log
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_cache "$rootTargetDisk" /mnt/var/cache
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt "$rootTargetDisk" /mnt/opt
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@tmp "$rootTargetDisk" /mnt/tmp
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_log UUID="$rootTargetDiskUUID" /mnt/var/log
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_cache UUID="$rootTargetDiskUUID" /mnt/var/cache
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt UUID="$rootTargetDiskUUID" /mnt/opt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@tmp UUID="$rootTargetDiskUUID" /mnt/tmp
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
