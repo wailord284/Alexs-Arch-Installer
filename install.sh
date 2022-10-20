@@ -510,8 +510,8 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	fi
 
 	if [ "$filesystem" = btrfs ] ; then
-		rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
 		#Mount the root partition by UUID
+		rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 UUID="$rootTargetDiskUUID" /mnt
 		#Create the subvolumes
 		btrfs subvolume create /mnt/@
@@ -595,12 +595,14 @@ fi
 clear
 
 
-###ENCRYPTION HOOK - MKINITCPIO###
-#Enable encryption mkinitcpio hooks if needed and set zstd compression
-#Arch has now made ZSTD the default (over gzip). LZ4 is slightly faster but uses more disk space.
+###MKINITCPIO###
+#Replace base and udev with systemd. Improves boot time slightly
+sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(systemd autodetect keyboard modconf block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+#Enable encryption mkinitcpio hook if needed
 if [ "$encrypt" = y ]; then
-	sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+	sed "s,HOOKS=(systemd autodetect modconf block filesystems keyboard fsck),HOOKS=(systemd autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
+#Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
 
