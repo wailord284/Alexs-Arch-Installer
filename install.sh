@@ -27,16 +27,16 @@ dialogWidth=80
 ###INTERNET CHECK###
 curl -s -o /dev/null http://archlinux.com
 if [ $? -eq 1 ]; then
-	echo -e "$red""No internet connection was found.\nPlease connect the device to the Internet and try again."
+	echo -e "$red""No internet connection was found.\nThis installer requires an Internet connection to continue.\nPlease connect to the Internet and try again."
 	exit 1
 fi
 
 
-###WELCOME MESSAGE###
-echo -e "$yellow""Please wait while the system clock and keyring are configured.\nThis can take a moment especially on older and low power systems.""$reset"
+###WELCOME MESSAGE 1###
+echo -e "$yellow""Please wait while the system clock and keyring are configured.\nThis can take some time especially on older systems.""$reset"
 
 
-###CONFIGURE PACMAN###
+###CONFIGURE ISO SERVICES###
 #Stop the following services as it sometimes fails and prints messages over the dialog prompts. We sort mirrors later
 systemctl stop reflector.service qemu-guest-agent.service choose-mirror.service
 #Start the pacman key service
@@ -54,7 +54,7 @@ SigLevel = Never
 Server = https://wailord284.club/repo/\$repo/\$arch
 SigLevel = Never
 EOF
-#Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?)
+#Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?) or unreliable
 cat << EOF > /etc/pacman.d/mirrorlist
 Server = https://mirrors.xtom.com/archlinux/\$repo/os/\$arch
 Server = https://mirror.arizona.edu/archlinux/\$repo/os/\$arch
@@ -66,8 +66,7 @@ EOF
 
 
 ###SET TIME###
-#Set time before init
-#This is useful if you installed coreboot or have a dead RTC. The clock will have no time set by default and this will update it
+#This is useful if you installed coreboot or have a dead RTC. The clock may have no time set by default and this will update it
 timedatectl set-ntp true
 #Sync repos and reinstall/install critical applications. Reinstalling glibc and the keyring helps fix errors if the ISO is outdated
 pacman -Syy
@@ -83,7 +82,7 @@ pacman-key --populate
 clear
 
 
-###WELCOME###
+###WELCOME MESSAGE 2###
 dialog --title "Welcome!" \
 --backtitle "$dialogBacktitle" \
 --timeout 20 \
@@ -120,7 +119,7 @@ clear
 
 ###USERNAME###
 #Loop until the username passes the regex check
-#Username must only be lowercase with numbers. Anything else fails
+#Username must only be lowercase with or without numbers. Anything else fails
 usernameCharacters="^[0-9a-z]+$"
 #Loop until the username passes the regex check
 while : ; do
@@ -844,7 +843,7 @@ Defaults editor=/usr/bin/rnano
 Defaults log_host, log_year, logfile="/var/log/sudo.log"
 #Required for profile-sync-daemon when using overlayfs
 $user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
-#Uncomment to allow some commands to be executed without entering the sudo password
+#Uncomment to allow some commands to be executed without entering the user password
 #$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector,/usr/bin/dmesg"
 EOF
 
@@ -1058,14 +1057,13 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	#Set PCIE powersave in TLP
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
-	arch-chroot /mnt systemctl mask systemd-rfkill.socket
-	arch-chroot /mnt systemctl mask systemd-rfkill.service
+	arch-chroot /mnt systemctl mask systemd-rfkill.socket systemd-rfkill.service > /dev/null 2>&1
 	#Increase dirty writeback time to 60 seconds - same as TLP
 	mv "$configFiles"/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
-	#Disable wake on lan - may help with power
+	#Disable wake on lan - may help with power savings
 	mv "$configFiles"/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
 	mv "$configFiles"/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
-	#Enable wifi powersave
+	#Enable wifi powersaving
 	mv "$configFiles"/configs/udev/81-wifi-powersave.rules /mnt/etc/udev/rules.d/
 fi
 clear
@@ -1085,18 +1083,22 @@ if [ "$filesystem" = btrfs ] ; then
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
+        #Move and enable the BTRFS defrag service and timer
+        mv "$configFiles"/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
+        mv "$configFiles"/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
+        arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
 fi
 
 
 ###MODULES###
-#Load the tcp_bbr module for better network stuffs. This is utilized in the network sysctl config
+#Load the tcp_bbr module for better networking. This is utilized in the network sysctl config
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 
 ###LGIHTDM - DISPLAY MANAGER###
 #Set greeter
 sed "s,\#greeter-session=example-gtk-gnome,greeter-session=lightdm-gtk-greeter,g" -i /mnt/etc/lightdm/lightdm.conf
-#Remove xauth from .home
+#Remove xauth dot file from /home/user/
 sed "s,\#user-authority-in-system-dir=false,user-authority-in-system-dir=true,g" -i /mnt/etc/lightdm/lightdm.conf
 #Background
 sed "s,\#background=,background=\#2b303c,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
@@ -1124,13 +1126,6 @@ mv "$configFiles"/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/sy
 mv "$configFiles"/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
 #Enable the clear-pacman-cache service and ttyinterfaces.service
 arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service > /dev/null 2>&1
-#Copy BTRFS file defrag service if filesystem is BTRFS
-if [ "$filesystem" = btrfs ] ; then
-	#Move and enable the BTRFS defrag service and timer
-	mv "$configFiles"/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
-	mv "$configFiles"/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
-	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
-fi
 
 
 ###SYSCTL RULES###
@@ -1266,7 +1261,7 @@ selection=${selection:- 6 7 q}
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
 		arch-chroot /mnt sh bedrock-linux-"$bedrockVersion"-x86_64.sh --hijack
-		arch-chroot /mnt sed "s,timeout = 30,timeout = 3,g" -i /bedrock/etc/bedrock.conf
+		arch-chroot /mnt sed "s,timeout = 30,timeout = 5,g" -i /bedrock/etc/bedrock.conf
 		sleep 3s
 		;;
 
@@ -1312,7 +1307,7 @@ selection=${selection:- 6 7 q}
 		7) #hblock
 		#run hblock to prevent ads
 		echo "$green""Running hblock and enabling hblock.timer - hosts file will be modified""$reset"
-		arch-chroot /mnt pacman -S hblock --noconfirm #installed from Aurmageddon
+		arch-chroot /mnt pacman -S hblock --noconfirm
 		arch-chroot /mnt hblock
 		arch-chroot /mnt systemctl enable hblock.timer
 		#Make sure to replace the hostname from archiso
