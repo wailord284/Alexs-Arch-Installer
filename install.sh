@@ -510,10 +510,10 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	fi
 
 	if [ "$filesystem" = btrfs ] ; then
-		#Mount the root partition by UUID
+		#Mount the root partition by UUID to make sure genfstab uses UUIDs
 		rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 UUID="$rootTargetDiskUUID" /mnt
-		#Create the subvolumes
+		#Create the subvolumes. We do not mount /tmp but make it a subvolume anyways
 		btrfs subvolume create /mnt/@
 		btrfs subvolume create /mnt/@var_log
 		btrfs subvolume create /mnt/@var_cache
@@ -1080,6 +1080,8 @@ if [ "$filesystem" = btrfs ] ; then
 	clear
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
+	#Change the snapper-cleanup timer run every eight hours instead of once per day
+	sed "s,1d,8h,g" -i /mnt/usr/lib/systemd/system/snapper-cleanup.timer
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
