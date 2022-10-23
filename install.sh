@@ -1094,8 +1094,8 @@ if [ "$filesystem" = btrfs ] ; then
 	mv "$configFiles"/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
 	#Update mkinitcpio to include btrfs hooks for Grub. Get the current hooks then add grub-btrfs-overlayfs
-	currentHooks=$(tac /etc/mkinitcpio.conf | grep -m1 HOOKS=)
-	newHooks=$(tac /etc/mkinitcpio.conf | grep -m1 HOOKS= | sed 's/.\{1\}$//' | sed -e 's/$/ grub-btrfs-overlayfs)/g')
+	currentHooks=$(tac /mnt/etc/mkinitcpio.conf | grep -m1 HOOKS=)
+	newHooks=$(tac /mnt/etc/mkinitcpio.conf | grep -m1 HOOKS= | sed 's/.\{1\}$//' | sed -e 's/$/ grub-btrfs-overlayfs)/g')
 	#Replace the currentHooks with newHooks (appends grub-btrfs-overlayfs to the end)
 	sed "s,$currentHooks,$newHooks,g" -i /mnt/etc/mkinitcpio.conf
 	#Add btrfs assistant rule for storage group, allow users to not enter a password to view smart data
