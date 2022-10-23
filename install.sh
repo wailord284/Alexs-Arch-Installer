@@ -482,7 +482,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		rootTargetDisk="${storagePartitions[2]}"
 	fi
 	#Get the UUID of the root partition
-	rootTargetDiskUUID=$(lsblk -dno UUID "${storagePartitions[2]}")
+	rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
 
 	#Filesystem creation
 	if [ "$filesystem" = ext4 ] ; then
