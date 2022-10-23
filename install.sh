@@ -465,7 +465,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	parted -a optimal -s "$storage" mkpart primary fat32 1MiB 512MiB
 	#Mark partition 1 as bootable
 	parted -s "$storage" set 1 boot on
-	#Create ext4 root partition
+	#Create root partition/filesystem
 	parted -a optimal -s "$storage" mkpart primary "$filesystem" 512MiB 100%
 	clear
 
@@ -481,8 +481,6 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#If encryption is not set, make this set to ${storagePartitions[2]}
 		rootTargetDisk="${storagePartitions[2]}"
 	fi
-	#Get the UUID of the root partition
-	rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
 
 	#Filesystem creation
 	if [ "$filesystem" = ext4 ] ; then
@@ -512,8 +510,9 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	fi
 
 	if [ "$filesystem" = btrfs ] ; then
+		rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
 		#Mount the root partition by UUID to make sure genfstab uses UUIDs
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 UUID="$rootTargetDiskUUID" /mnt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 -U "$rootTargetDiskUUID" /mnt
 		#Create the subvolumes. We do not mount /tmp but make it a subvolume anyways
 		btrfs subvolume create /mnt/@
 		btrfs subvolume create /mnt/@var_log
@@ -524,14 +523,14 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Unmount the root partition
 		umount /mnt
 		#Remount everything using subvolumes
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@ UUID="$rootTargetDiskUUID" /mnt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@ -U "$rootTargetDiskUUID" /mnt
 		#Make the subvolume directories to mount
 		mkdir -p /mnt/{var/log,var/cache,var/tmp,opt}
 		#Mount the remaining subvoulmes
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_log UUID="$rootTargetDiskUUID" /mnt/var/log
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_cache UUID="$rootTargetDiskUUID" /mnt/var/cache
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_tmp UUID="$rootTargetDiskUUID" /mnt/var/tmp
-		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt UUID="$rootTargetDiskUUID" /mnt/opt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_log -U "$rootTargetDiskUUID" /mnt/var/log
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_cache -U "$rootTargetDiskUUID" /mnt/var/cache
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_tmp -U "$rootTargetDiskUUID" /mnt/var/tmp
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt -U "$rootTargetDiskUUID" /mnt/opt
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
@@ -600,9 +599,9 @@ clear
 ###MKINITCPIO###
 #Replace base and udev with systemd. Improves boot time slightly
 sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(systemd autodetect keyboard modconf block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
-#Enable encryption mkinitcpio hook if needed
+#Enable encryption mkinitcpio hook if needed and revert back to base/udev hooks as using the systemd one required additional changes
 if [ "$encrypt" = y ]; then
-	sed "s,HOOKS=(systemd autodetect modconf block filesystems keyboard fsck),HOOKS=(systemd autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+	sed "s,HOOKS=(systemd autodetect keyboard modconf block filesystems fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
@@ -1200,6 +1199,7 @@ fi
 ###GRUB CONFIG###
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
+	rootTargetDiskUUID=$(lsblk -dno UUID "${storagePartitions[2]}")
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Generate grubcfg if no encryption
