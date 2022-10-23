@@ -1081,7 +1081,7 @@ clear
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snap-pac-grub snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	clear
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
@@ -1090,10 +1090,17 @@ if [ "$filesystem" = btrfs ] ; then
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
-        #Move and enable the BTRFS defrag service and timer
-        mv "$configFiles"/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
-        mv "$configFiles"/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
-        arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
+	#Move and enable the BTRFS defrag service and timer
+	mv "$configFiles"/configs/systemd/btrfs-autodefrag.service /mnt/etc/systemd/system/
+	mv "$configFiles"/configs/systemd/btrfs-autodefrag.timer /mnt/etc/systemd/system/
+	arch-chroot /mnt systemctl enable btrfs-autodefrag.timer > /dev/null 2>&1
+	#Update mkinitcpio to include btrfs hooks for Grub. Get the current hooks then add grub-btrfs-overlayfs
+	currentHooks=$(tac /etc/mkinitcpio.conf | grep -m1 HOOKS=)
+	newHooks=$(tac /etc/mkinitcpio.conf | grep -m1 HOOKS= | sed 's/.\{1\}$//' | sed -e 's/$/ grub-btrfs-overlayfs)/g')
+	#Replace the currentHooks with newHooks (appends grub-btrfs-overlayfs to the end)
+	sed "s,$currentHooks,$newHooks,g" -i /mnt/etc/mkinitcpio.conf
+	#Add btrfs assistant rule for storage group, allow users to not enter a password to view smart data
+	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
 fi
 
 

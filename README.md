@@ -65,6 +65,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
     * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) - Allow gparted to run without a password (users in storage group)
     * [Gsmartcontrol rule](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in storage group)
+    * BTRFS Assistant rule - Allows btrfs-assistant to run without a password (users in storage group)
 - Bash changes:
     * [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) - Add color and improve tab completion
     * [ASCII Pokemon](https://gitlab.com/phoneybadger/pokemon-colorscripts) - Display a pokemon in terminal
