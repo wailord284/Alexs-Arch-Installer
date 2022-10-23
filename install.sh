@@ -520,17 +520,19 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		btrfs subvolume create /mnt/@var_tmp
 		btrfs subvolume create /mnt/@opt
 		btrfs subvolume create /mnt/@tmp
+		btrfs subvolume create /mnt/@srv
 		#Unmount the root partition
 		umount /mnt
 		#Remount everything using subvolumes
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@ -U "$rootTargetDiskUUID" /mnt
 		#Make the subvolume directories to mount
-		mkdir -p /mnt/{var/log,var/cache,var/tmp,opt}
+		mkdir -p /mnt/{srv,var/log,var/cache,var/tmp,opt}
 		#Mount the remaining subvoulmes
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_log -U "$rootTargetDiskUUID" /mnt/var/log
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_cache -U "$rootTargetDiskUUID" /mnt/var/cache
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_tmp -U "$rootTargetDiskUUID" /mnt/var/tmp
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt -U "$rootTargetDiskUUID" /mnt/opt
+		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt -U "$rootTargetDiskUUID" /mnt/srv
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
@@ -602,6 +604,10 @@ sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOK
 #Enable encryption mkinitcpio hook if needed and revert back to base/udev hooks as using the systemd one required additional changes
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(systemd autodetect keyboard modconf block filesystems fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+fi
+#If the filesystem is btrfs add the btrfs binary to mkinitcpio for recovery situations
+if [ "$filesystem" = btrfs ] ; then
+	sed "s,BINARIES=(),BINARIES=(btrfs),g" -i /mnt/etc/mkinitcpio.conf
 fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
