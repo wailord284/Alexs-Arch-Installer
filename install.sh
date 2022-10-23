@@ -1019,7 +1019,7 @@ mv -f "$configFiles"/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d
 #Add gsmartcontrol rule for storage group, allow users to not enter a password to view smart data
 mv -f "$configFiles"/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
 #Allow user in the network group to add/modify/delete networks without a password
-mv -f "$configFiles"/configs/polkit-1/50-org.freedesktop.NetworkManager.rules /mnt/etc/polkit-1/rules.d/
+mv -f "$configFiles"/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/
 
 
 ###SCRIPTS###
@@ -1082,7 +1082,6 @@ if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software" \
 	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snap-pac-grub snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
-	clear
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
 	#Change the snapper-cleanup timer run every eight hours instead of once per day
@@ -1101,6 +1100,7 @@ if [ "$filesystem" = btrfs ] ; then
 	sed "s,$currentHooks,$newHooks,g" -i /mnt/etc/mkinitcpio.conf
 	#Add btrfs assistant rule for storage group, allow users to not enter a password to view smart data
 	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
+	clear
 fi
 
 
