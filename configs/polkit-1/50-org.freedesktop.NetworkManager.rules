@@ -1,3 +1,5 @@
+/* Allow users in the network group to manage NetworkManager
+daemon without authentication */
 polkit.addRule(function(action, subject) {
   if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0 && subject.isInGroup("network")) {
     return polkit.Result.YES;

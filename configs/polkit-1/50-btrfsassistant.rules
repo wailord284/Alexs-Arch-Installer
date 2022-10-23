@@ -1,4 +1,4 @@
-/* Allow users in storage group to manage btrfs assistant
+/* Allow users in the storage group to manage btrfs assistant
 daemon without authentication */
 polkit.addRule(function(action, subject) {
     if (action.id == "org.btrfs-assistant.pkexec.policy.run" &&

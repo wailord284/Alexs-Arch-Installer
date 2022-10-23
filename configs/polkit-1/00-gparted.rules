@@ -1,4 +1,4 @@
-/* Allow users in storage group to run GParted without authentication */
+/* Allow users in the storage group to run GParted without authentication */
 polkit.addRule(function(action, subject) {
     if (action.id == "org.gnome.gparted" &&
         subject.isInGroup("storage")) {

@@ -1,4 +1,4 @@
-/* Allow users in kvm group to manage the libvirt
+/* Allow users in the storage group to run gsmartcontrol
 daemon without authentication */
 polkit.addRule(function(action, subject) {
     if (action.id == "org.archlinux.pkexec.gsmartcontrol" &&
