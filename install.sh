@@ -1081,7 +1081,7 @@ clear
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snap-pac-grub snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
 	#Change the snapper-cleanup timer run every eight hours instead of once per day
@@ -1100,8 +1100,6 @@ if [ "$filesystem" = btrfs ] ; then
 	sed "s,$currentHooks,$newHooks,g" -i /mnt/etc/mkinitcpio.conf
 	#Add btrfs assistant rule for storage group, allow users to not enter a password to view smart data
 	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
-	#Update grub when snapshots happen
-	arch-chroot /mnt systemctl enable grub-btrfsd > /dev/null 2>&1
 	clear
 fi
 
