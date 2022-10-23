@@ -1200,7 +1200,6 @@ fi
 ###GRUB CONFIG###
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
-	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Generate grubcfg if no encryption
