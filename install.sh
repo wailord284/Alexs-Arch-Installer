@@ -481,6 +481,9 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#If encryption is not set, make this set to ${storagePartitions[2]}
 		rootTargetDisk="${storagePartitions[2]}"
 	fi
+	#Get the UUID of the root partition
+	rootTargetDiskUUID=$(lsblk -dno UUID "${storagePartitions[2]}")
+
 	#Filesystem creation
 	if [ "$filesystem" = ext4 ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -510,7 +513,6 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 	if [ "$filesystem" = btrfs ] ; then
 		#Mount the root partition by UUID to make sure genfstab uses UUIDs
-		rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 UUID="$rootTargetDiskUUID" /mnt
 		#Create the subvolumes. We do not mount /tmp but make it a subvolume anyways
 		btrfs subvolume create /mnt/@
@@ -697,8 +699,8 @@ clear
 ###PACKAGE INSTALLATION###
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing additional desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller pigz lzip lzop cpio lrzip zip unzip p7zip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger pbzip2 smartmontools neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox hdparm usbutils logrotate ethtool systembus-notify dbus-broker gpart tldr kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g wxhexeditor lsscsi lightdm lightdm-gtk-greeter xorg --noconfirm" "$HEIGHT" "$WIDTH"
+--title "Installing desktop software" \
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger smartmontools neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox hdparm usbutils logrotate ethtool systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter xorg fsearch --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1199,7 +1201,7 @@ fi
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
 	uuid=$(lsblk -dno UUID "${storagePartitions[2]}")
-	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$uuid:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
+	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Generate grubcfg if no encryption
 if [ "$encrypt" = n ]; then
