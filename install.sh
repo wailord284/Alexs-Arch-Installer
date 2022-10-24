@@ -773,7 +773,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S opencl-mesa vulkan-radeon nvtop --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S opencl-mesa vulkan-radeon radeontop --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1084,8 +1084,8 @@ if [ "$filesystem" = btrfs ] ; then
 	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snap-pac-grub snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
-	#Change the snapper-cleanup timer run every eight hours instead of once per day
-	sed "s,1d,8h,g" -i /mnt/usr/lib/systemd/system/snapper-cleanup.timer
+	#Change the snapper-cleanup timer run every six hours instead of once per day
+	sed "s,1d,6h,g" -i /mnt/usr/lib/systemd/system/snapper-cleanup.timer
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
