@@ -805,6 +805,30 @@ if [[ "$CPUModel" = Ryzen ]] || [[ "$CPUModel" = ryzen ]]; then
 fi
 
 
+###VIRTUAL MACHINE CHECK/SETUP###
+#Detect if running in virtual machine and install guest additions
+#$product - Sets to company that produces the system
+#$hypervisor - Name of hypervisor software (extra check if dmidecode fails)
+#$manufacturer - Systemd has built in tools to check for VM (extra extra check)
+product=$(dmidecode -s system-product-name)
+hypervisor=$(dmesg | grep "Hypervisor detected" | cut -d ":" -f 2 | tr -d ' ')
+manufacturer=$(systemd-detect-virt)
+if [ "$product" = "VirtualBox" ] || [ "$hypervisor" = "VirtualBox" ] || [ "$manufacturer" = "oracle" ]; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting virtual machine" \
+	--prgbox "Running in VirtualBox - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm" "$HEIGHT" "$WIDTH"
+elif [ "$product" = "Standard PC (Q35 + ICH9, 2009)" ] || [ "$hypervisor" = "KVM" ] || [ "$manufacturer" = "kvm" ]; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting virtual machine" \
+	--prgbox "Running in KVM - Installing guest additions" "arch-chroot /mnt pacman -S qemu-guest-agent spice spice-vdagent xf86-video-qxl --noconfirm && arch-chroot /mnt systemctl enable qemu-guest-agent.service" "$HEIGHT" "$WIDTH"
+elif [ "$product" = "VMware Virtual Platform" ] || [ "$hypervisor" = "VMware" ] || [ "$manufacturer" = "vmware" ]; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting virtual machine" \
+	--prgbox "Running in VMWare - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm && arch-chroot /mnt systemctl enable vmtoolsd.service vmware-vmblock-fuse.service" "$HEIGHT" "$WIDTH"
+fi
+clear
+
+
 ###ZRAM###
 #Changes the default amount of zram from 20% to 10% of total system RAM
 sed "s,20,10,g" -i /mnt/etc/zramswap.conf
@@ -872,30 +896,6 @@ sed "s,COMPRESSXZ=(xz -c -z -),COMPRESSXZ=(xz -e -9 -c -z --threads=0 -),g" -i /
 sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=0 -),g" -i /mnt/etc/makepkg.conf
 #Change default pkg extension to just tar (uncompressed)
 sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
-
-
-###VIRTUAL MACHINE CHECK/SETUP###
-#Detect if running in virtual machine and install guest additions
-#$product - Sets to company that produces the system
-#$hypervisor - Name of hypervisor software (extra check if dmidecode fails)
-#$manufacturer - Systemd has built in tools to check for VM (extra extra check)
-product=$(dmidecode -s system-product-name)
-hypervisor=$(dmesg | grep "Hypervisor detected" | cut -d ":" -f 2 | tr -d ' ')
-manufacturer=$(systemd-detect-virt)
-if [ "$product" = "VirtualBox" ] || [ "$hypervisor" = "VirtualBox" ] || [ "$manufacturer" = "oracle" ]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Detecting virtual machine" \
-	--prgbox "Running in VirtualBox - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware virtualbox-guest-utils --noconfirm" "$HEIGHT" "$WIDTH"
-elif [ "$product" = "Standard PC (Q35 + ICH9, 2009)" ] || [ "$hypervisor" = "KVM" ] || [ "$manufacturer" = "kvm" ]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Detecting virtual machine" \
-	--prgbox "Running in KVM - Installing guest additions" "arch-chroot /mnt pacman -S qemu-guest-agent spice spice-vdagent xf86-video-qxl --noconfirm && arch-chroot /mnt systemctl enable qemu-guest-agent.service" "$HEIGHT" "$WIDTH"
-elif [ "$product" = "VMware Virtual Platform" ] || [ "$hypervisor" = "VMware" ] || [ "$manufacturer" = "vmware" ]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Detecting virtual machine" \
-	--prgbox "Running in VMWare - Installing guest additions" "arch-chroot /mnt pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools --noconfirm && arch-chroot /mnt systemctl enable vmtoolsd.service vmware-vmblock-fuse.service" "$HEIGHT" "$WIDTH"
-fi
-clear
 
 
 ###USER CONFIG SETUP - /etc/skel###
