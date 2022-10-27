@@ -829,6 +829,17 @@ fi
 clear
 
 
+###DVD/CD UTILITIES###
+#Only install DVD/CD stuff if the device has an optical drive
+ls /dev/sr0 > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detected Optical Drive" \
+	--prgbox "Installing additional optical drive software" "arch-chroot /mnt pacman -S xfburn cdrtools --noconfirm" "$HEIGHT" "$WIDTH"
+fi
+clear
+
+
 ###ZRAM###
 #Changes the default amount of zram from 20% to 10% of total system RAM
 sed "s,20,10,g" -i /mnt/etc/zramswap.conf
