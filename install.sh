@@ -835,7 +835,7 @@ ls /dev/sr0 > /dev/null 2>&1
 if [ $? -eq 0 ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detected Optical Drive" \
-	--prgbox "Installing additional optical drive software" "arch-chroot /mnt pacman -S xfburn cdrtools --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Installing additional optical drive software" "arch-chroot /mnt pacman -S xfburn cdrtools dvd+rw-tools --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 clear
 
