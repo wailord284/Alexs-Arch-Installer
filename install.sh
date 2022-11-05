@@ -70,7 +70,7 @@ EOF
 timedatectl set-ntp true
 #Sync repos and reinstall/install critical applications. Reinstalling glibc and the keyring helps fix errors if the ISO is outdated
 pacman -Syy
-pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector lshw --noconfirm
+pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector lshw openssl openssl-1.1 --noconfirm
 #Sync time with NTP
 ntpd -qg
 #Set hwclock as well in case system has no battery for RTC
@@ -975,9 +975,8 @@ sed "s/success=2/success=1/g" -i /mnt/etc/pam.d/system-auth
 ###FONTS###
 #Set fonts
 #https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
-arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
-arch-chroot /mnt ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
-arch-chroot /mnt ln -s /etc/fonts/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
+arch-chroot /mnt ln -s /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
+arch-chroot /mnt ln -s /usr/share/fontconfig/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
 sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
 
 
