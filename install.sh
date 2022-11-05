@@ -533,7 +533,6 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_tmp -U "$rootTargetDiskUUID" /mnt/var/tmp
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt -U "$rootTargetDiskUUID" /mnt/opt
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt -U "$rootTargetDiskUUID" /mnt/srv
-		sleep 5s
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
