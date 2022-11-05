@@ -510,7 +510,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	fi
 
 	if [ "$filesystem" = btrfs ] ; then
-		rootTargetDiskUUID=$(lsblk -dno UUID "$rootTargetDisk")
+		rootTargetDiskUUID=$(blkid | grep "$rootTargetDisk" | cut -d" " -f3 | cut -d'"' -f2)
 		#Mount the root partition by UUID to make sure genfstab uses UUIDs
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60 -U "$rootTargetDiskUUID" /mnt
 		#Create the subvolumes. We do not mount /tmp but make it a subvolume anyways
@@ -533,6 +533,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@var_tmp -U "$rootTargetDiskUUID" /mnt/var/tmp
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt -U "$rootTargetDiskUUID" /mnt/opt
 		mount -o compress-force=zstd:3,space_cache=v2,noatime,commit=60,subvol=@opt -U "$rootTargetDiskUUID" /mnt/srv
+		sleep 5s
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
@@ -1222,7 +1223,7 @@ fi
 ###GRUB CONFIG###
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
-	rootTargetDiskUUID=$(lsblk -dno UUID "${storagePartitions[2]}")
+	rootTargetDiskUUID=$(blkid | grep "${storagePartitions[2]}" | cut -d" " -f3 | cut -d'"' -f2)
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Generate grubcfg if no encryption
