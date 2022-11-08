@@ -96,7 +96,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Systemd changes:
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) - Systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
-    * Keep only [1024MB](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) of Journald logs and compress them
+    * [Keep only 1024MB](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) of Journald logs and compress them
     * Systemd service timeout changed from 90 seconds to 45 seconds
 - Password changes (How the password is stored):
     * [Increased hashing rounds](https://wiki.archlinux.org/title/SHA_password_hashes)
@@ -109,13 +109,12 @@ The user will now be prompted to supply basic information such as hostname, user
     * Commented line to run specific commands without requiring sudo password
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
     * Log file of elevated commands at /var/log/sudo.log
-    * Five password tries instead of three
     * Password displayed with * instead of being invisible
 - NetworkManager changes:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
-    * [IPv6 privacy extensions](https://wiki.archlinux.org/index.php/NetworkManager#Enable_IPv6_Privacy_Extensions)
-    * [DNSSEC Validation](https://wiki.archlinux.org/title/NetworkManager#DNSSEC)
-    * [Secure DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1, 45.11.45.11)
+    * [IPv6 privacy extensions](https://wiki.archlinux.org/title/IPv6#NetworkManager)
+    * [Faster default DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1)
+    * [Disable systemd-resolve](https://wiki.archlinux.org/title/NetworkManager#Unit_dbus-org.freedesktop.resolve1.service_not_found) to remove "unit dbus-org.freedesktop.resolve1.service not found" in journal log
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains ~1500 packages
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
 

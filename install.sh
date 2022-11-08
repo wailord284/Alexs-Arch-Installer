@@ -878,11 +878,12 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
 cat << EOF >> /mnt/etc/sudoers
 Defaults timestamp_type=global
-Defaults passwd_tries=5
+Defaults passwd_tries=5 
 Defaults passwd_timeout=0
 Defaults env_reset,pwfeedback
 Defaults editor=/usr/bin/rnano
 Defaults log_host, log_year, logfile="/var/log/sudo.log"
+Defaults log_input, log_output
 #Required for profile-sync-daemon when using overlayfs
 $user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
 #Uncomment to allow some commands to be executed without entering the user password
@@ -974,7 +975,6 @@ sed "s/success=2/success=1/g" -i /mnt/etc/pam.d/system-auth
 
 ###FONTS###
 #Set fonts
-#https://www.reddit.com/r/archlinux/comments/5r5ep8/make_your_arch_fonts_beautiful_easily/
 arch-chroot /mnt ln -s /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /usr/share/fontconfig/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
 sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
@@ -990,28 +990,16 @@ mv "$configFiles"/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 mv "$configFiles"/configs/xdg.sh /mnt/etc/profile.d/
 
 
-###NETWORK MANAGER###
-#NetworkManager/Network startup scripts
+###NETWORKMANAGER###
 mkdir -p /mnt/etc/NetworkManager/conf.d/
-mkdir -p /mnt/etc/NetworkManager/dnsmasq.d/
 #Configure mac address spoofing on startup via networkmanager. Only wireless interfaces are randomized
 mv "$configFiles"/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
-#IPv6 privacy and managed connection
-cat << EOF >> /mnt/etc/NetworkManager/NetworkManager.conf
-[connection]
-ipv6.ip6-privacy=2
-[ifupdown]
-managed=true
-EOF
-#Use dnsmasq for dns - networkmanager sets dns in resolv.conf to 127.0.0.1 when dns=dnsmasq
-mv "$configFiles"/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
-echo "cache-size=1000" > /mnt/etc/NetworkManager/dnsmasq.d/cache.conf
-echo "listen-address=::1" > /mnt/etc/NetworkManager/dnsmasq.d/ipv6_listen.conf
-mv "$configFiles"/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
-#Set default DNS to cloudflare and dns.sb
+#Set default DNS to cloudflare
 mv "$configFiles"/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 #Set network manager to avoid systemd-resolved. Fixes issue "unit dbus-org.freedesktop.resolve1.service not found" in journal log
 mv "$configFiles"/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
+#Enable IPv6 privacy
+mv "$configFiles"/configs/networkmanager/ip6-privacy.conf /mnt/etc/NetworkManager/conf.d/
 
 
 ###UDEV RULES###
@@ -1042,7 +1030,6 @@ mv "$configFiles"/configs/scripts/* /mnt/opt/scripts/
 mkdir -p /mnt/etc/pacman.d/hooks/
 mv "$configFiles"/configs/pacman-hooks/needrestart.hook /mnt/etc/pacman.d/hooks/
 mv "$configFiles"/configs/pacman-hooks/update-grub.hook /mnt/etc/pacman.d/hooks/
-clear
 
 
 ###WACOM TABLET###
@@ -1082,8 +1069,8 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	mv "$configFiles"/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
 	#Enable wifi powersaving
 	mv "$configFiles"/configs/udev/81-wifi-powersave.rules /mnt/etc/udev/rules.d/
+	clear
 fi
-clear
 
 
 ###FILESYSTEM - BTRFS###
@@ -1155,8 +1142,6 @@ arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service
 ###SYSCTL RULES###
 #Provide the ability to allow unprivileged_userns_clone for programs like Zoom
 mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
-#OOM Killer tweaks
-mv "$configFiles"/configs/sysctl/00-oom-killer.conf /mnt/etc/sysctl.d/
 #Low-level console messages
 mv "$configFiles"/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
 #IPv6 privacy
@@ -1298,7 +1283,7 @@ selection=${selection:- 6 7 q}
 		;;
 
 		3) #SSHD
-		echo "$green""Enabling sshd""$reset" # AllowUsers, PermitRootLogin no
+		echo "$green""Enabling sshd""$reset"
 		arch-chroot /mnt systemctl enable sshd
 		sleep 3s
 		;;
@@ -1365,8 +1350,8 @@ selection=${selection:- 6 7 q}
 			umount -R /mnt/boot
 		fi
 		clear
-		echo "$green""Installation Complete. Thanks for installing!""$reset"
-		sleep 1s
+		echo -e "$green""Installation Complete. All drives have been unmounted and you can now reboot.\nThanks for installing!""$reset"
+		sleep 3s
 		exit 0
 		;;
 	esac
