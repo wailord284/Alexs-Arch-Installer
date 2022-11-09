@@ -743,15 +743,7 @@ clear
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer" "$HEIGHT" "$WIDTH"
-clear
-#Enable fstrim if an ssd is detected using lsblk -d -o name,rota. Will return 0 for ssd
-#This works however if you install via usb itll detect the usb drive as nonrotational and enable fstrim
-if lsblk -d -o name,rota | grep "0" > /dev/null 2>&1 ; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Enabling FSTrim timer" \
-	--prgbox "Enable FStrim" "arch-chroot /mnt systemctl enable fstrim.timer" "$HEIGHT" "$WIDTH"
-fi
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer fstrim.timer" "$HEIGHT" "$WIDTH"
 clear
 #Enable performance services if RAM is over ~2GB
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
