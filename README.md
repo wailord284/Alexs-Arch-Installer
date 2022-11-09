@@ -36,7 +36,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SATA SSDs and NVME drives
 - Change [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to lz4 for faster speeds
 - Change mkinitcpio base and udev hooks to [systemd hook](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Using_systemd_instead_of_busybox_on_early_init) to decrease boot time
-- Support for [Wacom touchscreen devices](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/72-wacom-options.conf) (such as the Thinkpad X201T/X220T)
+- Support for [Wacom touchscreen devices](https://wiki.archlinux.org/title/Graphics_tablet#Permanent_configuration) (such as the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) tab found in most file managers
 - Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
 - Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to kill the running desktop and return to the login manager
