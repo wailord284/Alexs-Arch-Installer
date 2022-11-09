@@ -954,7 +954,7 @@ arch-chroot /mnt useradd -m -G network,kvm,floppy,disk,storage,uucp,wheel,optica
 TMPFILE=$(mktemp)
 #Setup more secure passwd by increasing hashes
 sed '/nullok/d' -i /mnt/etc/pam.d/passwd
-echo "password required pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
+echo "password	required	pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
 #Create account passwords
 echo "$user":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
@@ -970,7 +970,7 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su-l
 #Remove annoying systemd-homed log messages anytime sudo is used
-sed "s/success=2/success=1/g" -i /mnt/etc/pam.d/system-auth
+sed '/systemd_home/d' -i /mnt/etc/pam.d/system-auth
 
 
 ###FONTS###
