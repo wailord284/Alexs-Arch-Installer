@@ -705,7 +705,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol redshift yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger smartmontools neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar bind-tools arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-input-wacom xf86-video-nouveau vulkan-icd-loader firefox hdparm usbutils logrotate ethtool systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter fsearch --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 yay grub-customizer baka-mplayer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger smartmontools neofetch net-tools bind xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync screen acpi keepassxc xclip noto-fonts-emoji unrar arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-input-wacom xf86-video-nouveau vulkan-icd-loader firefox hdparm usbutils logrotate ethtool systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate libopenraw gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter fsearch --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -955,7 +955,7 @@ TMPFILE=$(mktemp)
 #Setup more secure passwd by increasing hashes
 sed '/nullok/d' -i /mnt/etc/pam.d/passwd
 echo "password	required	pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
-#Create account passwords
+#Create normal user account password
 echo "$user":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
 #Set the root password
@@ -969,7 +969,7 @@ echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-log
 #Require users to be in the wheel group to run su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su-l
-#Remove annoying systemd-homed log messages anytime sudo is used
+#Remove annoying systemd-homed log messages anytime sudo is used. Normally seen in journalctl
 sed '/systemd_home/d' -i /mnt/etc/pam.d/system-auth
 
 
