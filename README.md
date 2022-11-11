@@ -48,7 +48,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
 - [Spectre](https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)) and [Meltdown](https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)) mitigations can be [disabled](https://sleeplessbeastie.eu/2020/03/27/how-to-disable-mitigations-for-cpu-vulnerabilities/)
 - [Systemd-timesyncd](https://wiki.archlinux.org/title/Systemd-timesyncd) for system time
-- [Zenpower3](https://github.com/Ta180m/zenpower3) temperature kernel driver for AMD Ryzen processors (replaces k10temp)
 - Changes if RAM is over 2GB
     * [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system

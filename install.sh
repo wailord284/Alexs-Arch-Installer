@@ -784,19 +784,6 @@ if dmesg | grep -q 'b43-phy0 ERROR'; then
 fi
 
 
-###AMD RYZEN ZENPOWER KERNEL DRIVER###
-#Checks to see if the current CPU is ryzen. If it is, install a better temperature kernel driver that supports more values and readouts
-CPUModel=$(lscpu | grep -io ryzen)
-if [[ "$CPUModel" = Ryzen ]] || [[ "$CPUModel" = ryzen ]]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Detecting hardware" \
-	--prgbox "Found AMD Ryzen CPU" "arch-chroot /mnt pacman -S zenpower3-dkms zenmonitor3-git --noconfirm" "$HEIGHT" "$WIDTH"
-	#Prevent k10temp from loading and replace it with zenpower
-	echo "blacklist k10temp" > /mnt/etc/modprobe.d/disable-k10temp.conf
-	echo "zenpower" > /mnt/etc/modules-load.d/zenpower.conf
-fi
-
-
 ###VIRTUAL MACHINE CHECK/SETUP###
 #Detect if running in virtual machine and install guest additions
 #$product - Sets to company that produces the system
