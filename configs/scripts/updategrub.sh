@@ -11,7 +11,15 @@ if [ -d /sys/firmware/efi/ ]; then
 		grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck
 	fi
 else
-	rootDisk=$(df -hT | grep /$ | cut -d" " -f1)
+	#Get the disk mounted at /boot
+	bootDisk=$(df -hT | grep /boot$ | cut -d" " -f1)
+	#Get the root disk without partitions
+	if [[ "$bootDisk" = /dev/nvme* ]] || [[ "$bootDisk" = /dev/mmcblk* ]]; then
+		rootDisk=$(echo "$bootDisk" | cut -c-12)
+	elif [[ "$bootDisk" = /dev/vd* ]] || [[ "$bootDisk" = /dev/sd* ]]; then
+		rootDisk=$(echo "$bootDisk" | cut -c-8)
+	fi
+	#Reinstall grub to the rootDisk
 	grub-install --target=i386-pc "$rootDisk" --recheck
 fi
 #Update grub config
