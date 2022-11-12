@@ -920,8 +920,9 @@ mv "$configFiles"/configs/htoprc /mnt/etc/skel/.config/htop/
 mv "$configFiles"/configs/bash/inputrc /mnt/etc/skel/.config/readline/
 mv "$configFiles"/configs/bash/screenrc /mnt/etc/skel/.config/screen/
 mv "$configFiles"/configs/bash/.bashrc /mnt/etc/skel/
-#Move Firefox config
+#Move Firefox config and set permissions for extra privacy
 mv "$configFiles"/configs/firefox/ /mnt/etc/skel/.mozilla/
+chmod -R 700 /mnt/etc/skel/.mozilla/firefox/
 
 
 ###USER, PASSWORDS and PAM###
