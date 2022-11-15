@@ -3,6 +3,7 @@ user_pref("gfx.offscreencanvas.enabled", true);
 user_pref("image.jxl.enabled", true);
 user_pref("layout.css.animation-composition.enabled", true);
 user_pref("layout.css.grid-template-masonry-value.enabled", true);
+user_pref("dom.enable_web_task_scheduling", true);
 
 //Smooth scroll and appearance
 user_pref("general.smoothScroll", true);
