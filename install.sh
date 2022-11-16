@@ -300,7 +300,7 @@ clear
 dialog --title "Disk Encryption" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to enable disk encryption for the root partition?" "If you do not know what this means, you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to enable disk encryption for the root partition?" "If you do not know what this means you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionEncrypt=$?
 if [ "$optionEncrypt" = 0 ]; then
 	encrypt="y"
@@ -339,7 +339,7 @@ clear
 dialog --title "Secure Disk Erase" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "This is also NOT recommended on any solid state media as it can shorten the devices life." "If you do not know what this means, you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to overwrite the drive with random data? This can take a long time depending on the size and speed of the drive." "This is also NOT recommended on any solid state media as it can shorten the devices life." "If you do not know what this means you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionWipe=$?
 if [ "$optionWipe" = 0 ]; then
 	wipe="y"
@@ -354,7 +354,7 @@ clear
 dialog --title "Custom Kernel" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg, a kernel focused on gaming and desktop performance." "The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware." "This option is only recommended for advanced users. If you do not know what this means, you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg, a kernel focused on gaming and desktop performance." "The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware." "This option is only recommended for advanced users. If you do not know what this means you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionKernel=$?
 if [ "$optionKernel" = 0 ]; then
 	kernel="y"
@@ -391,7 +391,7 @@ grubSecurityMitigations="mitigations=off"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations?" "These options will improve performance at the cost of security. This is most impactful on older systems." "If you do not know what this means, you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations?" "These options will improve performance at the cost of security. This is most impactful on older systems." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionDisableMitigations=$?
 if [ "$optionDisableMitigations" = 0 ]; then
 	disableMitigations="y"
