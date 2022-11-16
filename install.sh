@@ -273,8 +273,7 @@ clear
 
 ###DISK SPACE CHECK###
 #Make sure the drive is at least 8GB (8589934592 bytes)
-#8589934592 / 1048576 = 8192MB (8GB)
-driveSize=$(fdisk -l "$storage" | grep -m1 Disk | cut -d ":" -f 2 | cut -d "," -f 2 | sed -e 's/[^0-9]/ /g' -e 's/ //g')
+driveSize=$(fdisk -l /dev/sda | grep -m1 Disk | cut -d "," -f 2 | grep -Eo '[0-9]*')
 if [ "$driveSize" -lt "8589934592" ]; then
 	dialog --msgbox "Your target drive is smaller than 8GB. Please use a larger drive." "$dialogHeight" "$dialogWidth"
 	exit 1
@@ -757,6 +756,7 @@ clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling dbus-broker" "arch-chroot /mnt systemctl disable dbus.service && arch-chroot /mnt systemctl enable dbus-broker.service && arch-chroot /mnt systemctl --global enable dbus-broker.service" "$HEIGHT" "$WIDTH"
+clear
 
 
 ###GPU CHECK/SETUP###
@@ -781,6 +781,7 @@ if dmesg | grep -q 'b43-phy0 ERROR'; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
 	--prgbox "Found B43 Broadcom Wireless card" "arch-chroot /mnt pacman -S b43-firmware --noconfirm" "$HEIGHT" "$WIDTH"
+	clear
 fi
 
 
