@@ -11,6 +11,8 @@ sed "s,TIMELINE_LIMIT_DAILY=\"10\",TIMELINE_LIMIT_DAILY=\"3\",g" -i /etc/snapper
 sed "s,TIMELINE_LIMIT_WEEKLY=\"0\",TIMELINE_LIMIT_WEEKLY=\"1\",g" -i /etc/snapper/configs/root
 sed "s,TIMELINE_LIMIT_MONTHLY=\"10\",TIMELINE_LIMIT_MONTHLY=\"0\",g" -i /etc/snapper/configs/root
 sed "s,TIMELINE_LIMIT_YEARLY=\"10\",TIMELINE_LIMIT_YEARLY=\"0\",g" -i /etc/snapper/configs/root
+#Disable timeline snapshots
+sed "s,TIMELINE_CREATE=\"yes\",TIMELINE_CREATE=\"no\",g" -i /etc/snapper/configs/root
 #Enable snapper system services for cleanup
 systemctl enable snapper-cleanup.timer
 #Disable the snapper config script
