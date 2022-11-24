@@ -599,10 +599,10 @@ clear
 
 ###MKINITCPIO###
 #Replace base and udev with systemd. Improves boot time slightly
-sed "s,HOOKS=(base udev autodetect modconf block filesystems keyboard fsck),HOOKS=(systemd autodetect keyboard modconf block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+sed "s,HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(systemd autodetect modconf kms keyboard keymap consolefont block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 #Enable encryption mkinitcpio hook if needed and revert back to base/udev hooks as using the systemd one required additional changes
 if [ "$encrypt" = y ]; then
-	sed "s,HOOKS=(systemd autodetect keyboard modconf block filesystems fsck),HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+	sed "s,HOOKS=(systemd autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont encrypt block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
 #If the filesystem is btrfs add the btrfs binary to mkinitcpio for recovery situations
 if [ "$filesystem" = btrfs ] ; then
@@ -611,6 +611,8 @@ fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
+#Make sure to enable modules decompression
+sed "s,\#\MODULES_DECOMPRESS=\"yes\",MODULES_DECOMPRESS=\"yes\",g" -i /mnt/etc/mkinitcpio.conf
 
 
 ###FSTAB###
