@@ -860,7 +860,6 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
 cat << EOF >> /mnt/etc/sudoers
 Defaults timestamp_type=global
-Defaults passwd_tries=5 
 Defaults passwd_timeout=0
 Defaults env_reset,pwfeedback
 Defaults editor=/usr/bin/rnano
