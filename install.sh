@@ -899,6 +899,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Alexs-Arch-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 #Create /etc/skel dirs for configs to be applied to our new user
 mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf}
+mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.mozilla/
 #Move profile-sync-daemon config
 mv "$configFiles"/configs/psd.conf /mnt/etc/skel/.config/psd/
@@ -925,6 +926,9 @@ mv "$configFiles"/configs/bash/.bashrc /mnt/etc/skel/
 #Move Firefox config and set permissions for extra privacy
 mv "$configFiles"/configs/firefox/ /mnt/etc/skel/.mozilla/
 chmod -R 700 /mnt/etc/skel/.mozilla/firefox/
+#Make gnupg config folder. Required with custom XDG
+mkdir -p /mnt/etc/skel/.local/share/gnupg
+chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 
 
 ###USER, PASSWORDS and PAM###
