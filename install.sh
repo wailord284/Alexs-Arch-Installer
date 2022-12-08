@@ -927,7 +927,7 @@ mv "$configFiles"/configs/bash/.bashrc /mnt/etc/skel/
 mv "$configFiles"/configs/firefox/ /mnt/etc/skel/.mozilla/
 chmod -R 700 /mnt/etc/skel/.mozilla/firefox/
 #Make gnupg config folder. Required with custom XDG
-mkdir -p /mnt/etc/skel/.local/share/gnupg
+mkdir -p /mnt/etc/skel/.local/share/gnupg/
 chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 
 
@@ -1126,8 +1126,6 @@ arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service
 mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
 #Low-level console messages
 mv "$configFiles"/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
-#IPv6 privacy
-mv "$configFiles"/configs/sysctl/10-ipv6-privacy.conf /mnt/etc/sysctl.d/
 #Kernel hardening
 mv "$configFiles"/configs/sysctl/10-kernel-hardening.conf /mnt/etc/sysctl.d/
 #System tweaks
