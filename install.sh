@@ -867,8 +867,10 @@ Defaults log_host, log_year, logfile="/var/log/sudo.log"
 Defaults log_input, log_output
 #Required for profile-sync-daemon when using overlayfs
 $user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
+#Allow the user to reboot and poweroff without a password
+$user ALL=(ALL) NOPASSWD:/usr/bin/poweroff,/usr/bin/reboot
 #Uncomment to allow some commands to be executed without entering the user password
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/machinectl,/usr/bin/reflector,/usr/bin/dmesg"
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg"
 EOF
 
 
