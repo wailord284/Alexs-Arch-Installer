@@ -598,10 +598,10 @@ clear
 
 ###MKINITCPIO###
 #Replace base and udev with systemd. Improves boot time slightly
-sed "s,HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(systemd autodetect modconf kms keyboard keymap consolefont block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+sed "s,HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(systemd autodetect modconf kms keyboard keymap block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 #Enable encryption mkinitcpio hook if needed and revert back to base/udev hooks as using the systemd one required additional changes
 if [ "$encrypt" = y ]; then
-	sed "s,HOOKS=(systemd autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+	sed "s,HOOKS=(systemd autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(base udev autodetect modconf kms keyboard keymap block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
 #If the filesystem is btrfs add the btrfs binary to mkinitcpio for recovery situations
 if [ "$filesystem" = btrfs ] ; then
