@@ -103,7 +103,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
     * Users must be in the wheel group to [run su](https://wiki.archlinux.org/title/Su#su_and_wheel)
     * Disable [Systemd-homed not available](https://www.reddit.com/r/archlinux/comments/ie3cvj/pam_systemd_home_spamming_the_journal_everytime_i/) log message everytime sudo is run
-    * Commented line to run specific commands without requiring sudo password
+    * Reboot and poweroff do not requrie the sudo password to run
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
     * Log file of elevated commands at /var/log/sudo.log
     * Password displayed with * instead of being invisible
@@ -117,9 +117,8 @@ The user will now be prompted to supply basic information such as hostname, user
 
 # Things to consider when using this installer
 - NO automatic updates or GUI package manager. You are expected to update the system regularly!
-- NO manual partitioning (you can only select the drive)
+- NO manual partitioning (you can only select the drive) or dual booting
 - NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)
-- NO snapshots or backup system enabled
 - Third party repositories enabled by default (archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 - Some aspects are optimized for performance/convenience over security
