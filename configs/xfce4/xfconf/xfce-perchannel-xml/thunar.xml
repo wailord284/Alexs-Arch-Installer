@@ -11,7 +11,7 @@
   <property name="misc-show-delete-action" type="bool" value="true"/>
   <property name="misc-date-style" type="string" value="THUNAR_DATE_STYLE_SHORT"/>
   <property name="misc-directory-specific-settings" type="bool" value="true"/>
-  <property name="last-show-hidden" type="bool" value="true"/>
+  <property name="last-show-hidden" type="bool" value="false"/>
   <property name="last-separator-position" type="int" value="170"/>
   <property name="misc-middle-click-in-tab" type="bool" value="true"/>
   <property name="hidden-bookmarks" type="array">
