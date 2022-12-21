@@ -1068,6 +1068,9 @@ if [ "$filesystem" = btrfs ] ; then
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
 	#Change the snapper-cleanup timer run every six hours instead of once per day
 	sed "s,1d,6h,g" -i /mnt/usr/lib/systemd/system/snapper-cleanup.timer
+	#Change grub-btrfs boot menu to keep less snapshots
+	sed "s,\#GRUB_BTRFS_LIMIT=\"50\",GRUB_BTRFS_LIMIT=\"8\",g" -i /mnt/etc/default/grub-btrfs/config
+	sed "s,\#GRUB_BTRFS_SUBMENUNAME=\"Arch Linux snapshots\",GRUB_BTRFS_SUBMENUNAME=\"BTRFS Snapshots\",g" -i /mnt/etc/default/grub-btrfs/config
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
