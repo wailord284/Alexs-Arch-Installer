@@ -4,7 +4,8 @@
 #Create our snapper config
 snapper -c root create-config /
 #Change snapper backups to keep to 10
-sed "s,NUMBER_LIMIT=\"50\",NUMBER_LIMIT=\"10\",g" -i /etc/snapper/configs/root
+sed "s,NUMBER_LIMIT=\"50\",NUMBER_LIMIT=\"8\",g" -i /etc/snapper/configs/root
+sed "s,NUMBER_LIMIT_IMPORTANT=\"10\",NUMBER_LIMIT_IMPORTANT=\"5\",g" -i /etc/snapper/configs/root
 #Change snapper timeline settings to keep 3 daily and 1 weekly. We dont enable the service though
 sed "s,TIMELINE_LIMIT_HOURLY=\"10\",TIMELINE_LIMIT_HOURLY=\"0\",g" -i /etc/snapper/configs/root
 sed "s,TIMELINE_LIMIT_DAILY=\"10\",TIMELINE_LIMIT_DAILY=\"3\",g" -i /etc/snapper/configs/root
