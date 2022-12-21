@@ -386,11 +386,11 @@ clear
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-grubSecurityMitigations="mitigations=off"
+grubSecurityMitigations="mitigations=off nowatchdog"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "This option will also disable Watchdog which can reduce power consumption and decrease boot times." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionDisableMitigations=$?
 if [ "$optionDisableMitigations" = 0 ]; then
 	disableMitigations="y"
@@ -1043,8 +1043,6 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	mv "$configFiles"/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#Laptop mode
 	mv "$configFiles"/configs/sysctl/00-laptop-mode.conf /mnt/etc/sysctl.d/
-	#Disable watchdog - may help with power
-	mv "$configFiles"/configs/sysctl/10-disable-watchdog.conf /mnt/etc/sysctl.d/
 	#Set PCIE powersave in TLP
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
