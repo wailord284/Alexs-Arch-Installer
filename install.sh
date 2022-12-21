@@ -1063,24 +1063,16 @@ fi
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S grub-btrfs snap-pac-grub snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
 	#Change the snapper-cleanup timer run every six hours instead of once per day
 	mkdir -p /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/
 	echo "[Timer]" > /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
 	echo "OnUnitActiveSec=6h" >> /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
-	#Change grub-btrfs boot menu to keep less snapshots
-	sed "s,\#GRUB_BTRFS_LIMIT=\"50\",GRUB_BTRFS_LIMIT=\"8\",g" -i /mnt/etc/default/grub-btrfs/config
-	sed "s,\#GRUB_BTRFS_SUBMENUNAME=\"Arch Linux snapshots\",GRUB_BTRFS_SUBMENUNAME=\"BTRFS Snapshots\",g" -i /mnt/etc/default/grub-btrfs/config
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
-	#Update mkinitcpio to include btrfs hooks for Grub. Get the current hooks then add grub-btrfs-overlayfs
-	currentHooks=$(tac /mnt/etc/mkinitcpio.conf | grep -m1 HOOKS=)
-	newHooks=$(tac /mnt/etc/mkinitcpio.conf | grep -m1 HOOKS= | sed 's/.\{1\}$//' | sed -e 's/$/ grub-btrfs-overlayfs)/g')
-	#Replace the currentHooks with newHooks (appends grub-btrfs-overlayfs to the end)
-	sed "s,$currentHooks,$newHooks,g" -i /mnt/etc/mkinitcpio.conf
 	#Add btrfs assistant rule for storage group, allow users to not enter a password to view smart data
 	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
 	clear
