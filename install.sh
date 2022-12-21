@@ -386,7 +386,7 @@ clear
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-grubSecurityMitigations="mitigations=off nowatchdog"
+grubSecurityMitigations="mitigations=off nmi_watchdog=0"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
@@ -1033,7 +1033,7 @@ if acpi -V | grep -iq Battery ; then acpiBattery=yes; fi
 if [ -d "/sys/class/power_supply/BAT0" ] || [ -d "/sys/class/power_supply/BAT1" ]; then sysBattery=yes; fi
 modelType=$(hostnamectl | sed 's/ //g' | grep "HardwareModel" | cut -d":" -f2)
 if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
-	#Move the powertop auto tune service so it can be enabled
+	#Move the powertop auto tune service so it can be enabled if the user wants. TLP does the same thing
 	mv "$configFiles"/configs/systemd/powertop.service /mnt/etc/systemd/system/
 	#Install power saving tools and enable tlp, powertop and other power saving tweaks
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1166,7 +1166,7 @@ mv "$configFiles"/configs/grub/games/*.efi /mnt/boot/EFI/games/
 mv "$configFiles"/configs/grub/custom.cfg /mnt/boot/grub/
 
 
-###GRUB BOOT OPTIONS###
+###GRUB AND PERFORMANCE BOOT OPTIONS###
 #Check the output of cat /sys/power/mem_sleep for the systems sleep mode
 #If the system is using s2idle but also has deep sleep mode availible, switch it to deep
 #This is especially needed on the Framework laptop, although others may benefit
@@ -1178,8 +1178,10 @@ if [ "$sleepMode" = "[s2idle] deep" ]; then
 	grubCmdlineLinuxOptions=mem_sleep_default=deep
 fi
 #If mitigations are wanted, add them as well as grubCmdlineLinuxOptions. If deep sleep was selected it will be added
+#Also make sure to blacklist some watchdog modules which may keep watchdog loaded
 if [ "$disableMitigations" = "y" ]; then
 	grubCmdlineLinuxOptions="$grubSecurityMitigations $grubCmdlineLinuxOptions"
+	mv "$configFiles"/configs/disable-watchdog.conf /mnt/etc/modprobe.d/
 fi
 
 
