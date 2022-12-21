@@ -70,7 +70,7 @@ EOF
 timedatectl set-ntp true
 #Sync repos and reinstall/install critical applications. Reinstalling glibc and the keyring helps fix errors if the ISO is outdated
 pacman -Syy
-pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector lshw openssl openssl-1.1 --noconfirm
+pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector lshw --noconfirm
 #Sync time with NTP
 ntpd -qg
 #Set hwclock as well in case system has no battery for RTC
