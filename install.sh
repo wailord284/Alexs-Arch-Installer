@@ -566,7 +566,7 @@ clear
 #Begin base system install and install zlib-ng from aurmageddon
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap /mnt base base-devel --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "pacstrap -K /mnt base base-devel --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
