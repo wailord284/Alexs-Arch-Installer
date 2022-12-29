@@ -563,10 +563,10 @@ clear
 
 
 ###BASE PACKAGE INSTALL#
-#Begin base system install and install zlib-ng from aurmageddon
+#Begin base system install
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap -K /mnt base base-devel --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "pacstrap -K /mnt base --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -581,7 +581,7 @@ sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
 cpuVendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
 if [ "$cpuVendor" = Intel ]; then
