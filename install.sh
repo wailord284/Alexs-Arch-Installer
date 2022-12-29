@@ -65,10 +65,12 @@ Server = https://mirror.phx1.us.spryservers.net/archlinux/\$repo/os/\$arch
 EOF
 
 
-###SET TIME###
+###SET TIME AND CONFIGURE PACMAN###
 #This is useful if you installed coreboot or have a dead RTC. The clock may have no time set by default and this will update it
 timedatectl set-ntp true
 #Sync repos and reinstall/install critical applications. Reinstalling glibc and the keyring helps fix errors if the ISO is outdated
+#Also enable parallel downloads on the ISO to 3. Useful for the first pacstrap command
+sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 3,g" -i /etc/pacman.conf
 pacman -Syy
 pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector lshw --noconfirm
 #Sync time with NTP
