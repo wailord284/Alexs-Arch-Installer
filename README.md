@@ -97,7 +97,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * Systemd service timeout changed from 90 seconds to 45 seconds
 - Password changes (How the password is stored):
     * [Increased hashing rounds](https://wiki.archlinux.org/title/SHA_password_hashes)
-    * 4 second delay between password attempts
+    * [4 second delay between password attempts](https://wiki.archlinux.org/title/Security#Enforce_a_delay_after_a_failed_login_attempt)
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
