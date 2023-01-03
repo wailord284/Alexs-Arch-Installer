@@ -95,6 +95,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
     * [Keep only 1024MB](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) of Journald logs and compress them
     * Systemd service timeout changed from 90 seconds to 45 seconds
+    * Disable coredump in coredump.conf
 - Password changes (How the password is stored):
     * [Increased hashing rounds](https://wiki.archlinux.org/title/SHA_password_hashes)
     * [4 second delay between password attempts](https://wiki.archlinux.org/title/Security#Enforce_a_delay_after_a_failed_login_attempt)

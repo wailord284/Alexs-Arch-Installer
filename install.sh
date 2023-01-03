@@ -1110,6 +1110,9 @@ sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/s
 sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
 #Set journal to only keep 1024MB of logs
 mv "$configFiles"/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
+#Disable systemd coredumps
+mkdir /mnt/etc/systemd/coredump.conf.d/
+mv "$configFiles"/configs/systemd/00-disable-coredumps.conf /mnt/etc/systemd/coredump.conf.d/
 #Copy and enable the clear-pacman-cache service and timer
 mv "$configFiles"/configs/systemd/clear-pacman-cache.timer /mnt/etc/systemd/system/
 mv "$configFiles"/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/system/
