@@ -1106,8 +1106,8 @@ mv "$configFiles"/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
 mkdir /mnt/etc/systemd/journald.conf.d
 mv "$configFiles"/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
 #Set a lower systemd timeout
-sed "s,\#\DefaultTimeoutStartSec=90s,DefaultTimeoutStartSec=45s,g" -i /mnt/etc/systemd/system.conf
-sed "s,\#\DefaultTimeoutStopSec=90s,DefaultTimeoutStopSec=45s,g" -i /mnt/etc/systemd/system.conf
+mkdir /mnt/etc/systemd/system.conf.d/
+mv "$configFiles"/configs/systemd/00-service-timeout.conf /mnt/etc/systemd/system.conf.d/
 #Set journal to only keep 1024MB of logs
 mv "$configFiles"/configs/systemd/00-journal-size.conf /mnt/etc/systemd/journald.conf.d/
 #Disable systemd coredumps
