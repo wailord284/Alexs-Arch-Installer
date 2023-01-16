@@ -733,14 +733,14 @@ clear
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer fstrim.timer" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target irqbalance earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer fstrim.timer" "$HEIGHT" "$WIDTH"
 clear
 #Enable performance services if RAM is over ~2GB
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
-if [ "$ramTotal" -gt "2000000" ]; then
+if [ "$ramTotal" -gt "2020000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Performance Services" \
-	--prgbox "Enabling preload and irqbalance" "arch-chroot /mnt systemctl enable preload.service irqbalance && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling preload and irqbalance" "arch-chroot /mnt systemctl enable preload.service && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
