@@ -597,10 +597,6 @@ sed "s,HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block
 if [ "$encrypt" = y ]; then
 	sed "s,HOOKS=(systemd autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(base udev autodetect modconf kms keyboard keymap block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
-#If the filesystem is btrfs add the btrfs binary to mkinitcpio for recovery situations
-if [ "$filesystem" = btrfs ] ; then
-	sed "s,BINARIES=(),BINARIES=(btrfs),g" -i /mnt/etc/mkinitcpio.conf
-fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
@@ -1060,6 +1056,8 @@ if [ "$filesystem" = btrfs ] ; then
 	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
+	#Add the btrfs binary to mkinitcpio for recovery situations
+	sed "s,BINARIES=(),BINARIES=(btrfs),g" -i /mnt/etc/mkinitcpio.conf
 	#Change the snapper-cleanup timer run every six hours instead of once per day
 	mkdir -p /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/
 	echo "[Timer]" > /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
