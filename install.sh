@@ -283,7 +283,7 @@ fi
 
 ###FILESYSTEM###
 unset COUNT MENU_OPTIONS options
-for i in $(echo "ext4 xfs btrfs f2fs jfs nilfs"); do
+for i in $(echo "ext4 xfs btrfs f2fs"); do
 	COUNT=$((COUNT+1))
 	MENU_OPTIONS="${MENU_OPTIONS} $i ${COUNT} off"
 done
@@ -491,14 +491,6 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Patitioning Disk" \
 		--prgbox "Formatting root partition" "mkfs.xfs -f -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
-	elif [ "$filesystem" = jfs ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Patitioning Disk" \
-		--prgbox "Formatting root partition" "yes | mkfs.jfs -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
-	elif [ "$filesystem" = nilfs ] ; then
-		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-		--title "Patitioning Disk" \
-		--prgbox "Formatting root partition" "yes | mkfs.nilfs2 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 	elif [ "$filesystem" = f2fs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Patitioning Disk" \
@@ -583,7 +575,7 @@ sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 #Install additional software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel jfsutils nilfs-utils linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on cpu
 cpuVendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
 if [ "$cpuVendor" = Intel ]; then
@@ -871,7 +863,7 @@ $user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
 #Allow the user to reboot and poweroff without a password
 $user ALL=(ALL) NOPASSWD:/usr/bin/poweroff,/usr/bin/reboot
 #Uncomment to allow some commands to be executed without entering the user password
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg"
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg,/usr/bin/s-tui"
 EOF
 
 
