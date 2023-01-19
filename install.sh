@@ -766,12 +766,19 @@ fi
 clear
 
 
-###B43 FIRMWARE CHECK/SETUP###
+###ADDITIONAL FIRMWARE CHECK/SETUP###
 #Detect b43 firmware wifi cards and install b43-firmware
 if dmesg | grep -q 'b43-phy0 ERROR'; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
 	--prgbox "Found B43 Broadcom Wireless card" "arch-chroot /mnt pacman -S b43-firmware --noconfirm" "$HEIGHT" "$WIDTH"
+	clear
+fi
+#Detect sof audio firmware - https://github.com/thesofproject/sof-bin/
+if dmesg | grep -q 'error: sof firmware file is missing'; then
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Detecting hardware" \
+	--prgbox "Found missing audio firmware" "arch-chroot /mnt pacman -S sof-firmware sof-tools --noconfirm" "$HEIGHT" "$WIDTH"
 	clear
 fi
 
