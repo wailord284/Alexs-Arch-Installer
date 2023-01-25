@@ -15,7 +15,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Automatically detect if running in VirtualBox, QEMU/KVM or VMware and install appropriate guest additions
 - Optional disk encryption for the root partition
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
-- Nano syntax highlighting
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Display all network interface IP Addresses on TTY logins
 - Lightdm display manager with optional autologin
@@ -26,13 +25,14 @@ The user will now be prompted to supply basic information such as hostname, user
     * BTRFS snapshots with [Snapper](https://wiki.archlinux.org/title/Snapper) and [snap-pac](https://github.com/wesbarnett/snap-pac)
     * All filesystems will use an *atime (usually noatime) mount option
 - GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)
+- Nano [syntax highlighting](https://github.com/scopatz/nanorc), line numbers and position log enabled
 - Preconfigured GPU Accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
 - [FSTrim timer](https://wiki.archlinux.org/index.php/Solid_state_drive#Periodic_TRIM) to trim all SSDs weekly
 - [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 10% of total ram)
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SATA SSDs and NVME drives
-- Change [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to lz4 for faster speeds
+- Use lz4 for [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to decrease compression and boot times
 - Change mkinitcpio base and udev hooks to [systemd hook](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Using_systemd_instead_of_busybox_on_early_init) to decrease boot time
 - Support for [Wacom touchscreen devices](https://wiki.archlinux.org/title/Graphics_tablet#Permanent_configuration) (such as the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) tab found in most file managers
@@ -43,11 +43,12 @@ The user will now be prompted to supply basic information such as hostname, user
 - [DBus-Broker](https://wiki.archlinux.org/index.php/D-Bus#dbus-broker) over traditional D-Bus for higher performance and reliability
 - [Realtime priority](https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level) in Pulseaudio
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
-- [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) installed if missing wireless card firmware
+- [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) and sof-firmware installed if required for device
 - [Spectre](https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)) and [Meltdown](https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)) mitigations can be [disabled](https://sleeplessbeastie.eu/2020/03/27/how-to-disable-mitigations-for-cpu-vulnerabilities/)
 - [Systemd-timesyncd](https://wiki.archlinux.org/title/Systemd-timesyncd) for system time
+- [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
+- [Reflector](https://wiki.archlinux.org/title/Reflector#systemd_timer) timer enabled to sort mirrors weekly
 - Changes if RAM is over 2GB
-    * [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM
 - Firefox changes:
