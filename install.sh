@@ -1119,6 +1119,28 @@ mv "$configFiles"/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
 arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service > /dev/null 2>&1
 
 
+###REFLECTOR###
+#Configure reflector to save the 10 fastest mirrors
+cat << EOF > /mnt/etc/xdg/reflector/reflector.conf
+#Save location
+--save /etc/pacman.d/mirrorlist
+#Save the 10 fastest mirrors
+-f 10
+#Mirrorlist protocol
+--protocol https
+#Mirrorlist country
+--country $region
+#Most recent mirrors to check
+--latest 15 --age 24
+#Sort mirrors by download speed
+--sort rate
+#Give up after 10 seconds if a mirror does not reply
+--download-timeout 10 --connection-timeout 10
+EOF
+#Enable the weekly reflector timer
+arch-chroot /mnt systemctl enable reflector.timer > /dev/null 2>&1
+
+
 ###SYSCTL RULES###
 #Provide the ability to allow unprivileged_userns_clone for programs like Zoom
 mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
@@ -1207,18 +1229,6 @@ echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
 --prgbox "Generating grubcfg" "arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg" "$HEIGHT" "$WIDTH"
-clear
-
-
-###MIRRORLIST SORTING - TARGET###
-#Sort mirrors
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Sorting mirrors on target device" \
---prgbox "Please wait while mirrors are sorted" "reflector --download-timeout 10 --connection-timeout 10 --verbose -f 10 --latest 20 --country $region --protocol https --age 24 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
-#Remove the following mirrors. For some reason they behave randomly
-sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
-sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
-sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
 clear
 
 
