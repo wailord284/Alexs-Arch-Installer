@@ -4,7 +4,7 @@ Documentation=man:pacman
 
 [Timer]
 OnCalendar=monthly
-AccuracySec=6h
+AccuracySec=1h
 Persistent=true
 RandomizedDelaySec=900
 WakeSystem=true

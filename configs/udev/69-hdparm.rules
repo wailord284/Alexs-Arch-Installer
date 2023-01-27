@@ -1,2 +1,2 @@
-#Allow drives to spin down and spin down after 20 minutes
-ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 127 -S 240 /dev/%k"
+#Allow drives to spin down and spin down after 15 minutes
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="/usr/bin/hdparm -B 127 -S 180 /dev/%k"
