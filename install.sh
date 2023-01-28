@@ -595,7 +595,7 @@ clear
 sed "s,HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(systemd autodetect modconf kms keyboard keymap block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 #Enable encryption mkinitcpio hook if needed and revert back to base/udev hooks as using the systemd one required additional changes
 if [ "$encrypt" = y ]; then
-	sed "s,HOOKS=(systemd autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(base udev autodetect modconf kms keyboard keymap block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+	sed "s,HOOKS=(systemd autodetect modconf kms keyboard keymap block filesystems fsck),HOOKS=(base udev autodetect modconf kms keyboard keymap block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
@@ -1209,7 +1209,8 @@ fi
 ###GRUB CONFIG###
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
-	rootTargetDiskUUID=$(blkid | grep "${storagePartitions[2]}" | cut -d" " -f2 | cut -d'"' -f2)
+	#rootTargetDiskUUID=$(blkid | grep "${storagePartitions[2]}" | cut -d" " -f2 | cut -d'"' -f2)
+	rootTargetDiskUUID=$(blkid -s UUID -o value ${storagePartitions[2]})
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Generate grubcfg if no encryption
