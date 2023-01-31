@@ -733,7 +733,7 @@ clear
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target irqbalance earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer fstrim.timer" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target irqbalance earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer fstrim.timer archlinux-keyring-wkd-sync.timer" "$HEIGHT" "$WIDTH"
 clear
 #Enable performance services if RAM is over ~2GB
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
