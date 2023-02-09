@@ -775,7 +775,7 @@ if dmesg | grep -q 'b43-phy0 ERROR'; then
 	clear
 fi
 #Detect sof audio firmware - https://github.com/thesofproject/sof-bin/
-if dmesg | grep -q 'sof firmware file is missing, you might need to'; then
+if dmesg | grep -q 'sof-audio'; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
 	--prgbox "Found missing audio firmware" "arch-chroot /mnt pacman -S sof-firmware sof-tools --noconfirm" "$HEIGHT" "$WIDTH"
