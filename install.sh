@@ -862,7 +862,7 @@ $user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
 #Allow the user to reboot and poweroff without a password
 $user ALL=(ALL) NOPASSWD:/usr/bin/poweroff,/usr/bin/reboot
 #Uncomment to allow some commands to be executed without entering the user password
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg,/usr/bin/s-tui"
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/yay,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg,/usr/bin/s-tui,/usr/bin/mt-st,/usr/bin/stenc,/usr/bin/ltfs"
 EOF
 
 
