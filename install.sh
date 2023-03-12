@@ -388,7 +388,7 @@ clear
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-grubSecurityMitigations="mitigations=off nmi_watchdog=0"
+grubSecurityMitigations="mitigations=off nowatchdog"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
@@ -1199,6 +1199,7 @@ fi
 if [ "$disableMitigations" = "y" ]; then
 	grubCmdlineLinuxOptions="$grubSecurityMitigations $grubCmdlineLinuxOptions"
 	mv "$configFiles"/configs/disable-watchdog.conf /mnt/etc/modprobe.d/
+	mv "$configFiles"/configs/sysctl/10-disable-watchdog.conf /mnt/etc/sysctl.d/
 fi
 
 
