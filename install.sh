@@ -855,8 +855,9 @@ Defaults timestamp_type=global
 Defaults passwd_timeout=0
 Defaults env_reset,pwfeedback
 Defaults editor=/usr/bin/rnano
-Defaults log_host, log_year, logfile="/var/log/sudo.log"
-Defaults log_input, log_output
+#Log sudo usage
+#Defaults log_host, log_year, logfile="/var/log/sudo.log"
+#Defaults log_input, log_output
 #Required for profile-sync-daemon when using overlayfs
 $user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
 #Allow the user to reboot and poweroff without a password
