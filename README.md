@@ -107,14 +107,13 @@ The user will now be prompted to supply basic information such as hostname, user
     * Disable [Systemd-homed not available](https://www.reddit.com/r/archlinux/comments/ie3cvj/pam_systemd_home_spamming_the_journal_everytime_i/) log message everytime sudo is run
     * Reboot and poweroff do not requrie the sudo password to run
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
-    * Log file of elevated commands at /var/log/sudo.log
     * Password displayed with * instead of being invisible
 - NetworkManager changes:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
     * [IPv6 privacy extensions](https://wiki.archlinux.org/title/IPv6#NetworkManager)
     * [Faster default DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1)
     * [Disable systemd-resolve](https://wiki.archlinux.org/title/NetworkManager#Unit_dbus-org.freedesktop.resolve1.service_not_found) to remove "unit dbus-org.freedesktop.resolve1.service not found" in journal log
-- [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains ~1500 packages
+- [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains ~1000 packages
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
 
 # Things to consider when using this installer
