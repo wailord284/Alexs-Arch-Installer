@@ -669,9 +669,13 @@ Server = https://mirrors.xtom.us/archlinuxcn/\$arch
 Server = https://mirrors.ocf.berkeley.edu/archlinuxcn/\$arch
 Server = https://repo.archlinuxcn.org/\$arch
 Server = https://cdn.repo.archlinuxcn.org/\$arch
-SigLevel = Never
 
 EOF
+#Reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
+dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+--title "Installing keys" \
+--prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
+clear
 #Add the ubuntu and MIT keyserver to gpg. This works a lot better than the default ones
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
@@ -679,11 +683,6 @@ echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Chaotic-aur keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key FBA220DFC880C036 && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
-clear
-#Reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Installing keys" \
---prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
