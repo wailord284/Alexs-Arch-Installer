@@ -56,12 +56,13 @@ SigLevel = Never
 EOF
 #Add a known good worldwide mirrorlist. Current mirrors on arch ISO are broken(?) or unreliable
 cat << EOF > /etc/pacman.d/mirrorlist
-Server = https://mirrors.xtom.com/archlinux/\$repo/os/\$arch
+Server = https://ridgewireless.mm.fcix.net/archlinux/\$repo/os/\$arch
 Server = https://mirror.arizona.edu/archlinux/\$repo/os/\$arch
-Server = https://arch.hu.fo/archlinux/\$repo/os/\$arch
-Server = https://mirrors.radwebhosting.com/archlinux/\$repo/os/\$arch
-Server = https://mirror.lty.me/archlinux/\$repo/os/\$arch
-Server = https://mirror.phx1.us.spryservers.net/archlinux/\$repo/os/\$arch
+Server = https://mirror.dal10.us.leaseweb.net/archlinux/\$repo/os/\$arch
+Server = https://mirrors.sonic.net/archlinux/\$repo/os/\$arch
+Server = https://archmirror1.octyl.net/\$repo/os/\$arch
+Server = https://iad.mirrors.misaka.one/archlinux/\$repo/os/\$arch
+
 EOF
 
 
