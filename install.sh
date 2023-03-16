@@ -705,7 +705,6 @@ clear
 cat << EOF >> /mnt/etc/pacman.conf
 #Chaotic-aur repo with many packages
 [chaotic-aur]
-SigLevel = PackageOptional
 Include = /etc/pacman.d/chaotic-mirrorlist
 EOF
 #Update repos on the ISO and the target
