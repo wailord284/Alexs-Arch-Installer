@@ -1,5 +1,5 @@
 [Unit]
-Description=Remove unused pacman cache files monthly
+Description=Remove all pacman cache files monthly
 Documentation=man:pacman
 
 [Timer]

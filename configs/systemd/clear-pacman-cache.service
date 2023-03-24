@@ -1,5 +1,5 @@
 [Unit]
-Description=Remove unused pacman cache files
+Description=Remove all pacman cache files
 Documentation=man:pacman
 ConditionACPower=true
 
