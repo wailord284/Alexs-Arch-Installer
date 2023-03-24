@@ -773,7 +773,7 @@ fi
 if dmesg | grep -q 'sof-audio'; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found missing audio firmware" "arch-chroot /mnt pacman -S sof-firmware sof-tools --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Found missing audio firmware" "arch-chroot /mnt pacman -S sof-firmware sof-tools alsa-utils --noconfirm" "$HEIGHT" "$WIDTH"
 	clear
 fi
 
@@ -1112,7 +1112,7 @@ mv "$configFiles"/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/sy
 #Add the TTY Interfaces service to output interface IP addresses to the TTY login screen
 mv "$configFiles"/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
 #Enable the clear-pacman-cache service and ttyinterfaces.service
-arch-chroot /mnt systemctl enable clear-pacman-cache.timer ttyinterfaces.service > /dev/null 2>&1
+arch-chroot /mnt systemctl enable clear-pacman-cache.timer > /dev/null 2>&1
 
 
 ###REFLECTOR###
