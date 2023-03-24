@@ -389,16 +389,16 @@ clear
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-grubSecurityMitigations="mitigations=off nowatchdog"
+grubPerformanceOptions="mitigations=off nowatchdog"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "This option will also disable Watchdog which can reduce power consumption and decrease boot times." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes: $grubSecurityMitigations")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
-optionDisableMitigations=$?
-if [ "$optionDisableMitigations" = 0 ]; then
-	disableMitigations="y"
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "This option will also disable Watchdog which can reduce power consumption and decrease boot times." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes: $grubPerformanceOptions")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+optionEnableGrubPerformanceOptions=$?
+if [ "$optionEnableGrubPerformanceOptions" = 0 ]; then
+	enableGrubPerformanceOptions="y"
 else
-	disableMitigations="n"
+	enableGrubPerformanceOptions="n"
 fi
 clear
 
@@ -408,7 +408,7 @@ clear
 dialog --backtitle "$dialogBacktitle" \
 --defaultno \
 --title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Keymap: $keymap" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $disableMitigations")" "$HEIGHT" "$WIDTH"
+--yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Keymap: $keymap" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $enableGrubPerformanceOptions")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
@@ -433,14 +433,14 @@ clear
 
 
 ###UEFI AND BIOS CHECK/SETUP###
-#Start the install - detect efi/uefi bios
+#Prepare to install. Detect efi/uefi or bios for GRUB
 #If efi is present in /sys/firmware/ then system is UEFI
 if [ -d /sys/firmware/efi/ ]; then
 	boot="efi" #Set boot to efi
 else
 	boot="bios" #Set boot to bios
 fi
-#Also detect the boot arch. Some platforms have a 32bit uefi (NOT to be confused with 32bit cpu)
+#Also detect the boot arch. Some platforms have a 32bit UEFI (NOT to be confused with 32bit cpu)
 if [ "$boot" = "efi" ]; then
 	bootArch="$(cat /sys/firmware/efi/fw_platform_size)"
 fi
@@ -472,14 +472,14 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 
 	#Format partitions for encryption
 	if [ "$encrypt" = y ]; then
-		#If encryption is set, make rootTargetDisk the cryptroot mapper. Otherwise, set it to ${storagePartitions[2]}
+		#If encryption is set make rootTargetDisk the cryptroot mapper. Otherwise set it to ${storagePartitions[2]}
 		rootTargetDisk=/dev/mapper/cryptroot
-		#Run cryptsetup just in terminal, password will be piped in from $encpass
+		#Run cryptsetup just in terminal. The password will be piped in from $encpass
 		echo "$green""Setting up disk encryption. Please wait.""$reset"
 		echo "$encpass" | cryptsetup --iter-time 5000 --use-random --type luks2 --cipher aes-xts-plain64 --key-size 512 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
 		echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 	else
-		#If encryption is not set, make this set to ${storagePartitions[2]}
+		#If encryption is not set make this set to ${storagePartitions[2]}
 		rootTargetDisk="${storagePartitions[2]}"
 	fi
 
@@ -550,7 +550,7 @@ clear
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Sorting mirrors on installation media" \
 --prgbox "Please wait while mirrors are sorted" "pacman -Syy && reflector --download-timeout 10 --connection-timeout 10 --verbose -f 10 --latest 20 --country $region --protocol https --age 24 --sort rate --save /etc/pacman.d/mirrorlist" "$HEIGHT" "$WIDTH"
-#Remove the following mirrors. For some reason they behave randomly
+#Remove the following mirrors. For some reason they behave poorly
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
@@ -558,7 +558,7 @@ clear
 
 
 ###BASE PACKAGE INSTALL#
-#Begin base system install
+#Install the base Archlinux system and packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
 --prgbox "Installing base and base-devel package groups" "pacstrap -K /mnt base --noconfirm" "$HEIGHT" "$WIDTH"
@@ -566,18 +566,18 @@ clear
 
 
 ###PACMAN CONFIG###
-#Enable some options in pacman.conf
+#Enable verbose output, parallel downloads and color in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
 sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 
 
 ###KERNEL, FIRMWARE, BASE-DEVEL AND MICROCODE INSTALLATION###
-#Install additional software
+#Install additional base Archlinux packages and kernel
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
 --prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
-#Install amd or intel ucode based on cpu
+#Install amd or intel ucode based on detected cpu
 cpuVendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
 if [ "$cpuVendor" = Intel ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -601,7 +601,7 @@ fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
 #sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
-#Make sure to enable modules decompression
+#Enable module decompression
 sed "s,\#\MODULES_DECOMPRESS=\"yes\",MODULES_DECOMPRESS=\"yes\",g" -i /mnt/etc/mkinitcpio.conf
 
 
@@ -653,7 +653,7 @@ EOF
 
 
 ###REPO AND KEY SETUP###
-#Install repos to target - multilib, aurmageddon, archlinuxcn
+#Add the following pacman repos to the installtion: multilib, aurmageddon, archlinuxcn
 cat << EOF >> /mnt/etc/pacman.conf
 [multilib]
 Include = /etc/pacman.d/mirrorlist
@@ -677,10 +677,10 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
-#Add the ubuntu and MIT keyserver to gpg. This works a lot better than the default ones
+#Add the Ubuntu and MIT keyserver to gpg. This works a lot better/faster than the default ones
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
-#Sign the chaotic-aur key
+#Import the chaotic-aur key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Chaotic-aur keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key FBA220DFC880C036 && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
@@ -701,13 +701,13 @@ clear
 
 
 ###SETUP CHAOTIC-AUR REPO###
-#Add chaotic-aur and to pacman.conf. Currently nothing is installed from this unless user wants a custom kernel
+#Add chaotic-aur to pacman.conf. Currently nothing is installed from this unless user wants a custom kernel
 cat << EOF >> /mnt/etc/pacman.conf
 #Chaotic-aur repo with many packages
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
 EOF
-#Update repos on the ISO and the target
+#Update pacman repos on the new installation
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Updating repos" \
 --prgbox "Updating pacman repos for chaotic-aur" "arch-chroot /mnt pacman -Syy && pacman -Syy" "$HEIGHT" "$WIDTH"
@@ -715,7 +715,7 @@ clear
 
 
 ###INSTALL CUSTOM KERNEL###
-#If user wants a custom kernel, install it here. For some reason, we need to echo the variables otherwise it doesnt work with pacman
+#Install a custom kernel now if the user selected one. For some reason we need to echo the variables otherwise it doesnt work with pacman
 if [ "$kernel" = y ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Custom kernel" \
@@ -735,7 +735,7 @@ ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
 if [ "$ramTotal" -gt "2020000" ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Enabling Performance Services" \
-	--prgbox "Enabling preload and irqbalance" "arch-chroot /mnt systemctl enable preload.service && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Enabling preload and profile-sync-daemon" "arch-chroot /mnt systemctl enable preload.service && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
 fi
 clear
 #Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
@@ -839,7 +839,7 @@ echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
 
 
 ###PULSEAUDIO SETUP###
-#Change pulseaudio to have higher priority and enable realtime priority
+#Change pulseaudio to have both higher and realtime priority
 sed "s,\; high-priority = yes,high-priority = yes,g" -i /mnt/etc/pulse/daemon.conf
 sed "s,\; nice-level = -11,nice-level = -11,g" -i /mnt/etc/pulse/daemon.conf
 sed "s,\; realtime-scheduling = yes,realtime-scheduling = yes,g" -i /mnt/etc/pulse/daemon.conf
@@ -870,18 +870,18 @@ EOF
 #Setup makepkg config
 #Change default -j count to use all cores
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
-#Build all pkgs with native optimizations
+#Build all packages with native optimizations
 sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
-#Enable link time optimizations
+#Enable link time optimizations (LTO)
 sed "s,\!lto,lto,g" -i /mnt/etc/makepkg.conf
-#Build all rust pkgs with native optimizations
+#Build all rust packages with native optimizations
 sed "s,\#\RUSTFLAGS=\"-C opt-level=2\",RUSTFLAGS=\"-C opt-level=2 -C target-cpu=native\",g" -i /mnt/etc/makepkg.conf
-#Enable multithreaded compression support
+#Enable multithreaded and higher level compression support. This only does anything if you change the PKGEXT value
 sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSXZ=(xz -c -z -),COMPRESSXZ=(xz -e -9 -c -z --threads=0 -),g" -i /mnt/etc/makepkg.conf
 sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=0 -),g" -i /mnt/etc/makepkg.conf
-#Change default pkg extension to just tar (uncompressed)
+#Change default package extension to just tar (uncompressed)
 sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 
 
@@ -891,7 +891,7 @@ configFiles=Alexs-Arch-Installer-master
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Alexs-Arch-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
-#Create /etc/skel dirs for configs to be applied to our new user
+#Create /etc/skel dirs for configs to be applied to the new user
 mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf}
 mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.mozilla/
@@ -909,7 +909,7 @@ mv "$configFiles"/configs/gtk-3.0/settings.ini /mnt/etc/skel/.config/gtk-3.0/
 mv "$configFiles"/configs/xfce4/ /mnt/etc/skel/.config/
 #Move the mousepad config in dconf
 mv "$configFiles"/configs/dconf/user /mnt/etc/skel/.config/dconf/
-#Move mimelist - sets some default apps for file types
+#Move mimelist. Sets some default apps for file types
 mv "$configFiles"/configs/mimeapps.list /mnt/etc/skel/.config/
 #Move htoprc
 mv "$configFiles"/configs/htoprc /mnt/etc/skel/.config/htop/
@@ -972,31 +972,32 @@ mv "$configFiles"/configs/xdg.sh /mnt/etc/profile.d/
 
 ###NETWORKMANAGER###
 mkdir -p /mnt/etc/NetworkManager/conf.d/
-#Configure mac address spoofing on startup via networkmanager. Only wireless interfaces are randomized
+#Configure mac address spoofing on startup via NetworkManager. Only wireless interfaces are randomized
 mv "$configFiles"/configs/networkmanager/rand_mac.conf /mnt/etc/NetworkManager/conf.d/
 #Set default DNS to cloudflare
 mv "$configFiles"/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
-#Set network manager to avoid systemd-resolved. Fixes issue "unit dbus-org.freedesktop.resolve1.service not found" in journal log
+#Set NetworkManager to avoid systemd-resolved. Fixes issue "unit dbus-org.freedesktop.resolve1.service not found" in journal log
 mv "$configFiles"/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
 #Enable IPv6 privacy
 mv "$configFiles"/configs/networkmanager/ip6-privacy.conf /mnt/etc/NetworkManager/conf.d/
 
 
 ###UDEV RULES###
-#IOschedulers for storage that supposedly increase perfomance
+#IOschedulers for storage that "should" increase perfomance
 mv "$configFiles"/configs/udev/60-ioschedulers.rules /mnt/etc/udev/rules.d/
-#HDParm rule to spin down drives after 20 idle minutes
+#HDParm rule to spin down drives after 20 idle minutes. Increases access times after idle periods but increases HDD life
 mv "$configFiles"/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
 
 
 ###POLKIT RULES###
+#The following rules allow the user to not enter a password if in the correct group for specific applications.
 #Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
 mv -f "$configFiles"/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
-#Add gparted polkit rule for storage group, allow users to not enter a password
+#Add gparted polkit rule for storage group
 mv -f "$configFiles"/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
-#Add gsmartcontrol rule for storage group, allow users to not enter a password to view smart data
+#Add gsmartcontrol rule for storage group
 mv -f "$configFiles"/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
-#Allow user in the network group to add/modify/delete networks without a password
+#Allow user in the network group to add/modify/delete networks
 mv -f "$configFiles"/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/
 
 
@@ -1014,7 +1015,7 @@ mv "$configFiles"/configs/pacman-hooks/update-grub.hook /mnt/etc/pacman.d/hooks/
 
 ###WACOM TABLET###
 #Change to and if -d /proc/bus/input/devices/wacom
-#Check and setup touchscreen - like x201T/x220T
+#Check and setup touchscreen for devices like the Thinkpad X201T/X220T
 if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv "$configFiles"/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
 fi
@@ -1026,9 +1027,9 @@ if acpi -V | grep -iq Battery ; then acpiBattery=yes; fi
 if [ -d "/sys/class/power_supply/BAT0" ] || [ -d "/sys/class/power_supply/BAT1" ]; then sysBattery=yes; fi
 modelType=$(hostnamectl | sed 's/ //g' | grep "HardwareModel" | cut -d":" -f2)
 if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
-	#Move the powertop auto tune service so it can be enabled if the user wants. TLP does the same thing
+	#Move the powertop auto tune service so it can be enabled if the user wants. TLP does the same thing. Disable by default
 	mv "$configFiles"/configs/systemd/powertop.service /mnt/etc/systemd/system/
-	#Install power saving tools and enable tlp, powertop and other power saving tweaks
+	#Install power saving tools and enable tlp and other power saving tweaks
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
 	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S powertop x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
@@ -1040,9 +1041,9 @@ if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = ye
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
 	arch-chroot /mnt systemctl mask systemd-rfkill.socket systemd-rfkill.service > /dev/null 2>&1
-	#Increase dirty writeback time to 60 seconds - same as TLP
+	#Increase dirty writeback time to 60 seconds. Same as TLP but always enforced
 	mv "$configFiles"/configs/sysctl/50-dirty-writebacks.conf /mnt/etc/sysctl.d/
-	#Disable wake on lan - may help with power savings
+	#Disable wake on lan. May help with power savings
 	mv "$configFiles"/configs/udev/81-disable_wol.rules /mnt/etc/udev/rules.d/
 	mv "$configFiles"/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
 	#Enable wifi powersaving
@@ -1196,8 +1197,8 @@ if [ "$sleepMode" = "[s2idle] deep" ]; then
 fi
 #If mitigations are wanted, add them as well as grubCmdlineLinuxOptions. If deep sleep was selected it will be added
 #Also make sure to blacklist some watchdog modules which may keep watchdog loaded
-if [ "$disableMitigations" = "y" ]; then
-	grubCmdlineLinuxOptions="$grubSecurityMitigations $grubCmdlineLinuxOptions"
+if [ "$enableGrubPerformanceOptions" = "y" ]; then
+	grubCmdlineLinuxOptions="$grubPerformanceOptions $grubCmdlineLinuxOptions"
 	mv "$configFiles"/configs/disable-watchdog.conf /mnt/etc/modprobe.d/
 	mv "$configFiles"/configs/sysctl/10-disable-watchdog.conf /mnt/etc/sysctl.d/
 fi
@@ -1206,7 +1207,6 @@ fi
 ###GRUB CONFIG###
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
-	#rootTargetDiskUUID=$(blkid | grep "${storagePartitions[2]}" | cut -d" " -f2 | cut -d'"' -f2)
 	rootTargetDiskUUID=$(blkid -s UUID -o value ${storagePartitions[2]})
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
