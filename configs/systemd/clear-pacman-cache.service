@@ -1,7 +1,6 @@
 [Unit]
 Description=Remove all pacman cache files
 Documentation=man:pacman
-ConditionACPower=true
 
 [Service]
 ExecStart=/usr/bin/paccache -rk0
