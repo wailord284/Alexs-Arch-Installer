@@ -16,7 +16,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Optional disk encryption for the root partition
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
-- Display all network interface IP Addresses on TTY logins
 - Lightdm display manager with optional autologin
 - Monthly systemd timer to clean the pacman cache
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
@@ -95,6 +94,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) - Systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
     * [Keep only 1024MB](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) of Journald logs and compress them
+    * [Display network interface IP Addresses](https://github.com/wailord284/Alexs-Arch-Installer/blob/master/configs/scripts/ttyinterfaces.sh) on TTY logins - Systemd service and script (disabled by default)
     * Systemd service timeout changed from 90 seconds to 45 seconds
     * Disable coredump in coredump.conf
 - Password changes (How the password is stored):

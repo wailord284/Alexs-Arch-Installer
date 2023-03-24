@@ -1109,9 +1109,9 @@ mv "$configFiles"/configs/systemd/00-disable-coredumps.conf /mnt/etc/systemd/cor
 #Copy and enable the clear-pacman-cache service and timer
 mv "$configFiles"/configs/systemd/clear-pacman-cache.timer /mnt/etc/systemd/system/
 mv "$configFiles"/configs/systemd/clear-pacman-cache.service /mnt/etc/systemd/system/
-#Add the TTY Interfaces service to output interface IP addresses to the TTY login screen
+#Add the TTY Interfaces service to output interface IP addresses to the TTY login screen. Not enabled
 mv "$configFiles"/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
-#Enable the clear-pacman-cache service and ttyinterfaces.service
+#Enable the clear-pacman-cache service
 arch-chroot /mnt systemctl enable clear-pacman-cache.timer > /dev/null 2>&1
 
 
