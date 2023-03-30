@@ -78,6 +78,7 @@
         <value type="string" value="networkmanager applet"/>
       </property>
     </property>
+    <property name="icon-size" type="int" value="0"/>
     <property name="plugin-8" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
       <property name="show-notifications" type="bool" value="true"/>
