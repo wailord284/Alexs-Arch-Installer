@@ -53,8 +53,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM
 - Firefox changes:
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
-    * [ClearURLs](https://addons.mozilla.org/en-US/firefox/addon/clearurls/) - Blocks URL tracking elements
-    * [Canvas Blocker](https://addons.mozilla.org/en-US/firefox/addon/canvasblocker/) - Prevents Javascript canvas tracking
     * [Decentral Eyes](https://decentraleyes.org/) - Local emulation of Content Delivery Networks
     * A privacy oriented prefs.js focused on compatibility made with [ffprofile](https://ffprofile.com/)
     * A custom user.js with some changes based on [BetterFox](https://github.com/yokoffing/Betterfox)
