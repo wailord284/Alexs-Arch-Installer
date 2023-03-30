@@ -895,6 +895,8 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf}
 mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.mozilla/
+#Move xsuspender config. We dont enable or install this
+mv "$configFiles"/configs/xsuspender.conf /mnt/etc/skel/.config/
 #Move profile-sync-daemon config
 mv "$configFiles"/configs/psd.conf /mnt/etc/skel/.config/psd/
 #Move kitty config
