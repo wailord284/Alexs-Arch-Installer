@@ -762,7 +762,7 @@ clear
 
 
 ###ADDITIONAL FIRMWARE CHECK/SETUP###
-#Detect b43 firmware wifi cards and install b43-firmware
+#Detect b43 firmware wifi cards and install b43-firmware - https://wiki.archlinux.org/title/Broadcom_wireless#Installation
 if dmesg | grep -q 'b43-phy0 ERROR'; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
@@ -1170,7 +1170,7 @@ if [ "$boot" = efi ]; then
 	else
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "GRUB installation" \
-		--prgbox "Installing grub for 32 bit UEFI" "arch-chroot /mnt grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck" "$HEIGHT" "$WIDTH"
+		--prgbox "Installing grub for 32-bit UEFI" "arch-chroot /mnt grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck" "$HEIGHT" "$WIDTH"
 	fi
 	#Install memtest86 for UEFI
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
