@@ -1,5 +1,4 @@
-/* Allow users in the kvm group to manage the libvirt
-daemon without authentication */
+/* Allow users in the kvm group to manage the libvirt daemon without authentication */
 polkit.addRule(function(action, subject) {
     if (action.id == "org.libvirt.unix.manage" &&
         subject.isInGroup("kvm")) {

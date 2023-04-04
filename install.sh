@@ -1000,9 +1000,9 @@ mv "$configFiles"/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
 #The following rules allow the user to not enter a password if in the correct group for specific applications.
 #Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
 mv -f "$configFiles"/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
-#Add gparted polkit rule for storage group
+#Add gparted polkit rule for disk group
 mv -f "$configFiles"/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
-#Add gsmartcontrol rule for storage group
+#Add gsmartcontrol rule for disk group
 mv -f "$configFiles"/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
 #Allow user in the network group to add/modify/delete networks
 mv -f "$configFiles"/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/

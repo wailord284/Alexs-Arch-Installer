@@ -59,14 +59,14 @@ The user will now be prompted to supply basic information such as hostname, user
 - Polkit changes:
     * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the kvm group)
     * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
-    * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) - Allow gparted to run without a password (users in storage group)
-    * [Gsmartcontrol rule](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in storage group)
-    * [BTRFS Assistant rule](https://gitlab.com/btrfs-assistant/btrfs-assistant) - Allows btrfs-assistant to run without a password (users in storage group)
+    * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) - Allow gparted to run without a password (users in disk group)
+    * [Gsmartcontrol rule](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in disk group)
+    * [BTRFS Assistant rule](https://gitlab.com/btrfs-assistant/btrfs-assistant) - Allows btrfs-assistant to run without a password (users in disk group)
 - Bash changes:
     * [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) - Add color and improve tab completion
     * [ASCII Pokemon](https://gitlab.com/phoneybadger/pokemon-colorscripts) - Display a pokemon in terminal
     * Add colored output to ls, ip, grep and file extensions
-    * Custom aliases for yay/pacman and other system tasks
+    * Custom aliases for trizen/pacman and other system tasks
 - Laptop changes (If detected):
     * [Tackpad](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) - More comfortable defaults
     * [TLP](https://wiki.archlinux.org/title/TLP) - Default settings and PCIE_ASPM_ON_BAT=powersupersave
