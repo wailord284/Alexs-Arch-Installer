@@ -936,7 +936,7 @@ chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 #Create autologin group for lightdm
 arch-chroot /mnt groupadd -r autologin
 #Add user here to get /etc/skel configs
-arch-chroot /mnt useradd -m -G network,kvm,floppy,disk,storage,uucp,wheel,optical,video,autologin -s /bin/bash "$user"
+arch-chroot /mnt useradd -m -G input,scanner,network,kvm,floppy,disk,storage,uucp,wheel,optical,video,autologin -s /bin/bash "$user"
 #Create a temp file to store the password in
 TMPFILE=$(mktemp)
 #Setup more secure passwd by increasing hashes
