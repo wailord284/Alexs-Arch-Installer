@@ -691,7 +691,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger smartmontools neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-input-wacom xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate ethtool systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter fsearch deadbeef memtest86+-efi memtest86+ --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger smartmontools neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-input-wacom xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate ethtool systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter fsearch deadbeef --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1161,7 +1161,7 @@ mv "$configFiles"/configs/sysctl/50-dirty-bytes.conf /mnt/etc/sysctl.d/
 
 
 ###GRUB INSTALL###
-#Grub install - support uefi 64 and 32
+#Grub install
 if [ "$boot" = efi ]; then
 	if [ "$bootArch" = 64 ]; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1172,11 +1172,19 @@ if [ "$boot" = efi ]; then
 		--title "GRUB installation" \
 		--prgbox "Installing grub for 32 bit UEFI" "arch-chroot /mnt grub-install --target=i386-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck" "$HEIGHT" "$WIDTH"
 	fi
+	#Install memtest86 for UEFI
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Memtest86" \
+		--prgbox "Installing memtest86 for UEFI" "arch-chroot /mnt pacman -S memtest86+-efi --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 if [ "$boot" = bios ]; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "GRUB installation" \
 	--prgbox "Installing grub for legacy BIOS" "arch-chroot /mnt grub-install --target=i386-pc $storage --recheck" "$HEIGHT" "$WIDTH"
+	#Install memtest86 for BIOS
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+		--title "Memtest86" \
+		--prgbox "Installing memtest86 for legacy BIOS" "arch-chroot /mnt pacman -S memtest86+ --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 clear
 
