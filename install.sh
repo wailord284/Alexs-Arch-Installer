@@ -691,12 +691,12 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-sensors-plugin xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager-openvpn networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird xfce4-terminal file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa xfce4-notifyd xfce4-screenshooter dmidecode macchanger smartmontools neofetch net-tools xorg-xev dnsmasq downgrade nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar arch-install-scripts earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-input-wacom xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate ethtool systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp nmap profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter fsearch deadbeef --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter fsearch --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S trizen ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont lscolors-git zramswap preload pacman-updatedb-hook needrestart dracula-gtk-theme catppuccin-gtk-theme-mocha redshift-minimal --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S trizen ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont lscolors-git zramswap preload pacman-updatedb-hook needrestart dracula-gtk-theme catppuccin-gtk-theme-mocha redshift-minimal deadbeef --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -707,7 +707,7 @@ cat << EOF >> /mnt/etc/pacman.conf
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
 EOF
-#Update pacman repos on the new installation
+#Update pacman repos on the new installation and Arch ISO
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Updating repos" \
 --prgbox "Updating pacman repos for chaotic-aur" "arch-chroot /mnt pacman -Syy && pacman -Syy" "$HEIGHT" "$WIDTH"
@@ -1025,6 +1025,9 @@ mv "$configFiles"/configs/pacman-hooks/update-grub.hook /mnt/etc/pacman.d/hooks/
 #Check and setup touchscreen for devices like the Thinkpad X201T/X220T
 if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv "$configFiles"/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
+	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
+	--title "Touchscreen Found" \
+	--prgbox "Install Touchscreen driver" "arch-chroot /mnt pacman -S xf86-input-wacom --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 
 
