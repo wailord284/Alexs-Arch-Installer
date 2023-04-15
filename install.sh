@@ -878,6 +878,7 @@ mkdir -p /mnt/etc/skel/.mozilla/
 mkdir -p /mnt/etc/skel/.ssh
 #Move nanorc
 mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
+cp /mnt/etc/skel/.config/nano/ /mnt/root/.nanorc
 #Move trizen
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
