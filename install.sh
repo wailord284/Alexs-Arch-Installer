@@ -818,26 +818,6 @@ clear
 sed "s,20,10,g" -i /mnt/etc/zramswap.conf
 
 
-###NANO SETUP###
-#Setup nano config
-sed "s,\#\ set linenumbers, set linenumbers,g" -i /mnt/etc/nanorc
-sed "s,\#\ set positionlog, set positionlog,g" -i /mnt/etc/nanorc
-sed "s,\#\ set constantshow, set constantshow,g" -i /mnt/etc/nanorc
-sed "s,\#\ set titlecolor bold\,white\,blue, set titlecolor bold\,lightwhite,g" -i /mnt/etc/nanorc
-sed "s,\#\ set promptcolor lightwhite\,grey, set promptcolor lightwhite\,lightblack,g" -i /mnt/etc/nanorc
-sed "s,\#\ set errorcolor bold\,white\,red, set errorcolor bold\,lightwhite\,red,g" -i /mnt/etc/nanorc
-sed "s,\#\ set spotlightcolor black\,lightyellow, set spotlightcolor black\,lime,g" -i /mnt/etc/nanorc
-sed "s,\#\ set selectedcolor lightwhite\,magenta, set selectedcolor lightwhite\,magenta,g" -i /mnt/etc/nanorc
-sed "s,\#\ set stripecolor \,yellow, set stripecolor yellow,g" -i /mnt/etc/nanorc
-sed "s,\#\ set statuscolor bold\,white\,green, set statuscolor bold\,white,g" -i /mnt/etc/nanorc
-sed "s,\#\ set scrollercolor cyan, set scrollercolor cyan,g" -i /mnt/etc/nanorc
-sed "s,\#\ set numbercolor cyan, set numbercolor magenta,g" -i /mnt/etc/nanorc
-sed "s,\#\ set keycolor cyan, set keycolor cyan,g" -i /mnt/etc/nanorc
-sed "s,\#\ set functioncolor green, set functioncolor green,g" -i /mnt/etc/nanorc
-sed "s,\#\ include \"/usr/share/nano/\*.nanorc\", include \"/usr/share/nano/\*.nanorc\",g" -i /mnt/etc/nanorc
-echo "include /usr/share/nano-syntax-highlighting/*.nanorc" >> /mnt/etc/nanorc
-
-
 ###PULSEAUDIO SETUP###
 #Change pulseaudio to have both higher and realtime priority
 sed "s,\; high-priority = yes,high-priority = yes,g" -i /mnt/etc/pulse/daemon.conf
@@ -892,10 +872,12 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Alexs-Arch-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 #Create /etc/skel dirs for configs to be applied to the new user
-mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf,trizen}
+mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf,trizen,nano}
 mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.mozilla/
 mkdir -p /mnt/etc/skel/.ssh
+#Move nanorc
+mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
 #Move trizen
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
