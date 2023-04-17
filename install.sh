@@ -1057,6 +1057,7 @@ if [ "$filesystem" = btrfs ] ; then
 	#Change the snapper-cleanup timer run every six hours instead of once per day
 	mkdir -p /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/
 	echo "[Timer]" > /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
+	echo "OnUnitActiveSec=" >> /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
 	echo "OnUnitActiveSec=6h" >> /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
