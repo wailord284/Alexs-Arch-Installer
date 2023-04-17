@@ -873,6 +873,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Alexs-Arch-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 #Create /etc/skel dirs for configs to be applied to the new user
 mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf,trizen,nano}
+mkdir -p /mnt/etc/skel/.config/systemd/user/psd-resync.timer.d/
 mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.mozilla/
 mkdir -p /mnt/etc/skel/.ssh
@@ -886,6 +887,7 @@ mv "$configFiles"/configs/ssh-config /mnt/etc/skel/.ssh/config
 mv "$configFiles"/configs/xsuspender.conf /mnt/etc/skel/.config/
 #Move profile-sync-daemon config
 mv "$configFiles"/configs/psd.conf /mnt/etc/skel/.config/psd/
+mv "$configFiles"/configs/systemd/psd-frequency.conf /mnt/etc/skel/.config/systemd/user/psd-resync.timer.d/frequency.conf
 #Move kitty config
 mv "$configFiles"/configs/kitty.conf /mnt/etc/skel/.config/kitty/
 #Move wezterm config. We dont install wezterm by default
