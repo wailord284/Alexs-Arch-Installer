@@ -102,7 +102,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano
-    * Users must be in the wheel group to [run su](https://wiki.archlinux.org/title/Su#su_and_wheel)
+    * Users must be in the [wheel group to run su](https://wiki.archlinux.org/title/Su#su_and_wheel)
     * Disable [Systemd-homed not available](https://www.reddit.com/r/archlinux/comments/ie3cvj/pam_systemd_home_spamming_the_journal_everytime_i/) log message everytime sudo is run
     * Reboot and poweroff do not requrie the sudo password to run
     * Allow multiple TTYs to run sudo after one TTY has successfully ran sudo
@@ -110,7 +110,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - NetworkManager changes:
     * [Random wireless MAC address](https://wiki.archlinux.org/index.php/NetworkManager#Configuring_MAC_address_randomization)
     * [IPv6 privacy extensions](https://wiki.archlinux.org/title/IPv6#NetworkManager)
-    * [Faster default DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) (1.1.1.1, 1.0.0.1)
+    * [Faster default DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) - [Cloudflare 1.1.1.1](https://1.1.1.1/)
     * [Disable systemd-resolve](https://wiki.archlinux.org/title/NetworkManager#Unit_dbus-org.freedesktop.resolve1.service_not_found) to remove "unit dbus-org.freedesktop.resolve1.service not found" in journal log
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains ~1000 packages
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
@@ -127,9 +127,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Some of the UEFI tools will only work on systems with a newer UEFI implementation
 
 # Todos
- - xsuspender?
  - Finish working on implementing dialog prompts as functions
- - x86 V3 support?
-    * /lib/ld-linux-x86-64.so.2 --help | grep supported
  - optionally allow people to upload hw-probe
  - optionally allow people to upload pkgstats
