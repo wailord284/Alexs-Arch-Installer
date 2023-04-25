@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###ABOUT###
-#Automated Arch Linux installation script by Alex "wailord284" Gaudino.
+#Automated Arch Linux installation script by Alex aka "wailord284".
 #This script will autodetect a large range of hardware and should automatically configure many systems out of the box.
 #This script will install Arch with mainly vanilla settings plus some programs and features I personally use.
 #To install applications I like, I've created a custom software repository known as "Aurmageddon"
@@ -877,8 +877,10 @@ mkdir -p /mnt/etc/skel/.config/systemd/user/psd-resync.timer.d/
 mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.mozilla/
 mkdir -p /mnt/etc/skel/.ssh
-#Move nanorc
+#Move nanorc to user and root
 mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
+mkdir -p /mnt/root/.config/nano 
+cp /mnt/etc/skel/.config/nano/ /mnt/root/.config/nano/
 #Move trizen
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
@@ -904,10 +906,13 @@ mv "$configFiles"/configs/dconf/user /mnt/etc/skel/.config/dconf/
 mv "$configFiles"/configs/mimeapps.list /mnt/etc/skel/.config/
 #Move htoprc
 mv "$configFiles"/configs/htoprc /mnt/etc/skel/.config/htop/
-#Bash stuff and screenrc
+#Bash stuff and screenrc. Move to user and root
 mv "$configFiles"/configs/bash/inputrc /mnt/etc/skel/.config/readline/
 mv "$configFiles"/configs/bash/screenrc /mnt/etc/skel/.config/screen/
 mv "$configFiles"/configs/bash/.bashrc /mnt/etc/skel/
+mkdir -p /mnt/root/.config/readline
+cp /mnt/etc/skel/.config/readline/inputrc /mnt/root/.config/readline/
+cp /mnt/etc/skel/.bashrc /mnt/root/.bashrc
 #Move Firefox config and set permissions for extra privacy
 mv "$configFiles"/configs/firefox/ /mnt/etc/skel/.mozilla/
 chmod -R 700 /mnt/etc/skel/.mozilla/firefox/
