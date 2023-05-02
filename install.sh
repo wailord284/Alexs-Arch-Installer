@@ -880,7 +880,7 @@ mkdir -p /mnt/etc/skel/.ssh
 #Move nanorc to user and root
 mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
 mkdir -p /mnt/root/.config/nano 
-cp /mnt/etc/skel/.config/nano/ /mnt/root/.config/nano/
+cp -r /mnt/etc/skel/.config/nano/ /mnt/root/.config/nano/
 #Move trizen
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
@@ -919,7 +919,8 @@ chmod -R 700 /mnt/etc/skel/.mozilla/firefox/
 #Make gnupg config folder. Required with custom XDG
 mkdir -p /mnt/etc/skel/.local/share/gnupg/
 chmod -R 700 /mnt/etc/skel/.local/share/gnupg
-
+echo "user configs"
+sleep 10s
 
 ###USER, PASSWORDS and PAM###
 #Create autologin group for lightdm
