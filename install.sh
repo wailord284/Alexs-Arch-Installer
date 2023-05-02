@@ -389,7 +389,7 @@ clear
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-grubPerformanceOptions="mitigations=off nowatchdog"
+grubPerformanceOptions="mitigations=off nowatchdog quiet systemd.show_status=auto rd.udev.log_level=3"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
