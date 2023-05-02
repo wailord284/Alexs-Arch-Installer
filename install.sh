@@ -596,7 +596,7 @@ clear
 sed "s,HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck),HOOKS=(systemd keyboard autodetect modconf kms sd-vconsole block filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 #Enable encryption mkinitcpio hook if needed and revert back to base/udev hooks as using the systemd one required additional changes
 if [ "$encrypt" = y ]; then
-	sed "s,HOOKS=(systemd autodetect modconf kms keyboard keymap block filesystems fsck),HOOKS=(base udev keyboard autodetect modconf kms keymap block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
+	sed "s,HOOKS=(systemd keyboard autodetect modconf kms sd-vconsole block filesystems fsck),HOOKS=(base udev keyboard autodetect modconf kms keymap block encrypt filesystems fsck),g" -i /mnt/etc/mkinitcpio.conf
 fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
