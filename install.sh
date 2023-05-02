@@ -1143,6 +1143,11 @@ arch-chroot /mnt systemctl enable reflector.timer > /dev/null 2>&1
 mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
 #Low-level console messages
 mv "$configFiles"/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
+if [ "$enableGrubPerformanceOptions" = "y" ]; then
+	echo "kernel.printk = 3 3 3 3" >> /mnt/etc/sysctl.d/10-console-messages.conf
+else
+	echo "kernel.printk = 4 4 1 7" >> /mnt/etc/sysctl.d/10-console-messages.conf
+fi
 #Kernel hardening
 mv "$configFiles"/configs/sysctl/10-kernel-hardening.conf /mnt/etc/sysctl.d/
 #System tweaks
