@@ -1071,6 +1071,9 @@ if [ "$filesystem" = btrfs ] ; then
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
 	#Add btrfs assistant rule for storage group, allow users to not enter a password to view smart data
 	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
+	#Skip FSCK for btrfs since it is not needed and remove the fsck mkinitcpio hook
+	grubCmdlineLinuxOptions="fsck.mode=skip"
+	grep HOOKS= /mnt/etc/mkinitcpio.conf | tail -n1 | sed -e "s/ fsck//g" -i /mnt/etc/mkinitcpio.conf
 	clear
 fi
 
@@ -1206,7 +1209,7 @@ sleepMode=$(cat /sys/power/mem_sleep)
 if [ "$sleepMode" = "[s2idle] deep" ]; then
 	#If the system has both s2idle and deep but s2idle is currently selected, then deep sleep will be used
 	#This will set mem_sleep_default=deep in grub - GRUB_CMDLINE_LINUX
-	grubCmdlineLinuxOptions=mem_sleep_default=deep
+	grubCmdlineLinuxOptions="mem_sleep_default=deep $grubCmdlineLinuxOptions"
 fi
 #If mitigations are wanted, add them as well as grubCmdlineLinuxOptions. If deep sleep was selected it will be added
 #Also make sure to blacklist some watchdog modules which may keep watchdog loaded
