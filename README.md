@@ -17,7 +17,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Slightly modified XFCE configuration to enable compositing, change font and change theme
 - Optionally install custom kernels (linux-tkg) with GCC CPU optimizations from chaotic-aur
 - Lightdm display manager with optional autologin
-- Monthly systemd timer to clean the pacman cache
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
     * BTRFS will use [compress-force=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression
     * BTRFS scrub timer (monthly) will be enabled for the root directory if selected
@@ -78,8 +77,8 @@ The user will now be prompted to supply basic information such as hostname, user
     * Arch Linux [theme](https://github.com/fghibellini/arch-silence)
 - Pacman changes:
     * [Kernel Modules hook](https://github.com/saber-nyan/kernel-modules-hook) to restore functionality when the running kernel updates
-    * [Package Cleanup hook](https://aur.archlinux.org/packages/pacman-cleanup-hook/) to minimize the pacman cache size when updating
     * [Needrestart hook](https://github.com/liske/needrestart) to restart outdated libraries
+    * Package cleanup hook to minimize the pacman cache size when updating
     * Update and reinstall grub hook after grub updates
     * Verbose Package changes, Color, Parallel downloads
 - Makepkg changes:
