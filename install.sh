@@ -505,7 +505,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	if [ "$filesystem" = btrfs ] ; then
 		rootTargetDiskUUID=$(blkid | grep "$rootTargetDisk" | cut -d" " -f3 | cut -d'"' -f2)
 		#Mount the root partition by UUID to make sure genfstab uses UUIDs
-		mount -o noatime,compress-force=zstd:3,space_cache=v2,nodiscard,autodefrag,commit=90 -U "$rootTargetDiskUUID" /mnt
+		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90 -U "$rootTargetDiskUUID" /mnt
 		#Create the subvolumes. We do not mount /tmp but make it a subvolume anyways
 		btrfs subvolume create /mnt/@
 		btrfs subvolume create /mnt/@var_log
@@ -521,11 +521,11 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Make the subvolume directories to mount
 		mkdir -p /mnt/{srv,var/log,var/cache,var/tmp,opt}
 		#Mount the remaining subvoulmes
-		mount -o noatime,compress-force=zstd:3,space_cache=v2,nodiscard,autodefrag,commit=90,subvol=@var_log -U "$rootTargetDiskUUID" /mnt/var/log
-		mount -o noatime,compress-force=zstd:3,space_cache=v2,nodiscard,autodefrag,commit=90,subvol=@var_cache -U "$rootTargetDiskUUID" /mnt/var/cache
-		mount -o noatime,compress-force=zstd:3,space_cache=v2,nodiscard,autodefrag,commit=90,subvol=@var_tmp -U "$rootTargetDiskUUID" /mnt/var/tmp
-		mount -o noatime,compress-force=zstd:3,space_cache=v2,nodiscard,autodefrag,commit=90,subvol=@opt -U "$rootTargetDiskUUID" /mnt/opt
-		mount -o noatime,compress-force=zstd:3,space_cache=v2,nodiscard,autodefrag,commit=90,subvol=@srv -U "$rootTargetDiskUUID" /mnt/srv
+		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@var_log -U "$rootTargetDiskUUID" /mnt/var/log
+		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@var_cache -U "$rootTargetDiskUUID" /mnt/var/cache
+		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@var_tmp -U "$rootTargetDiskUUID" /mnt/var/tmp
+		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@opt -U "$rootTargetDiskUUID" /mnt/opt
+		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@srv -U "$rootTargetDiskUUID" /mnt/srv
 	elif [ "$filesystem" = f2fs ] ; then
 		#Mount F2FS root partition using -o compress_algorithm=zstd
 		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
