@@ -393,7 +393,7 @@ grubPerformanceOptions="mitigations=off nowatchdog quiet systemd.show_status=aut
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "This option will also disable Watchdog which can reduce power consumption and decrease boot times." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes: $grubPerformanceOptions")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "This option will also disable Watchdog which can reduce power consumption and decrease boot times." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes and the grub timeout will be set to 0: $grubPerformanceOptions")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionEnableGrubPerformanceOptions=$?
 if [ "$optionEnableGrubPerformanceOptions" = 0 ]; then
 	enableGrubPerformanceOptions="y"
@@ -1240,6 +1240,12 @@ else
 fi
 #Change theme
 echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
+#Change timeout to 3 seconds from 5 seconds or to 0 if performance options set
+if [ "$enableGrubPerformanceOptions" = "y" ]; then
+	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' -i /mnt/etc/default/grub
+else
+	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=3/g' -i /mnt/etc/default/grub
+fi
 #Generate grubcfg
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
