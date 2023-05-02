@@ -1055,8 +1055,8 @@ fi
 #If we have a BTRFS filesystem, add some extra software and configs
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Installing Additional Software" \
-	--prgbox "Adding configs and software for BTRFS" "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	--title "Installing Additional Software and Regenerating initramfs for BTRFS" \
+	--prgbox "Adding configs and software for BTRFS. This may take a while..." "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
 	#Add the btrfs binary to mkinitcpio for recovery situations
@@ -1074,6 +1074,7 @@ if [ "$filesystem" = btrfs ] ; then
 	#Skip FSCK for btrfs since it is not needed and remove the fsck mkinitcpio hook
 	grubCmdlineLinuxOptions="fsck.mode=skip"
 	grep HOOKS= /mnt/etc/mkinitcpio.conf | tail -n1 | sed -e "s/ fsck//g" -i /mnt/etc/mkinitcpio.conf
+	arch-chroot /mnt mkinitcpio -P > /dev/null 2>&1
 	clear
 fi
 
