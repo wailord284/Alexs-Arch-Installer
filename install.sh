@@ -44,7 +44,7 @@ systemctl start pacman-init
 
 
 ###ADD REPOS AND MIRRORS###
-#Add chaotic-aur to live ISO pacman config in case user wants custom kernel
+#Add chaotic-aur to live ISO pacman config
 cat << EOF >> /etc/pacman.conf
 [chaotic-aur]
 Server = https://random-mirror.chaotic.cx/\$repo/\$arch
@@ -351,41 +351,6 @@ fi
 clear
 
 
-###CUSTOM KERNEL###
-#Ask user if they want a custom kernel
-dialog --title "Custom Kernel" \
-	--defaultno \
-	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to install a custom kernel? This includes optimized releases of Linux-tkg, a kernel focused on gaming and desktop performance." "The normal Linux kernel will still be installed as a fallback option in case the custom kernel does not work on your hardware." "This option is only recommended for advanced users. If you do not know what this means you can safely press no.")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
-optionKernel=$?
-if [ "$optionKernel" = 0 ]; then
-	kernel="y"
-else
-	kernel="n"
-fi
-clear
-#Eventually this will get its own function when i figure it out
-#If user wants a custom kernel prompt them to choose from all linux-tkg options
-#Installation of the kernel will happen later
-if [ "$kernel" = y ]; then
-	unset COUNT MENU_OPTIONS options
-	COUNT=-1
-	mapfile -t dialogChaoticKernel < <(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d' | sed 's/$/-headers/')
-	for i in $(pacman -Sl chaotic-aur | grep linux-tkg | cut -d" " -f2 | sed '/-headers/d') ; do
-		COUNT=$((COUNT+1))
-		MENU_OPTIONS="${MENU_OPTIONS} $i ${dialogChaoticKernel[$COUNT]} off"
-	done
-	targetKernel=(dialog --backtitle "$dialogBacktitle" \
-	--scrollbar \
-	--title "Custom Kernel" \
-	--radiolist "Press space to select your Kernel." "$HEIGHT" "$WIDTH" "$CHOICE_HEIGHT")
-	IFS=" " read -r -a options <<< "${MENU_OPTIONS}"
-	installKernel=$("${targetKernel[@]}" "${options[@]}" 2>&1 >/dev/tty)
-	installKernelHeaders=$(echo "$installKernel" | sed 's/$/-headers/')
-fi
-clear
-
-
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
@@ -408,7 +373,7 @@ clear
 dialog --backtitle "$dialogBacktitle" \
 --defaultno \
 --title "Do you want to install with the following options?" \
---yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Keymap: $keymap" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Custom Kernel: $installKernel" "Disable Mitigations: $enableGrubPerformanceOptions")" "$HEIGHT" "$WIDTH"
+--yesno "$(printf %"s\n" "Do you want to proceed with the installation? If you press yes, all data on the drive will be lost!" "Hostname: $host" "Username: $user" "Encryption: $encrypt" "Locale: $locale" "Keymap: $keymap" "Country Timezone: $countryTimezone" "City Timezone: $cityTimezone" "Mirrorlist location: $region" "Filesystem: $filesystem" "Install Disk: $storage" "Secure Wipe: $wipe" "Disable Mitigations: $enableGrubPerformanceOptions")" "$HEIGHT" "$WIDTH"
 finalInstall=$?
 if [ "$finalInstall" = 0 ]; then
 	dialog --backtitle "$dialogBacktitle" \
@@ -704,7 +669,7 @@ clear
 
 
 ###SETUP CHAOTIC-AUR REPO###
-#Add chaotic-aur to pacman.conf. Currently nothing is installed from this unless user wants a custom kernel
+#Add chaotic-aur to pacman.conf. Currently nothing is installed from this
 cat << EOF >> /mnt/etc/pacman.conf
 #Chaotic-aur repo with many packages
 [chaotic-aur]
@@ -714,16 +679,6 @@ EOF
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Updating repos" \
 --prgbox "Updating pacman repos for chaotic-aur" "arch-chroot /mnt pacman -Syy && pacman -Syy" "$HEIGHT" "$WIDTH"
-clear
-
-
-###INSTALL CUSTOM KERNEL###
-#Install a custom kernel now if the user selected one. For some reason we need to echo the variables otherwise it doesnt work with pacman
-if [ "$kernel" = y ]; then
-	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
-	--title "Custom kernel" \
-	--prgbox "Installing custom kernel and headers" "arch-chroot /mnt pacman -S $(echo $installKernel $installKernelHeaders) --noconfirm" "$HEIGHT" "$WIDTH"
-fi
 clear
 
 
