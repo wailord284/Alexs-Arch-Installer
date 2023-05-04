@@ -73,7 +73,7 @@ timedatectl set-ntp true
 #Also enable parallel downloads on the ISO to 3. Useful for the first pacstrap command
 sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 3,g" -i /etc/pacman.conf
 pacman -Syy
-pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector lshw --noconfirm
+pacman -S archlinux-keyring acpi glibc ntp ncurses unzip dmidecode wget dialog reflector python lshw --noconfirm
 #Sync time with NTP
 ntpd -qg
 #Set hwclock as well in case system has no battery for RTC
