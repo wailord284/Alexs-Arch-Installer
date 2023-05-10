@@ -3,6 +3,11 @@
 [[ $- != *i* ]] && return
 #Bash completion
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+#Kitty shell integration
+if test -n "$KITTY_INSTALLATION_DIR"; then
+	export KITTY_SHELL_INTEGRATION="enabled"
+	source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"
+fi
 #Do not save cmds with " " in front or duplicate commands run after eachother
 HISTSIZE=2500
 HISTFILESIZE=10000
@@ -98,27 +103,14 @@ ex ()
   fi
 }
 
-#Smile or Frown based on exit status in the PS1 prompt
+#Some colors
 BRED='\[\e[1;31m\]'
 BGRED='\[\e[41m\]'
 BGREEN='\[\e[1;32m\]'
 BGWHITE='\[\e[1;37m\]'
 BCYAN='\[\e[1;36m\]'
 BMAGENTA='\[\e[1;35m\]'
-# Regular Colors
-Black='\033[0;30m'        # Black
-Red='\033[0;31m'          # Red
-Green='\033[0;32m'        # Green
-Yellow='\033[0;33m'       # Yellow
-Blue='\033[0;34m'         # Blue
-Purple='\033[0;35m'       # Purple
-Cyan='\033[0;36m'         # Cyan
-White='\033[0;37m'        # White
-BBlack='\033[1;30m'       # Black
-BGreen='\033[1;32m'       # Green
-BYellow='\033[1;33m'      # Yellow
-BBlue='\033[1;34m'        # Blue
-BPurple='\033[1;35m'      # Purple
+#Smile or Frown based on exit status in the PS1 prompt
 PROMPT_COMMAND='exitstatus && echo -ne "\033]0;${USER}@${HOSTNAME}\007"' 
 exitstatus() {
 if [ "$?" -eq "0" ]; then
@@ -126,5 +118,10 @@ if [ "$?" -eq "0" ]; then
 else
 	SC="${BRED}:("
 fi
-PS1="${BGWHITE}[\A][\u${BGWHITE}@${BMAGENTA}\h ${BGWHITE}\W${BGWHITE}] ${SC}${BGWHITE} "
+#If the user is root change prompt to be red
+if [ $(id -u) -eq 0 ]; then
+	PS1="${BGWHITE}[\A][\u${BGWHITE}@${BRED}\h ${BGWHITE}\W${BGWHITE}] ${SC}${BGWHITE} "
+else
+	PS1="${BGWHITE}[\A][\u${BGWHITE}@${BMAGENTA}\h ${BGWHITE}\W${BGWHITE}] ${SC}${BGWHITE} "
+fi
 }

@@ -836,10 +836,11 @@ mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.local/state/
 mkdir -p /mnt/etc/skel/.mozilla/
 mkdir -p /mnt/etc/skel/.ssh
-#Move nanorc to user and root
+#Move nanorc to user and root. Change root users to have a red title bar
 mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
 mkdir -p /mnt/root/.config/nano 
 cp /mnt/etc/skel/.config/nano/nanorc /mnt/root/.config/nano/
+sed "s,set titlecolor bold\,lightwhite,set titlecolor bold\,red\,black,g" -i /mnt/root/.config/nano/nanorc
 #Move trizen
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
