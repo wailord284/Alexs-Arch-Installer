@@ -833,6 +833,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf,trizen,nano}
 mkdir -p /mnt/etc/skel/.config/systemd/user/psd-resync.timer.d/
 mkdir -p /mnt/etc/skel/.local/share/
+mkdir -p /mnt/etc/skel/.local/state/
 mkdir -p /mnt/etc/skel/.mozilla/
 mkdir -p /mnt/etc/skel/.ssh
 #Move nanorc to user and root
