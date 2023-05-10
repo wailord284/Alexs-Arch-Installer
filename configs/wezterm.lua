@@ -16,7 +16,7 @@ end)
 
 return {
 	color_scheme = "Dracula",
-	enable_scroll_bar=true,
+	enable_scroll_bar = true,
 	scrollback_lines = 8192,
 	window_background_opacity = 0.95,
 	text_background_opacity = 1.0,
