@@ -39,7 +39,6 @@ user_pref("privacy.history.custom", true);
 user_pref("security.insecure_connection_text.enabled", true);
 user_pref("security.insecure_connection_text.pbmode.enabled", true);
 user_pref("network.IDN_show_punycode", true);
-user_pref("layout.forms.reveal-password-context-menu.enabled", true); // right-click menu option
 user_pref("editor.truncate_user_pastes", false);
 user_pref("network.auth.subresource-http-auth-allow", 1);
 user_pref("media.peerconnection.ice.proxy_only_if_behind_proxy", true);
@@ -82,6 +81,7 @@ user_pref("browser.newtabpage.activity-stream.topSitesRows", 4);
 
 //ANNOYANCE - https://github.com/yokoffing/Betterfox/blob/master/Peskyfox.js
 user_pref("layout.css.prefers-color-scheme.content-override", 2);
+user_pref("browser.shell.checkDefaultBrowser", false);
 user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 user_pref("app.update.suppressPrompts", true);
 user_pref("browser.compactmode.show", true);
@@ -94,7 +94,7 @@ user_pref("browser.preferences.moreFromMozilla", false);
 user_pref("browser.tabs.tabmanager.enabled", false);
 user_pref("full-screen-api.transition-duration.enter", "0 0");
 user_pref("full-screen-api.transition-duration.leave", "0 0");
-user_pref("full-screen-api.warning.delay", 0);
+user_pref("full-screen-api.warning.delay", -1);
 user_pref("full-screen-api.warning.timeout", 0);
 user_pref("browser.aboutwelcome.enabled", false);
 user_pref("findbar.highlightAll", true);
@@ -105,5 +105,4 @@ user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
 user_pref("extensions.pocket.enabled", false);
 user_pref("browser.download.always_ask_before_handling_new_types", true);
 user_pref("browser.download.open_pdf_attachments_inline", true);
-user_pref("dom.disable_window_move_resize", true);
 user_pref("layout.css.has-selector.enabled", true);
