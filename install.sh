@@ -1264,11 +1264,10 @@ selection=${selection:- 6 7 q}
 
 		6) #Desktop login - greetd
 		echo "$green""Enabling automatic desktop login""$reset"
-		echo -e '\n' >> /etc/greetd/config.toml
-		echo "[initial_session]" >> /etc/greetd/config.toml
-		echo "command = "startxfce4"" >> /etc/greetd/config.toml
-		echo "user = "$user"" >> /etc/greetd/config.toml
-		EOF
+		echo -e '\n' >> /mnt/etc/greetd/config.toml
+		echo "[initial_session]" >> /mnt/etc/greetd/config.toml
+		echo "command = "startxfce4"" >> /mnt/etc/greetd/config.toml
+		echo "user = "$user"" >> /mnt/etc/greetd/config.toml
 		sleep 3s
 		;;
 
