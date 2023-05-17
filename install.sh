@@ -840,7 +840,7 @@ mkdir -p /mnt/etc/skel/.ssh
 mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
 mkdir -p /mnt/root/.config/nano 
 cp /mnt/etc/skel/.config/nano/nanorc /mnt/root/.config/nano/
-sed "s,set titlecolor bold\,lightwhite,set titlecolor bold\,red\,black,g" -i /mnt/root/.config/nano/nanorc
+sed "s,set titlecolor bold\,lightwhite,set titlecolor bold\,red\,lightblack,g" -i /mnt/root/.config/nano/nanorc
 #Move trizen
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
