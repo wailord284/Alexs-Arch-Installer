@@ -659,7 +659,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi lightdm lightdm-gtk-greeter fsearch --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi greetd greetd-tuigreet fsearch --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -686,7 +686,7 @@ clear
 #Enable services
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
---prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target irqbalance earlyoom zramswap lightdm linux-modules-cleanup logrotate.timer fstrim.timer archlinux-keyring-wkd-sync.timer" "$HEIGHT" "$WIDTH"
+--prgbox "Enabling core system services" "arch-chroot /mnt systemctl enable NetworkManager systemd-timesyncd ctrl-alt-del.target irqbalance earlyoom zramswap greetd linux-modules-cleanup logrotate.timer fstrim.timer archlinux-keyring-wkd-sync.timer" "$HEIGHT" "$WIDTH"
 clear
 #Enable performance services if RAM is over ~2GB
 ramTotal=$(grep MemTotal /proc/meminfo | grep -Eo '[0-9]*')
@@ -882,10 +882,8 @@ chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 
 
 ###USER, PASSWORDS and PAM###
-#Create autologin group for lightdm
-arch-chroot /mnt groupadd -r autologin
 #Add user here to get /etc/skel configs
-arch-chroot /mnt useradd -m -G input,scanner,network,kvm,floppy,disk,storage,uucp,wheel,optical,video,autologin -s /bin/bash "$user"
+arch-chroot /mnt useradd -m -G input,scanner,network,kvm,floppy,disk,storage,uucp,wheel,optical,video -s /bin/bash "$user"
 #Create a temp file to store the password in
 TMPFILE=$(mktemp)
 #Setup more secure passwd by increasing hashes
@@ -1045,17 +1043,8 @@ fi
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 
-###LGIHTDM - DISPLAY MANAGER###
-#Set greeter
-sed "s,\#greeter-session=example-gtk-gnome,greeter-session=lightdm-gtk-greeter,g" -i /mnt/etc/lightdm/lightdm.conf
-#Remove xauth dot file from /home/user/
-sed "s,\#user-authority-in-system-dir=false,user-authority-in-system-dir=true,g" -i /mnt/etc/lightdm/lightdm.conf
-#Background
-sed "s,\#background=,background=\#2b303c,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
-#Icons
-sed "s,\#icon-theme-name=,icon-theme-name=zafiro-dark,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
-#Theme
-sed "s,\#theme-name=,theme-name=Matcha-dark-azul,g" -i /mnt/etc/lightdm/lightdm-gtk-greeter.conf
+###GREETD - DISPLAY MANAGER###
+sed 's,command = "agreety --cmd /bin/sh",command = "tuigreet -t -r -i --asterisks --cmd startxfce4",g' -i /mnt/etc/greetd/config.toml
 
 
 ###SYSTEMD###
@@ -1218,7 +1207,7 @@ echo "$green""2$reset - Enable X2Go remote desktop management server"
 echo "$green""3$reset - Enable sshd"
 echo "$green""4$reset - Enable and install the UFW firewall"
 echo "$green""5$reset - Use the iwd wifi backend over wpa_suplicant for NetworkManager"
-echo "$green""6$reset - Enable automatic desktop login in lightdm $green(recommended)"
+echo "$green""6$reset - Enable automatic desktop login $green(recommended)"
 echo "$green""7$reset - Block ads system wide using hblock to modify the hosts file $green(recommended)"
 echo "$green""8$reset - Encrypt and cache DNS requests with dns-over-https"
 
@@ -1273,10 +1262,13 @@ selection=${selection:- 6 7 q}
 		sleep 3s
 		;;
 
-		6) #Desktop login - Lightdm
+		6) #Desktop login - greetd
 		echo "$green""Enabling automatic desktop login""$reset"
-		sed "s,\#autologin-user=,autologin-user=$user,g" -i /mnt/etc/lightdm/lightdm.conf
-		sed "s,\#autologin-session=,autologin-session=xfce,g" -i /mnt/etc/lightdm/lightdm.conf
+		echo -e '\n' >> /etc/greetd/config.toml
+		echo "[initial_session]" >> /etc/greetd/config.toml
+		echo "command = "startxfce4"" >> /etc/greetd/config.toml
+		echo "user = "$user"" >> /etc/greetd/config.toml
+		EOF
 		sleep 3s
 		;;
 
