@@ -71,7 +71,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [TLP](https://wiki.archlinux.org/title/TLP) - Default settings and PCIE_ASPM_ON_BAT=powersupersave
 - Grub changes:
     * [File Manager](https://github.com/a1ive/grub2-filemanager), Reboot and Shutdown - Available as additional grub menus
-    * [UEFI tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, GDisk partition editor, Memtest86, Super Grub Disk 2
+    * [UEFI tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, Memtest86, Super Grub Disk 2
     * [UEFI games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
     * Arch Linux [theme](https://github.com/fghibellini/arch-silence)
 - Pacman changes:
