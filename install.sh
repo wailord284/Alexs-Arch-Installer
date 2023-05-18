@@ -1048,8 +1048,6 @@ sed 's,command = "agreety --cmd /bin/sh",command = "tuigreet -t -r -i --asterisk
 
 
 ###SYSTEMD###
-#Systemd service for packet sniffing. Not enabled
-mv "$configFiles"/configs/systemd/promiscuous@.service /mnt/etc/systemd/system/
 #Set journal to output log contents to TTY12
 mkdir /mnt/etc/systemd/journald.conf.d
 mv "$configFiles"/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
