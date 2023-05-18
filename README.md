@@ -71,8 +71,8 @@ The user will now be prompted to supply basic information such as hostname, user
     * [TLP](https://wiki.archlinux.org/title/TLP) - Default settings and PCIE_ASPM_ON_BAT=powersupersave
 - Grub changes:
     * [File Manager](https://github.com/a1ive/grub2-filemanager), Reboot and Shutdown - Available as additional grub menus
-    * [UEFI tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) UEFI Shell, Memtest86, Super Grub Disk 2
-    * [UEFI games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) Tetris, Flappybird
+    * [UEFI tools:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/tools) [UEFI Shell](https://github.com/pbatard/UEFI-Shell), [Memtest86](https://memtest.org/), [Super Grub Disk 2](https://www.supergrubdisk.org/)
+    * [UEFI games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) [Tetris](https://github.com/a1ive/uefi-tetris/), [Flappybird](https://github.com/hymen81/UEFI-Game-FlappyBirdy)
     * Arch Linux [theme](https://github.com/fghibellini/arch-silence)
 - Pacman changes:
     * [Kernel Modules hook](https://github.com/saber-nyan/kernel-modules-hook) to restore functionality when the running kernel updates
