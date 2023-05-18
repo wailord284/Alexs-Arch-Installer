@@ -12,33 +12,33 @@ The user will now be prompted to supply basic information such as hostname, user
 # Features!
 - Works with both UEFI and Legacy BIOS
 - Automatic detection for Intel and AMD graphics
-- Automatically detect if running in VirtualBox, QEMU/KVM or VMware and install appropriate guest additions
-- Optional disk encryption for the root partition
-- Slightly modified XFCE configuration to enable compositing, change font and change theme
-- [Greetd](https://wiki.archlinux.org/title/Greetd) display manager with optional autologin
+- Install guest additions for VirtualBox, QEMU/KVM or VMware if detected
+- XFCE configured and themed with whiskermenu
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
-    * BTRFS will use [compress-force=zstd](https://wiki.archlinux.org/index.php/Btrfs#Compression) for default compression
-    * BTRFS scrub timer (monthly) will be enabled for the root directory if selected
+    * BTRFS will use [zstd (level 3) and force compression](https://wiki.archlinux.org/index.php/Btrfs#Compression)
+    * BTRFS scrub timer (monthly) will be enabled for the root directory
     * BTRFS snapshots with [Snapper](https://wiki.archlinux.org/title/Snapper) and [snap-pac](https://github.com/wesbarnett/snap-pac)
-    * BTRFS will also [disable FSCK](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Filesystem_mounts) in mkinitcpio since it's not needed
+    * [Disable FSCK](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Filesystem_mounts) mkinitcpio hook since it's not needed for BTRFS
     * All filesystems will use an *atime (usually noatime) mount option
+- Optional setting to enable [disk encryption](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system) for the root partition
 - Optional setting to [disable mitigations](https://wiki.archlinux.org/title/Improving_performance#Turn_off_CPU_exploit_mitigations) and enable [silent boot](https://wiki.archlinux.org/title/Silent_boot)
-- GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)
+- Change mkinitcpio base and udev hooks to [systemd hook](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Using_systemd_instead_of_busybox_on_early_init) to decrease boot time
+- GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/) and [pgp.mit.edu](https://pgp.mit.edu/)
 - Nano [syntax highlighting](https://github.com/scopatz/nanorc), line numbers and position log enabled
-- Preconfigured GPU Accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
+- Preconfigured GPU accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
+- Support for [Wacom touchscreen devices](https://wiki.archlinux.org/title/Graphics_tablet#Through_Xorg.conf) (like the Thinkpad X201T/X220T)
+- Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) tab found in most file managers
+- Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
+- Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to kill the running desktop and return to the login manager
+- Automatic log rotation with [logrotate](https://wiki.archlinux.org/title/Logrotate)
+- [lz4 mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to decrease compression and boot times
+- [Greetd](https://wiki.archlinux.org/title/Greetd) display manager with optional autologin
+- [Archlinuxcn](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn) and [chaotic-aur](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#chaotic-aur) repositories for additional software
 - [Earlyoom](https://github.com/rfjakob/earlyoom) daemon to trigger the Linux OOM killer sooner
 - [FSTrim timer](https://wiki.archlinux.org/index.php/Solid_state_drive#Periodic_TRIM) to trim all SSDs weekly
 - [Zram](https://aur.archlinux.org/packages/zramswap/) instead of swap (sets to 10% of total ram)
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SATA SSDs and NVME drives
-- Use lz4 for [mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to decrease compression and boot times
-- Change mkinitcpio base and udev hooks to [systemd hook](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Using_systemd_instead_of_busybox_on_early_init) to decrease boot time
-- Support for [Wacom touchscreen devices](https://wiki.archlinux.org/title/Graphics_tablet#Through_Xorg.conf) (such as the Thinkpad X201T/X220T)
-- Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) tab found in most file managers
-- Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
-- Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to kill the running desktop and return to the login manager
-- [Archlinuxcn](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn) and [chaotic-aur](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#chaotic-aur) repository for additional software
-- Automatic log rotation with [logrotate](https://wiki.archlinux.org/title/Logrotate)
 - [DBus-Broker](https://wiki.archlinux.org/index.php/D-Bus#dbus-broker) over traditional D-Bus for higher performance and reliability
 - [Realtime priority](https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level) in Pulseaudio
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
@@ -46,7 +46,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Systemd-timesyncd](https://wiki.archlinux.org/title/Systemd-timesyncd) for system time
 - [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
 - [Reflector](https://wiki.archlinux.org/title/Reflector#systemd_timer) timer enabled to sort mirrors weekly
-- [Hardened SSH client](https://www.sshaudit.com/hardening_guides.html) - Configure .ssh/config to use strong ciphers by default
+- [Enforce Stronger SSH encryption](https://www.sshaudit.com/hardening_guides.html) - Configure .ssh/config to use strong ciphers by default
 - Changes if RAM is over 2GB
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM and sync to disk ever 30 minutes
@@ -54,18 +54,18 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Ublock Origin](https://ublockorigin.com/) - Ad blocker
     * [Decentral Eyes](https://decentraleyes.org/) - Local emulation of Content Delivery Networks
     * A privacy oriented prefs.js focused on compatibility made with [ffprofile](https://ffprofile.com/)
-    * A custom user.js with some changes based on [BetterFox](https://github.com/yokoffing/Betterfox)
+    * A custom user.js with changes based on [BetterFox](https://github.com/yokoffing/Betterfox)
 - Polkit changes:
-    * [Libvirt rule](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the kvm group)
-    * [NetworkManager rule](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
-    * [GParted rule](https://wiki.archlinux.org/title/Polkit#Authorization_rules) - Allow gparted to run without a password (users in disk group)
-    * [Gsmartcontrol rule](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in disk group)
-    * [BTRFS Assistant rule](https://gitlab.com/btrfs-assistant/btrfs-assistant) - Allows btrfs-assistant to run without a password (users in disk group)
+    * [Libvirt](https://wiki.archlinux.org/title/Libvirt#Using_polkit) - Use libvirt without password (users in the kvm group)
+    * [NetworkManager](https://wiki.archlinux.org/title/NetworkManager#Set_up_PolicyKit_permissions) - Add/Remove a network without a password (users in the network group)
+    * [GParted](https://wiki.archlinux.org/title/Polkit#Authorization_rules) - Allow gparted to run without a password (users in disk group)
+    * [Gsmartcontrol](https://gsmartcontrol.sourceforge.io/home/) - Allows gsmartcontrol to run without a password (users in disk group)
+    * [BTRFS Assistant](https://gitlab.com/btrfs-assistant/btrfs-assistant) - Allows btrfs-assistant to run without a password (users in disk group)
 - Bash changes:
     * [.inputrc](https://wiki.archlinux.org/index.php/Readline#Faster_completion) - Add color and improve tab completion
     * [ASCII Pokemon](https://gitlab.com/phoneybadger/pokemon-colorscripts) - Display a pokemon in terminal
     * Add colored output to ls, ip, grep and file extensions
-    * Custom aliases for trizen/pacman and other system tasks
+    * Custom aliases for trizen, pacman and other system tasks
 - Laptop changes (If detected):
     * [Tackpad](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/70-synaptics.conf) - More comfortable defaults
     * [TLP](https://wiki.archlinux.org/title/TLP) - Default settings and PCIE_ASPM_ON_BAT=powersupersave
@@ -75,8 +75,8 @@ The user will now be prompted to supply basic information such as hostname, user
     * [UEFI games:](https://github.com/wailord284/Arch-Linux-Installer/tree/master/configs/grub/games) [Tetris](https://github.com/a1ive/uefi-tetris/), [Flappybird](https://github.com/hymen81/UEFI-Game-FlappyBirdy)
     * Arch Linux [theme](https://github.com/fghibellini/arch-silence)
 - Pacman changes:
-    * [Kernel Modules hook](https://github.com/saber-nyan/kernel-modules-hook) to restore functionality when the running kernel updates
-    * [Needrestart hook](https://github.com/liske/needrestart) to restart outdated libraries
+    * [Kernel Modules hook](https://github.com/saber-nyan/kernel-modules-hook) - Restore functionality when the running kernel updates
+    * [Needrestart hook](https://github.com/liske/needrestart) - Restart outdated libraries
     * Package cleanup hook to minimize the pacman cache size when updating
     * Update and reinstall grub hook after grub updates
     * Verbose Package changes, Color, Parallel downloads
@@ -84,12 +84,11 @@ The user will now be prompted to supply basic information such as hostname, user
     * Set makeflags to use all cores when compiling
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
     * Change RUSTFLAGS to build [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) binaries
-    * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (No compression) when building AUR packages
+    * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (no compression) when building AUR packages
     * [Multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
     * [Max compression](https://wiki.archlinux.org/title/Makepkg#Utilizing_multiple_cores_on_compression) when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
     * LTO optimizations enabled
 - Systemd changes:
-    * [Promiscuous mode](https://wiki.archlinux.org/index.php/Network_configuration#Promiscuous_mode) - Systemd service to make packet sniffing easier (disabled by default)
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
     * [Keep only 1024MB](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) of Journald logs and compress them
     * [Display network interface IP Addresses](https://github.com/wailord284/Alexs-Arch-Installer/blob/master/configs/scripts/ttyinterfaces.sh) on TTY logins - Systemd service and script (disabled by default)
