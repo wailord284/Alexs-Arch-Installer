@@ -1045,6 +1045,8 @@ echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 ###GREETD - DISPLAY MANAGER###
 sed 's,command = "agreety --cmd /bin/sh",command = "tuigreet -t -r -i --asterisks --cmd startxfce4",g' -i /mnt/etc/greetd/config.toml
+#Make sure needrestart does not restart greetd. This has been fixed but has not yet been released: https://github.com/liske/needrestart/commit/301729b2d8d4ac90ded4f7cd3797da114bc295ac
+sed 's,xdm,greetd,g' -i /mnt/etc/needrestart/needrestart.conf
 
 
 ###SYSTEMD###
