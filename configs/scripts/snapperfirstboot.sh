@@ -3,7 +3,7 @@
 #In order to setup our snapshots correctly, we make a one time boot script
 #Create our snapper config
 snapper -c root create-config /
-#Change snapper backups to keep to 10
+#Change snapper backups to keep to 8
 sed "s,NUMBER_LIMIT=\"50\",NUMBER_LIMIT=\"8\",g" -i /etc/snapper/configs/root
 sed "s,NUMBER_LIMIT_IMPORTANT=\"10\",NUMBER_LIMIT_IMPORTANT=\"5\",g" -i /etc/snapper/configs/root
 #Change snapper timeline settings to keep 3 daily and 1 weekly. We dont enable the service though
@@ -15,6 +15,6 @@ sed "s,TIMELINE_LIMIT_YEARLY=\"10\",TIMELINE_LIMIT_YEARLY=\"0\",g" -i /etc/snapp
 #Disable timeline snapshots
 sed "s,TIMELINE_CREATE=\"yes\",TIMELINE_CREATE=\"no\",g" -i /etc/snapper/configs/root
 #Enable snapper system services for cleanup
-systemctl enable snapper-cleanup.timer
+systemctl enable --now snapper-cleanup.timer
 #Disable the snapper config script
 systemctl disable snapper-firstboot.service

@@ -976,6 +976,7 @@ if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Touchscreen Found" \
 	--prgbox "Install Touchscreen driver" "arch-chroot /mnt pacman -S xf86-input-wacom --noconfirm" "$HEIGHT" "$WIDTH"
+	clear
 fi
 
 
@@ -1266,8 +1267,8 @@ selection=${selection:- 6 7 q}
 		echo "$green""Enabling automatic desktop login""$reset"
 		echo -e '\n' >> /mnt/etc/greetd/config.toml
 		echo "[initial_session]" >> /mnt/etc/greetd/config.toml
-		echo "command = "startxfce4"" >> /mnt/etc/greetd/config.toml
-		echo "user = "$user"" >> /mnt/etc/greetd/config.toml
+		echo "command = startxfce4" >> /mnt/etc/greetd/config.toml
+		echo "user = $user" >> /mnt/etc/greetd/config.toml
 		sleep 3s
 		;;
 
