@@ -983,8 +983,8 @@ fi
 #Check and setup laptop features
 if acpi -V | grep -iq Battery ; then acpiBattery=yes; fi
 if [ -d "/sys/class/power_supply/BAT0" ] || [ -d "/sys/class/power_supply/BAT1" ]; then sysBattery=yes; fi
-modelType=$(hostnamectl | sed 's/ //g' | grep "HardwareModel" | cut -d":" -f2)
-if [ "$modelType" = Laptop ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
+chassisType=$(hostnamectl | grep "Chassis" | cut -d":" -f2 | cut -d" " -f2)
+if [ "$chassisType" = laptop ] || [ "$chassisType" = tablet ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
 	#Move the powertop auto tune service so it can be enabled if the user wants. TLP does the same thing. Disable by default
 	mv "$configFiles"/configs/systemd/powertop.service /mnt/etc/systemd/system/
 	#Install power saving tools and enable tlp and other power saving tweaks
