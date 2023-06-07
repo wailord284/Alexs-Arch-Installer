@@ -991,7 +991,7 @@ if [ "$chassisType" = laptop ] || [ "$chassisType" = tablet ] || [ "$acpiBattery
 	#Install power saving tools and enable tlp and other power saving tweaks
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
-	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S ethtool powertop x86_energy_perf_policy xf86-input-synaptics tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
+	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S ethtool powertop x86_energy_perf_policy xf86-input-synaptics iio-sensor-proxy tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
 	#Add touchpad config
 	mv "$configFiles"/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#Laptop mode
@@ -1186,7 +1186,7 @@ else
 fi
 #Change theme
 echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
-#Change timeout to 3 seconds from 5 seconds or to 0 if performance options set
+#Change timeout to 3 seconds from 5 seconds. Set to 0 if performance options set
 if [ "$enableGrubPerformanceOptions" = "y" ]; then
 	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' -i /mnt/etc/default/grub
 else
