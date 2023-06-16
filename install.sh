@@ -1022,9 +1022,9 @@ if [ "$filesystem" = btrfs ] ; then
 	#Add the btrfs binary to mkinitcpio for recovery situations
 	sed "s,BINARIES=(),BINARIES=(btrfs),g" -i /mnt/etc/mkinitcpio.conf
 	#Change the snapper-cleanup timer run every six hours instead of once per day
-	mkdir -p /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/
-	echo "[Timer]" > /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
-	echo "OnUnitActiveSec=6h" >> /mnt/usr/lib/systemd/system/snapper-cleanup.timer.d/override.conf
+	mkdir -p /mnt/etc/systemd/system/snapper-cleanup.timer.d/
+	echo "[Timer]" > /mnt/etc/systemd/system/snapper-cleanup.timer.d/override.conf
+	echo "OnUnitActiveSec=6h" >> /mnt/etc/systemd/system/snapper-cleanup.timer.d/override.conf
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
