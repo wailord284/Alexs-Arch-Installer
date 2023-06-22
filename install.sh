@@ -448,7 +448,14 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Run cryptsetup just in terminal. The password will be piped in from $encpass
 		echo "$green""Setting up disk encryption. Please wait.""$reset"
 		echo "$encpass" | cryptsetup --iter-time 5000 --use-random --type luks2 --cipher aes-xts-plain64 --key-size 512 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
-		echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
+		#If the device is an SSD disable workqueue - https://wiki.archlinux.org/title/Dm-crypt/Specialties#Disable_workqueue_for_increased_solid_state_drive_(SSD)_performance
+		if [ "$deviceIsSSD" = yes ]; then
+			echo "$encpass" | cryptsetup --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${storagePartitions[2]}" cryptroot
+			#Open the device again to intentionally error and force the options
+			echo "$encpass" | cryptsetup --perf-no_read_workqueue --perf-no_write_workqueue --persistent refresh cryptroot
+		else
+			echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
+		fi
 	else
 		#If encryption is not set make this set to ${storagePartitions[2]}
 		rootTargetDisk="${storagePartitions[2]}"
@@ -1171,7 +1178,7 @@ fi
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
 	rootTargetDiskUUID=$(blkid -s UUID -o value ${storagePartitions[2]})
-	#Check if the device is an SSD. If it is, enable discard
+	#Check if the device is an SSD. If it is, enable discard - https://wiki.archlinux.org/title/Dm-crypt/Specialties#Discard/TRIM_support_for_solid_state_drives_(SSD)
 	if [ "$deviceIsSSD" = yes ]; then
 		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot:allow-discards root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 	else
