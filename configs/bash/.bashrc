@@ -68,7 +68,7 @@ alias carp='sudo ip -s -s neigh flush all'
 alias cpr='rsync -ah --info=progress2'
 alias mousefix='sudo modprobe -r psmouse && sudo modprobe psmouse'
 alias dbusfix='systemctl --user restart gvfs-udisks2-volume-monitor'
-alias ipinfo='curl ipinfo.io'
+alias ipinfo='curl https://am.i.mullvad.net/ip'
 alias dl='yt-dlp -x --format m4a --youtube-skip-dash-manifest --audio-quality 1 --prefer-ffmpeg --embed-thumbnail -ci -o "%(title)s-%(id)s.%(ext)s"'
 alias update-mirror="sudo reflector --download-timeout 10 --connection-timeout 10 --verbose -f 10 --latest 20 --country us --protocol https --age 24 --sort rate --save /etc/pacman.d/mirrorlist"
 alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'

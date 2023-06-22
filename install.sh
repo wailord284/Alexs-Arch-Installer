@@ -354,11 +354,11 @@ clear
 ###GRUB/SECURITY OPTIONS###
 #Ask if user wants to disable security mitigations as well as trust cpu random
 #We might add more performance options so lets make it a variable just in case
-grubPerformanceOptions="mitigations=off nowatchdog quiet systemd.show_status=auto rd.udev.log_level=3"
+grubPerformanceOptions="mitigations=off nowatchdog quiet"
 dialog --title "Performance Options" \
 	--defaultno \
 	--backtitle "$dialogBacktitle" \
-	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "This option will also disable Watchdog which can reduce power consumption and decrease boot times." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes and the grub timeout will be set to 0: $grubPerformanceOptions")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
+	--yesno "$(printf %"s\n\n" "Do you want to disable spectre and meltdown mitigations? These options will improve performance at the cost of security. This is most impactful on systems older than 10th generation Intel or 1st generation AMD Ryzen processors." "This option will also disable Watchdog which can reduce power consumption and decrease boot times." "If you do not know what this means you can safely press no." "The following options will be added to Grub if you say yes and the grub timeout will be set to 1: $grubPerformanceOptions")" "$dialogHeight" "$dialogWidth" > /dev/tty 2>&1
 optionEnableGrubPerformanceOptions=$?
 if [ "$optionEnableGrubPerformanceOptions" = 0 ]; then
 	enableGrubPerformanceOptions="y"
@@ -1092,11 +1092,6 @@ arch-chroot /mnt systemctl enable reflector.timer > /dev/null 2>&1
 mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
 #Low-level console messages
 mv "$configFiles"/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
-if [ "$enableGrubPerformanceOptions" = "y" ]; then
-	echo "kernel.printk = 3 3 3 3" >> /mnt/etc/sysctl.d/10-console-messages.conf
-else
-	echo "kernel.printk = 4 4 1 7" >> /mnt/etc/sysctl.d/10-console-messages.conf
-fi
 #Kernel hardening
 mv "$configFiles"/configs/sysctl/10-kernel-hardening.conf /mnt/etc/sysctl.d/
 #System tweaks
@@ -1192,7 +1187,7 @@ fi
 echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
 #Change timeout to 3 seconds from 5 seconds. Set to 0 if performance options set
 if [ "$enableGrubPerformanceOptions" = "y" ]; then
-	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' -i /mnt/etc/default/grub
+	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=1/g' -i /mnt/etc/default/grub
 else
 	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=3/g' -i /mnt/etc/default/grub
 fi
