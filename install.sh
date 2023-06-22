@@ -1170,7 +1170,12 @@ fi
 #Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
 	rootTargetDiskUUID=$(blkid -s UUID -o value ${storagePartitions[2]})
-	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
+	#Check if the device is an SSD. If it is, enable discard
+	if [ $(cat /sys/block/$storage/queue/rotational) = 0 ]; then
+		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot:allow-discards root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
+	else
+		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot: root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
+	fi
 fi
 #Generate grubcfg if no encryption
 if [ "$encrypt" = n ]; then
