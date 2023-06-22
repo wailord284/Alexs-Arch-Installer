@@ -269,6 +269,12 @@ while : ; do
 	else
 		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sd[a-z], /dev/vd[a-z], /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth"
 	fi
+	#Check if device is an SSD
+	if [ "$(cat /sys/block/$storage/queue/rotational)" = 0 ]; then
+		deviceIsSSD=yes
+	else
+		deviceIsSSD=no
+	fi
 done
 clear
 
@@ -1166,7 +1172,7 @@ fi
 if [ "$encrypt" = y ]; then
 	rootTargetDiskUUID=$(blkid -s UUID -o value ${storagePartitions[2]})
 	#Check if the device is an SSD. If it is, enable discard
-	if [ $(cat /sys/block/$storage/queue/rotational) = 0 ]; then
+	if [ "$deviceIsSSD" = yes ]; then
 		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot:allow-discards root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 	else
 		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot: root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
