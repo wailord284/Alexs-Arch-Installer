@@ -58,7 +58,7 @@ alias yin='trizen -S --noconfirm'
 alias ycc='trizen -Scc'
 alias ysn='trizen -Syu --noconfirm'
 alias pss='sudo pacman -Ss'
-alias orphan='sudo pacman -Qtdq | pacman -Rns -'
+alias orphan='sudo pacman -Rns $(pacman -Qtdq)'
 
 #Other alias commands
 alias su='su -l'

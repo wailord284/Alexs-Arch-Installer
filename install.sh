@@ -547,7 +547,7 @@ clear
 ###PACMAN CONFIG###
 #Enable verbose output, parallel downloads and color in pacman.conf
 sed "s,\#\VerbosePkgLists,VerbosePkgLists,g" -i /mnt/etc/pacman.conf
-sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 5,g" -i /mnt/etc/pacman.conf
+sed "s,\#\ParallelDownloads = 5,ParallelDownloads = 4,g" -i /mnt/etc/pacman.conf
 sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 
 
@@ -855,8 +855,6 @@ mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
 mkdir -p /mnt/root/.config/nano 
 cp /mnt/etc/skel/.config/nano/nanorc /mnt/root/.config/nano/
 sed "s,set titlecolor bold\,lightwhite,set titlecolor bold\,red\,lightblack,g" -i /mnt/root/.config/nano/nanorc
-#XDG user directories
-mv "$configFiles"/configs/user-dirs.dirs /mnt/etc/skel/.config/
 #Move trizen
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
@@ -900,8 +898,6 @@ chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 ###USER, PASSWORDS and PAM###
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G input,scanner,network,kvm,floppy,disk,storage,uucp,wheel,optical,video -s /bin/bash "$user"
-#Force move the XDG directories again
-cp -f /mnt/etc/skel/.config/user-dirs.dirs /mnt/home/$user/.config/user-dirs.dirs
 #Create a temp file to store the password in
 TMPFILE=$(mktemp)
 #Setup more secure passwd by increasing hashes
