@@ -116,7 +116,6 @@ The user will now be prompted to supply basic information such as hostname, user
 # Things to consider when using this installer
 - NO automatic updates or GUI package manager. You are expected to update the system regularly!
 - NO manual partitioning (you can only select the drive) or dual booting
-- NO default folders generated in the user home directory (such as Desktop, Downloads, Documents, Pictures, Music....)
 - Third party repositories enabled by default (archlinuxcn, chaotic-aur, aurmageddon)
 - A significant amount of changes that may or may not align with the Arch Wiki or its suggestions
 - Some aspects are optimized for performance/convenience over security
