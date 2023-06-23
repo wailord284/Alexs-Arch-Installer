@@ -92,7 +92,7 @@
       <property name="digital-format" type="string" value="%I:%M %p"/>
       <property name="digital-time-format" type="string" value="%I:%M %p"/>
       <property name="digital-layout" type="uint" value="3"/>
-      <property name="digital-time-font" type="string" value="Ubuntu 12"/>
+      <property name="digital-time-font" type="string" value="Ubuntu Bold 12"/>
     </property>
     <property name="plugin-13" type="string" value="separator">
       <property name="style" type="uint" value="0"/>
