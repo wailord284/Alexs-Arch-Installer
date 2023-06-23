@@ -900,6 +900,8 @@ chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 ###USER, PASSWORDS and PAM###
 #Add user here to get /etc/skel configs
 arch-chroot /mnt useradd -m -G input,scanner,network,kvm,floppy,disk,storage,uucp,wheel,optical,video -s /bin/bash "$user"
+#Force move the XDG directories again
+cp -f /mnt/etc/skel/.config/user-dirs.dirs /mnt/home/$user/.config/user-dirs.dirs
 #Create a temp file to store the password in
 TMPFILE=$(mktemp)
 #Setup more secure passwd by increasing hashes
