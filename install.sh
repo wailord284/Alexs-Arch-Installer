@@ -269,7 +269,8 @@ while : ; do
 	else
 		dialog --msgbox "Invalid storage device enetered. Must be in the format of /dev/sd[a-z], /dev/vd[a-z], /dev/nvme0n1, /dev/mmcblk0." "$dialogHeight" "$dialogWidth"
 	fi
-	#Check if device is an SSD
+	#Check if device is an SSD. Make sure to get only the storage device without /dev/
+	storageType=$(echo $storage | cut -d"/" -f3)
 	if [ "$(cat /sys/block/$storage/queue/rotational)" = 0 ]; then
 		deviceIsSSD=yes
 	else
@@ -1182,7 +1183,7 @@ if [ "$encrypt" = y ]; then
 	if [ "$deviceIsSSD" = yes ]; then
 		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot:allow-discards root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 	else
-		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot: root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
+		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 	fi
 fi
 #Generate grubcfg if no encryption
