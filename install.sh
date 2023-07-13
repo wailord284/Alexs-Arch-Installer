@@ -742,7 +742,7 @@ clear
 
 
 ###ADDITIONAL FIRMWARE CHECK/SETUP###
-#Detect b43 firmware wifi cards and install b43-firmware - https://wiki.archlinux.org/title/Broadcom_wireless#Installation
+#Detect b43 firmware wifi cards and install b43-firmware
 if dmesg | grep -q 'b43-phy0 ERROR'; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
@@ -807,22 +807,26 @@ sed "s,\; realtime-priority = 5,realtime-priority = 5,g" -i /mnt/etc/pulse/daemo
 
 
 ###SUDO SETUP###
-#Add sudo changes
+#Allow wheel users to use sudo
 sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /mnt/etc/sudoers
 cat << EOF >> /mnt/etc/sudoers
+
+###Additional sudo changes###
+#Allow additional terminals to run sudo without requiring reauthentication
 Defaults timestamp_type=global
+#Dont have sudo timeout when running long commands
 Defaults passwd_timeout=0
+#Show * when typing a password
 Defaults env_reset,pwfeedback
+#Use nano for the sudo editor
 Defaults editor=/usr/bin/rnano
+#Allow the user to reboot and poweroff without a password and allow profile-sync-daemon to use overlayfs
+$user ALL=(ALL) NOPASSWD:/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/psd-overlay-helper
+#Uncomment to allow some commands to be executed without entering the user password
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/trizen,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg,/usr/bin/s-tui,/usr/bin/mt-st,/usr/bin/stenc,/usr/bin/ltfs"
 #Log sudo usage
 #Defaults log_host, log_year, logfile="/var/log/sudo.log"
 #Defaults log_input, log_output
-#Required for profile-sync-daemon when using overlayfs
-$user ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper
-#Allow the user to reboot and poweroff without a password
-$user ALL=(ALL) NOPASSWD:/usr/bin/poweroff,/usr/bin/reboot
-#Uncomment to allow some commands to be executed without entering the user password
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/trizen,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg,/usr/bin/s-tui,/usr/bin/mt-st,/usr/bin/stenc,/usr/bin/ltfs"
 EOF
 
 
@@ -983,7 +987,7 @@ mv "$configFiles"/configs/scripts/* /mnt/opt/scripts/
 
 
 ###PACMAN HOOKS###
-#Add the needrestart pacman hook
+#Add the needrestart and grub reinstall pacman hook
 mkdir -p /mnt/etc/pacman.d/hooks/
 mv "$configFiles"/configs/pacman-hooks/needrestart.hook /mnt/etc/pacman.d/hooks/
 mv "$configFiles"/configs/pacman-hooks/update-grub.hook /mnt/etc/pacman.d/hooks/
@@ -1050,9 +1054,9 @@ if [ "$filesystem" = btrfs ] ; then
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
-	#Add btrfs assistant rule for storage group, allow users to not enter a password to view smart data
+	#Add btrfs assistant rule for storage group. Allows users to open btrfsassistant without a password
 	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
-	#Skip FSCK for btrfs since it is not needed and remove the fsck mkinitcpio hook
+	#Skip FSCK for btrfs since it is not needed. Also remove the fsck mkinitcpio hook
 	grubCmdlineLinuxOptions="fsck.mode=skip"
 	grep HOOKS= /mnt/etc/mkinitcpio.conf | tail -n1 | sed -e "s/ fsck//g" -i /mnt/etc/mkinitcpio.conf
 	arch-chroot /mnt mkinitcpio -P > /dev/null 2>&1
