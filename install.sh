@@ -1049,8 +1049,7 @@ if [ "$filesystem" = btrfs ] ; then
 	sed "s,BINARIES=(),BINARIES=(btrfs),g" -i /mnt/etc/mkinitcpio.conf
 	#Change the snapper-cleanup timer run every six hours instead of once per day
 	mkdir -p /mnt/etc/systemd/system/snapper-cleanup.timer.d/
-	echo "[Timer]" > /mnt/etc/systemd/system/snapper-cleanup.timer.d/override.conf
-	echo "OnUnitActiveSec=6h" >> /mnt/etc/systemd/system/snapper-cleanup.timer.d/override.conf
+	mv "$configFiles"/configs/systemd/00-snapper-cleanup-time.conf /mnt/etc/systemd/system/snapper-cleanup.timer.d/
 	#Add the fristboot systemd script for snapper and enable the monthly btrfs scrub timer
 	mv "$configFiles"/configs/systemd/snapper-firstboot.service /mnt/etc/systemd/system/
 	arch-chroot /mnt systemctl enable snapper-firstboot.service btrfs-scrub@-.timer > /dev/null 2>&1
@@ -1092,6 +1091,7 @@ mv "$configFiles"/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
 #Lower the logs from rtkit. Reduces the spam in journalctl
 mkdir -p /mnt/etc/systemd/system/rtkit-daemon.service.d
 mv "$configFiles"/configs/systemd/00-rtkit-loglevel.conf /mnt/etc/systemd/system/rtkit-daemon.service.d/
+
 
 ###REFLECTOR###
 #Configure reflector to save the 10 fastest mirrors
