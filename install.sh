@@ -1105,7 +1105,7 @@ cat << EOF > /mnt/etc/xdg/reflector/reflector.conf
 #Mirrorlist country
 --country $region
 #Most recent mirrors to check
---latest 15 --age 24
+--latest 20 --age 24
 #Sort mirrors by download speed
 --sort rate
 #Give up after 10 seconds if a mirror does not reply
