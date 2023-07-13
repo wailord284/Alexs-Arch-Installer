@@ -1089,7 +1089,9 @@ mkdir /mnt/etc/systemd/coredump.conf.d/
 mv "$configFiles"/configs/systemd/00-disable-coredumps.conf /mnt/etc/systemd/coredump.conf.d/
 #Add the TTY Interfaces service to output interface IP addresses to the TTY login screen. Not enabled
 mv "$configFiles"/configs/systemd/ttyinterfaces.service /mnt/etc/systemd/system/
-
+#Lower the logs from rtkit. Reduces the spam in journalctl
+mkdir -p /mnt/etc/systemd/system/rtkit-daemon.service.d
+mv "$configFiles"/configs/systemd/00-rtkit-loglevel.conf /mnt/etc/systemd/system/rtkit-daemon.service.d/
 
 ###REFLECTOR###
 #Configure reflector to save the 10 fastest mirrors
