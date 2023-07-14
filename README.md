@@ -30,7 +30,6 @@ The user will now be prompted to supply basic information such as hostname, user
 - Support for [Wacom touchscreen devices](https://wiki.archlinux.org/title/Graphics_tablet#Through_Xorg.conf) (like the Thinkpad X201T/X220T)
 - Disabled ["Recents"](https://alexcabal.com/disabling-gnomes-recently-used-file-list-the-better-way) tab found in most file managers
 - Large amount of [sysctl configs](https://wiki.archlinux.org/index.php/Sysctl#Improving_performance) gathered from the Arch wiki to increase performance and stability
-- Xorg keybind [(Control + Alt + Backspace)](https://github.com/wailord284/Arch-Linux-Installer/blob/master/configs/xorg/90-zap.conf) to kill the running desktop and return to the login manager
 - Automatic log rotation with [logrotate](https://wiki.archlinux.org/title/Logrotate)
 - [lz4 mkinitcpio compression](https://wiki.archlinux.org/index.php/Mkinitcpio#COMPRESSION) to decrease compression and boot times
 - [Greetd](https://wiki.archlinux.org/title/Greetd) display manager with optional autologin

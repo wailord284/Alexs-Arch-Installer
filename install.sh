@@ -582,7 +582,6 @@ if [ "$encrypt" = y ]; then
 fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
-#sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
 #Enable module decompression
 sed "s,\#\MODULES_DECOMPRESS=\"yes\",MODULES_DECOMPRESS=\"yes\",g" -i /mnt/etc/mkinitcpio.conf
 
@@ -654,12 +653,12 @@ Server = https://repo.archlinuxcn.org/\$arch
 Server = https://cdn.repo.archlinuxcn.org/\$arch
 
 EOF
-#Reinstall keyring in case of gpg errors and add archlinuxcn/chaotic keyrings
+#Reinstall keyring in case of gpg errors and add the archlinuxcn and chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
-#Add the Ubuntu and MIT keyserver to gpg. This works a lot better/faster than the default ones
+#Add the Ubuntu and MIT keyserver to gpg. This works a lot better and faster than the default ones
 echo "keyserver keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 #Import the chaotic-aur key
@@ -718,7 +717,7 @@ if [ "$ramTotal" -gt "2020000" ]; then
 	--prgbox "Enabling preload and profile-sync-daemon" "arch-chroot /mnt systemctl enable preload.service && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
 fi
 clear
-#Dbus-broker setup. Disable dbus and then enable dbus-broker. systemctl --global enables dbus-broker for all users
+#Dbus-broker setup. Disable dbus and then enable dbus-broker for all users
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Enabling Services" \
 --prgbox "Enabling dbus-broker" "arch-chroot /mnt systemctl disable dbus.service && arch-chroot /mnt systemctl enable dbus-broker.service && arch-chroot /mnt systemctl --global enable dbus-broker.service" "$HEIGHT" "$WIDTH"
@@ -726,8 +725,9 @@ clear
 
 
 ###GPU CHECK/SETUP###
-#Determine installed GPU - by default we now install the stuff required for AMD/Intel since those just autoload drivers
-#The below stuff is now set to install vulkan drivers and hardware decoding for correct hardware
+#Determine installed GPU
+#By default we install the drivers required for AMD/Intel since those just autoload drivers
+#The below installs vulkan drivers and hardware decoding for correct hardware
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
@@ -832,7 +832,7 @@ EOF
 
 ###MAKEPKG SETUP###
 #Setup makepkg config
-#Change default -j count to use all cores
+#Change default job (-j) count to use all cores
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
 #Build all packages with native optimizations
 sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
@@ -861,10 +861,10 @@ mkdir -p /mnt/etc/skel/.config/systemd/user/psd-resync.timer.d/
 mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.local/state/
 mkdir -p /mnt/etc/skel/.mozilla/
-mkdir -p /mnt/etc/skel/.ssh
+mkdir -p /mnt/etc/skel/.ssh/
 #Move nanorc to user and root. Change root users to have a red title bar
 mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
-mkdir -p /mnt/root/.config/nano 
+mkdir -p /mnt/root/.config/nano
 cp /mnt/etc/skel/.config/nano/nanorc /mnt/root/.config/nano/
 sed "s,set titlecolor bold\,lightwhite,set titlecolor bold\,red\,lightblack,g" -i /mnt/root/.config/nano/nanorc
 #Move trizen
@@ -937,12 +937,6 @@ sed '/systemd_home/d' -i /mnt/etc/pam.d/system-auth
 #Set fonts
 arch-chroot /mnt ln -s /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
 arch-chroot /mnt ln -s /usr/share/fontconfig/conf.avail/10-hinting-full.conf /etc/fonts/conf.d
-sed "s,\#export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",export FREETYPE_PROPERTIES=\"truetype\:interpreter-version=40\",g" -i /mnt/etc/profile.d/freetype2.sh
-
-
-###XORG###
-#Add xorg file that allows the user to press control + alt + backspace to kill xorg (returns to login manager)
-mv "$configFiles"/configs/xorg/90-zap.conf /mnt/etc/X11/xorg.conf.d/
 
 
 ###ENVIRONMENT VARIABLES###
@@ -971,17 +965,18 @@ mv "$configFiles"/configs/udev/69-hdparm.rules /mnt/etc/udev/rules.d/
 
 ###POLKIT RULES###
 #The following rules allow the user to not enter a password if in the correct group for specific applications.
-#Add polkit rule so users in KVM group can use libvirt (you don't need to be in the libvirt group now)
+#Add libvirt rule for the kvm group (you don't need to be in the libvirt group now)
 mv -f "$configFiles"/configs/polkit-1/50-libvirt.rules /mnt/etc/polkit-1/rules.d/
-#Add gparted polkit rule for disk group
+#Add gparted polkit rule for the disk group
 mv -f "$configFiles"/configs/polkit-1/00-gparted.rules /mnt/etc/polkit-1/rules.d/
-#Add gsmartcontrol rule for disk group
+#Add gsmartcontrol rule for the disk group
 mv -f "$configFiles"/configs/polkit-1/50-gsmartcontrol.rules /mnt/etc/polkit-1/rules.d/
-#Allow user in the network group to add/modify/delete networks
+#Allow users in the network group to add/modify/delete networks
 mv -f "$configFiles"/configs/polkit-1/50-networkmanager.rules /mnt/etc/polkit-1/rules.d/
 
 
 ###SCRIPTS###
+#Custom scripts
 mkdir -p /mnt/opt/scripts/
 mv "$configFiles"/configs/scripts/* /mnt/opt/scripts/
 
@@ -995,7 +990,6 @@ mv "$configFiles"/configs/pacman-hooks/clean-pacman-cache.hook /mnt/etc/pacman.d
 
 
 ###WACOM TABLET###
-#Change to and if -d /proc/bus/input/devices/wacom
 #Check and setup touchscreen for devices like the Thinkpad X201T/X220T
 if grep -i wacom /proc/bus/input/devices > /dev/null 2>&1 ; then
 	mv "$configFiles"/configs/xorg/72-wacom-options.conf /mnt/etc/X11/xorg.conf.d/
@@ -1007,14 +1001,14 @@ fi
 
 
 ###LAPTOP SETUP###
-#Check and setup laptop features
+#Setup laptop features if detected
 if acpi -V | grep -iq Battery ; then acpiBattery=yes; fi
 if [ -d "/sys/class/power_supply/BAT0" ] || [ -d "/sys/class/power_supply/BAT1" ]; then sysBattery=yes; fi
 chassisType=$(hostnamectl | grep "Chassis" | cut -d":" -f2 | cut -d" " -f2)
 if [ "$chassisType" = laptop ] || [ "$chassisType" = tablet ] || [ "$acpiBattery" = yes ] || [ "$sysBattery" = yes ]; then
 	#Move the powertop auto tune service so it can be enabled if the user wants. TLP does the same thing. Disable by default
 	mv "$configFiles"/configs/systemd/powertop.service /mnt/etc/systemd/system/
-	#Install power saving tools and enable tlp and other power saving tweaks
+	#Install power saving tools and enable tlp
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Laptop Found" \
 	--prgbox "Setting up powersaving features" "arch-chroot /mnt pacman -S ethtool powertop x86_energy_perf_policy xf86-input-synaptics iio-sensor-proxy tlp tlp-rdw --noconfirm && arch-chroot /mnt systemctl enable tlp.service" "$HEIGHT" "$WIDTH"
@@ -1022,7 +1016,7 @@ if [ "$chassisType" = laptop ] || [ "$chassisType" = tablet ] || [ "$acpiBattery
 	mv "$configFiles"/configs/xorg/70-synaptics.conf /mnt/etc/X11/xorg.conf.d/
 	#Laptop mode
 	mv "$configFiles"/configs/sysctl/00-laptop-mode.conf /mnt/etc/sysctl.d/
-	#Set PCIE powersave in TLP
+	#Set PCIE powersave in TLP. Can make a significant improvement on some newer laptops
 	sed "s,\#\PCIE_ASPM_ON_BAT=default,PCIE_ASPM_ON_BAT=powersupersave,g" -i /mnt/etc/tlp.conf
 	#Mask rfkill for TLP
 	arch-chroot /mnt systemctl mask systemd-rfkill.socket systemd-rfkill.service > /dev/null 2>&1
@@ -1038,7 +1032,7 @@ fi
 
 
 ###FILESYSTEM - BTRFS###
-#If we have a BTRFS filesystem, add some extra software and configs
+#lAdd some extra software and configs when using BTRFS
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software and Regenerating initramfs for BTRFS" \
@@ -1064,7 +1058,7 @@ fi
 
 
 ###MODULES###
-#Load the tcp_bbr module for better networking. This is utilized in the network sysctl config
+#Load the tcp_bbr module for better networking. This is utilized in the network sysctl config (30-network.conf)
 echo 'tcp_bbr' > /mnt/etc/modules-load.d/tcp_bbr.conf
 
 
@@ -1078,7 +1072,7 @@ sed 's,xdm,greetd,g' -i /mnt/etc/needrestart/needrestart.conf
 #Set journal to output log contents to TTY12
 mkdir /mnt/etc/systemd/journald.conf.d
 mv "$configFiles"/configs/systemd/fw-tty12.conf /mnt/etc/systemd/journald.conf.d/
-#Set a lower systemd timeout
+#Set a lower systemd service timeout
 mkdir /mnt/etc/systemd/system.conf.d/
 mv "$configFiles"/configs/systemd/00-service-timeout.conf /mnt/etc/systemd/system.conf.d/
 #Set journal to only keep 1024MB of logs
@@ -1116,7 +1110,7 @@ arch-chroot /mnt systemctl enable reflector.timer > /dev/null 2>&1
 
 
 ###SYSCTL RULES###
-#Provide the ability to allow unprivileged_userns_clone for programs like Zoom
+#Allow unprivileged_userns_clone for programs like Zoom. Disabled bu default
 mv "$configFiles"/configs/sysctl/00-unprivileged-userns.conf /mnt/etc/sysctl.d/
 #Low-level console messages
 mv "$configFiles"/configs/sysctl/10-console-messages.conf /mnt/etc/sysctl.d/
@@ -1172,7 +1166,7 @@ mv "$configFiles"/configs/grub/custom.cfg /mnt/boot/grub/
 ###GRUB AND PERFORMANCE BOOT OPTIONS###
 #Check the output of cat /sys/power/mem_sleep for the systems sleep mode
 #If the system is using s2idle but also has deep sleep mode availible, switch it to deep
-#This is especially needed on the Framework laptop, although others may benefit
+#This is especially needed on the 11th gen Framework laptop, although others may benefit
 #This setting does make the laptop take longer to wake from sleep, but reduces power consumption a decent bit
 sleepMode=$(cat /sys/power/mem_sleep)
 if [ "$sleepMode" = "[s2idle] deep" ]; then
@@ -1199,21 +1193,19 @@ if [ "$encrypt" = y ]; then
 	else
 		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 	fi
-fi
-#Generate grubcfg if no encryption
-if [ "$encrypt" = n ]; then
+else
+	#Generate grubcfg if no encryption
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Append additional grub boot options if selected
 if [ -z "$grubCmdlineLinuxOptions" ]; then
 	true #Do nothing if unset
 else
-	#If set, add the options to grub
 	sed "s,\GRUB_CMDLINE_LINUX=\"\",\GRUB_CMDLINE_LINUX=\"$grubCmdlineLinuxOptions\",g" -i /mnt/etc/default/grub
 fi
 #Change theme
 echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
-#Change timeout to 3 seconds from 5 seconds. Set to 0 if performance options set
+#Change timeout to 3 seconds from 5 seconds. Set to 1 if performance options are set
 if [ "$enableGrubPerformanceOptions" = "y" ]; then
 	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=1/g' -i /mnt/etc/default/grub
 else
@@ -1301,7 +1293,7 @@ selection=${selection:- 6 7 q}
 
 		7) #hblock
 		#run hblock to prevent ads
-		echo "$green""Running hblock and enabling hblock.timer - hosts file will be modified""$reset"
+		echo "$green""Running hblock and enabling weekly hblock timer. The system host file will be modified""$reset"
 		arch-chroot /mnt pacman -S hblock --noconfirm
 		arch-chroot /mnt hblock
 		arch-chroot /mnt systemctl enable hblock.timer
@@ -1320,21 +1312,18 @@ selection=${selection:- 6 7 q}
 		#Move new network manager dns configs
 		mv "$configFiles"/configs/dns-https/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 		mv "$configFiles"/configs/dns-https/dns.conf /mnt/etc/NetworkManager/conf.d/
-		#Enable services
+		#Enable service
 		arch-chroot /mnt systemctl enable doh-client.service
 		sleep 3s
 		;;
 
 		q) #Finish
-		#Unmount based on encryption
+		#Unmount the drive and finish
 		if [ "$encrypt" = y ]; then
-			umount -R /mnt
-			umount -R /mnt/boot
 			cryptsetup close cryptroot
-		else
-			umount -R /mnt
-			umount -R /mnt/boot
 		fi
+		umount -R /mnt
+		umount -R /mnt/boot
 		clear
 		echo -e "$green""Installation Complete. All drives have been unmounted and you can now reboot.\nThanks for installing!""$reset"
 		sleep 3s
