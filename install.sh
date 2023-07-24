@@ -451,9 +451,9 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		echo "$encpass" | cryptsetup --iter-time 5000 --use-urandom --type luks2 --cipher aes-xts-plain64 --key-size 512 --pbkdf argon2id luksFormat "${storagePartitions[2]}"
 		#If the device is an SSD disable workqueue - https://wiki.archlinux.org/title/Dm-crypt/Specialties#Disable_workqueue_for_increased_solid_state_drive_(SSD)_performance
 		if [ "$deviceUsesSSD" = yes ]; then
-			echo "$encpass" | cryptsetup --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${storagePartitions[2]}" cryptroot
+			echo "$encpass" | cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${storagePartitions[2]}" cryptroot
 			#Refresh the device to force the workqueue options
-			echo "$encpass" | cryptsetup --perf-no_read_workqueue --perf-no_write_workqueue --persistent refresh cryptroot
+			echo "$encpass" | cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent refresh cryptroot
 		else
 			echo "$encpass" | cryptsetup open "${storagePartitions[2]}" cryptroot
 		fi
