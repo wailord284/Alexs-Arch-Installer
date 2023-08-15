@@ -582,6 +582,8 @@ if [ "$encrypt" = y ]; then
 fi
 #Arch has now made ZSTD the default. LZ4 is slightly faster but uses more disk space
 sed "s,\#\COMPRESSION=\"lz4\",COMPRESSION=\"lz4\",g" -i /mnt/etc/mkinitcpio.conf
+#Enable max compression for LZ4 saving some extra space. LZ4 still decompresses the fastest
+sed "s,\#\COMPRESSION_OPTIONS=(),COMPRESSION_OPTIONS=(-9),g" -i /mnt/etc/mkinitcpio.conf
 #Enable module decompression
 sed "s,\#\MODULES_DECOMPRESS=\"yes\",MODULES_DECOMPRESS=\"yes\",g" -i /mnt/etc/mkinitcpio.conf
 
