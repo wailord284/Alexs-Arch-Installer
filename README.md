@@ -46,6 +46,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
 - [Reflector](https://wiki.archlinux.org/title/Reflector#systemd_timer) timer enabled to sort mirrors weekly
 - [Enforce Stronger SSH encryption](https://www.sshaudit.com/hardening_guides.html) - Configure .ssh/config to use strong ciphers by default
+- [5 second delay between password attempts](https://wiki.archlinux.org/title/Security#Enforce_a_delay_after_a_failed_login_attempt)
 - Changes if RAM is over 2GB
     * [Preload](https://wiki.archlinux.org/index.php/Preload#Preload) - Daemon to load commonly used applications/files in RAM to speed up the system
     * [Profile-sync-daemon](https://wiki.archlinux.org/index.php/Profile-sync-daemon) - Copy browser profiles into RAM and sync to disk ever 30 minutes
@@ -93,9 +94,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Display network interface IP Addresses](https://github.com/wailord284/Alexs-Arch-Installer/blob/master/configs/scripts/ttyinterfaces.sh) on TTY logins - Systemd service and script (disabled by default)
     * Systemd service timeout changed from 90 seconds to 45 seconds
     * Disable coredump in coredump.conf
-- Password changes (How the password is stored):
-    * [Increased hashing rounds](https://wiki.archlinux.org/title/SHA_password_hashes)
-    * [4 second delay between password attempts](https://wiki.archlinux.org/title/Security#Enforce_a_delay_after_a_failed_login_attempt)
 - Sudo changes:
     * [Prevent password timeout](https://wiki.archlinux.org/index.php/Sudo#Disable_password_prompt_timeout) when running long commands
     * [visudo editor](https://wiki.archlinux.org/index.php/Sudo#Using_visudo) changed from vi to nano

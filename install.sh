@@ -533,6 +533,7 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 sed '/mirror.lty.me/d' -i /etc/pacman.d/mirrorlist
 sed '/mirrors.kernel.org/d' -i /etc/pacman.d/mirrorlist
 sed '/octyl.net/d' -i /etc/pacman.d/mirrorlist
+sed '/arch.hu.fo/d' -i /etc/pacman.d/mirrorlist
 clear
 
 
@@ -914,9 +915,6 @@ chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 arch-chroot /mnt useradd -m -G input,scanner,network,kvm,floppy,disk,storage,uucp,wheel,optical,video -s /bin/bash "$user"
 #Create a temp file to store the password in
 TMPFILE=$(mktemp)
-#Setup more secure passwd by increasing hashes
-sed '/nullok/d' -i /mnt/etc/pam.d/passwd
-echo "password	required	pam_unix.so sha512 shadow nullok rounds=65536" >> /mnt/etc/pam.d/passwd
 #Create normal user account password
 echo "$user":"$pass" > "$TMPFILE"
 arch-chroot /mnt chpasswd < "$TMPFILE"
@@ -927,7 +925,7 @@ arch-chroot /mnt chpasswd < "$TMPFILE"
 unset pass1 pass2 pass encpass encpass1 encpass2
 rm -rf "$TMPFILE"
 #Setup stronger password security by increasing delay between password attempts to 4 seconds
-echo "auth optional pam_faildelay.so delay=4000000" >> /mnt/etc/pam.d/system-login
+echo "auth optional pam_faildelay.so delay=5000000" >> /mnt/etc/pam.d/system-login
 #Require users to be in the wheel group to run su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su-l
@@ -1243,7 +1241,7 @@ selection=${selection:- 6 7 q}
 
 		1) #Bedrock Linux
 		#https://raw.githubusercontent.com/bedrocklinux/bedrocklinux-userland/0.7/releases
-		bedrockVersion="0.7.28"
+		bedrockVersion="0.7.29"
 		echo "$green""Installing Bedrock Linux""$reset"
 		modprobe fuse
 		arch-chroot /mnt wget https://github.com/bedrocklinux/bedrocklinux-userland/releases/download/"$bedrockVersion"/bedrock-linux-"$bedrockVersion"-x86_64.sh
