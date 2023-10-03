@@ -16,16 +16,15 @@
   <property name="Xft" type="empty">
     <property name="DPI" type="empty"/>
     <property name="Antialias" type="empty"/>
-    <property name="Hinting" type="int" value="1"/>
+    <property name="Hinting" type="empty"/>
     <property name="HintStyle" type="empty"/>
     <property name="RGBA" type="empty"/>
   </property>
   <property name="Gtk" type="empty">
     <property name="CanChangeAccels" type="empty"/>
     <property name="ColorPalette" type="empty"/>
-    <property name="DialogsUseHeader" type="bool" value="false"/>
-    <property name="FontName" type="string" value="Ubuntu 12"/>
-    <property name="MonospaceFontName" type="string" value="IBM Plex Mono Medium 12"/>
+    <property name="FontName" type="string" value="Ubuntu 13"/>
+    <property name="MonospaceFontName" type="string" value="IBM Plex Mono Medium 13"/>
     <property name="IconSizes" type="empty"/>
     <property name="KeyThemeName" type="empty"/>
     <property name="ToolbarStyle" type="empty"/>
@@ -36,6 +35,7 @@
     <property name="CursorThemeName" type="string" value="Bibata_Ghost"/>
     <property name="CursorThemeSize" type="empty"/>
     <property name="DecorationLayout" type="empty"/>
+    <property name="DialogsUseHeader" type="empty"/>
     <property name="TitlebarMiddleClick" type="empty"/>
   </property>
   <property name="Gdk" type="empty">

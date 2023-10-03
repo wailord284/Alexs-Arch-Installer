@@ -4,8 +4,7 @@
   <property name="general" type="empty">
     <property name="FailsafeSessionName" type="empty"/>
     <property name="LockCommand" type="empty"/>
-    <property name="SaveOnExit" type="bool" value="false"/>
-    <property name="SessionName" type="string" value="Default"/>
+    <property name="StartAssistiveTechnologies" type="bool" value="false"/>
   </property>
   <property name="sessions" type="empty">
     <property name="Failsafe" type="empty">
@@ -27,8 +26,5 @@
       <property name="Client4_Priority" type="empty"/>
       <property name="Client4_PerScreen" type="empty"/>
     </property>
-  </property>
-  <property name="security" type="empty">
-    <property name="EnableTcp" type="bool" value="false"/>
   </property>
 </channel>

@@ -4,6 +4,7 @@
   <property name="configver" type="int" value="2"/>
   <property name="panels" type="array">
     <value type="int" value="1"/>
+    <property name="dark-mode" type="bool" value="true"/>
     <property name="panel-1" type="empty">
       <property name="position" type="string" value="p=6;x=0;y=0"/>
       <property name="length" type="uint" value="100"/>
@@ -11,10 +12,10 @@
       <property name="icon-size" type="uint" value="0"/>
       <property name="size" type="uint" value="28"/>
       <property name="plugin-ids" type="array">
-        <value type="int" value="1"/>
+        <value type="int" value="7"/>
+        <value type="int" value="16"/>
+        <value type="int" value="15"/>
         <value type="int" value="17"/>
-        <value type="int" value="20"/>
-        <value type="int" value="19"/>
         <value type="int" value="2"/>
         <value type="int" value="3"/>
         <value type="int" value="4"/>
@@ -25,37 +26,17 @@
         <value type="int" value="11"/>
         <value type="int" value="12"/>
         <value type="int" value="13"/>
-        <value type="int" value="10"/>
-        <value type="int" value="15"/>
-        <value type="int" value="7"/>
-        <value type="int" value="16"/>
+        <value type="int" value="18"/>
+        <value type="int" value="20"/>
+        <value type="int" value="19"/>
+        <value type="int" value="21"/>
         <value type="int" value="14"/>
       </property>
-      <property name="enter-opacity" type="int" value="100"/>
-      <property name="leave-opacity" type="uint" value="100"/>
     </property>
-    <property name="panel-2" type="empty">
-      <property name="autohide-behavior" type="uint" value="1"/>
-      <property name="position" type="string" value="p=10;x=0;y=0"/>
-      <property name="position-locked" type="bool" value="true"/>
-      <property name="size" type="uint" value="48"/>
-      <property name="plugin-ids" type="array">
-        <value type="int" value="15"/>
-        <value type="int" value="16"/>
-        <value type="int" value="17"/>
-        <value type="int" value="18"/>
-        <value type="int" value="19"/>
-        <value type="int" value="20"/>
-        <value type="int" value="21"/>
-        <value type="int" value="22"/>
-      </property>
-    </property>
-    <property name="dark-mode" type="bool" value="true"/>
   </property>
   <property name="plugins" type="empty">
-    <property name="plugin-1" type="string" value="whiskermenu"/>
     <property name="plugin-2" type="string" value="tasklist">
-      <property name="grouping" type="uint" value="0"/>
+      <property name="grouping" type="bool" value="false"/>
     </property>
     <property name="plugin-3" type="string" value="separator">
       <property name="expand" type="bool" value="true"/>
@@ -66,64 +47,61 @@
       <property name="style" type="uint" value="0"/>
     </property>
     <property name="plugin-6" type="string" value="systray">
-      <property name="show-frame" type="bool" value="false"/>
       <property name="square-icons" type="bool" value="true"/>
-      <property name="names-ordered" type="array">
-        <value type="string" value="networkmanager applet"/>
-      </property>
       <property name="known-legacy-items" type="array">
-        <value type="string" value="no network connection"/>
-        <value type="string" value="requesting an ethernet network address for “wired connection 1”…"/>
-        <value type="string" value="thunar"/>
-        <value type="string" value="networkmanager applet"/>
+        <value type="string" value="preparing wi-fi network connection “wireless01”…"/>
       </property>
     </property>
-    <property name="icon-size" type="int" value="0"/>
     <property name="plugin-8" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
       <property name="show-notifications" type="bool" value="true"/>
-      <property name="mpris-players" type="string" value="firefox.instance2040;firefox.instance2310;firefox.instance2355"/>
     </property>
     <property name="plugin-9" type="string" value="power-manager-plugin"/>
     <property name="plugin-11" type="string" value="separator">
       <property name="style" type="uint" value="0"/>
     </property>
     <property name="plugin-12" type="string" value="clock">
-      <property name="digital-format" type="string" value="%I:%M %p"/>
+      <property name="digital-date-font" type="string" value="Ubuntu Bold 13"/>
+      <property name="digital-time-font" type="string" value="Ubuntu Bold 13"/>
       <property name="digital-time-format" type="string" value="%I:%M %p"/>
       <property name="digital-layout" type="uint" value="3"/>
-      <property name="digital-time-font" type="string" value="Ubuntu Bold 12"/>
     </property>
     <property name="plugin-13" type="string" value="separator">
       <property name="style" type="uint" value="0"/>
     </property>
     <property name="plugin-14" type="string" value="actions"/>
-    <property name="plugin-21" type="string" value="separator"/>
-    <property name="plugin-22" type="string" value="directorymenu">
+    <property name="plugin-7" type="string" value="whiskermenu">
+      <property name="launcher-icon-size" type="int" value="3"/>
+      <property name="menu-height" type="int" value="600"/>
+      <property name="position-categories-alternate" type="bool" value="true"/>
+      <property name="button-icon" type="string" value="xfce4-panel-menu"/>
+      <property name="hover-switch-category" type="bool" value="true"/>
+      <property name="favorites-in-recent" type="bool" value="true"/>
+      <property name="category-icon-size" type="int" value="2"/>
+      <property name="menu-width" type="int" value="500"/>
     </property>
-    <property name="plugin-7" type="string" value="xfce4-sensors-plugin"/>
-    <property name="plugin-10" type="string" value="cpufreq"/>
-    <property name="plugin-15" type="string" value="separator">
-      <property name="expand" type="bool" value="false"/>
-      <property name="style" type="uint" value="0"/>
+    <property name="plugin-15" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="16962960146.desktop"/>
+      </property>
     </property>
-    <property name="plugin-16" type="string" value="separator">
-      <property name="style" type="uint" value="0"/>
+    <property name="plugin-16" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="16962959975.desktop"/>
+      </property>
     </property>
     <property name="plugin-17" type="string" value="launcher">
       <property name="items" type="array">
-        <value type="string" value="16454206721.desktop"/>
+        <value type="string" value="16962960267.desktop"/>
       </property>
     </property>
-    <property name="plugin-19" type="string" value="launcher">
-      <property name="items" type="array">
-        <value type="string" value="16454207545.desktop"/>
-      </property>
+    <property name="plugin-18" type="string" value="cpufreq"/>
+    <property name="plugin-19" type="string" value="xfce4-sensors-plugin"/>
+    <property name="plugin-20" type="string" value="separator">
+      <property name="style" type="uint" value="0"/>
     </property>
-    <property name="plugin-20" type="string" value="launcher">
-      <property name="items" type="array">
-        <value type="string" value="16454207403.desktop"/>
-      </property>
+    <property name="plugin-21" type="string" value="separator">
+      <property name="style" type="uint" value="0"/>
     </property>
   </property>
 </channel>
