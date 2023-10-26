@@ -506,8 +506,8 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@opt -U "$rootTargetDiskUUID" /mnt/opt
 		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@srv -U "$rootTargetDiskUUID" /mnt/srv
 	elif [ "$filesystem" = f2fs ] ; then
-		#Mount F2FS root partition using -o compress_algorithm=zstd
-		mount -o compress_algorithm=zstd,compress_algorithm=zstd:3 "$rootTargetDisk" /mnt
+		#Mount F2FS root partition
+		mount -o compress_algorithm=zstd:6,compress_chksum,atgc,gc_merge,lazytime "$rootTargetDisk" /mnt
 	else
 		#Standard mount for everything else
 		mount -o noatime "$rootTargetDisk" /mnt
@@ -668,14 +668,6 @@ echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
 --prgbox "Installing Chaotic-aur keyring" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
-#Manually add two mirrors just in case the package install fails
-cat << EOF >> /mnt/etc/pacman.d/chaotic-mirrorlist
-
-#Geo server
-Server = https://geo-mirror.chaotic.cx/\$repo/\$arch
-#Global
-Server = https://cdn-mirror.chaotic.cx/\$repo/\$arch
-EOF
 clear
 
 
