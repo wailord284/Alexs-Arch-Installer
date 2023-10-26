@@ -496,7 +496,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 		#Unmount the root partition
 		umount /mnt
 		#Remount everything using subvolumes
-		mount -o noatime,compress-force=zstd:3,space_cache=v2,nodiscard,autodefrag,commit=90,subvol=@ -U "$rootTargetDiskUUID" /mnt
+		mount -o noatime,compress-force=zstd:3,space_cache=v2,autodefrag,commit=90,subvol=@ -U "$rootTargetDiskUUID" /mnt
 		#Make the subvolume directories to mount
 		mkdir -p /mnt/{srv,var/log,var/cache,var/tmp,opt}
 		#Mount the remaining subvoulmes
