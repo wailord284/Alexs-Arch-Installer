@@ -466,7 +466,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	if [ "$filesystem" = ext4 ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Patitioning Disk" \
-		--prgbox "Formatting root partition" "mkfs.ext4 -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
+		--prgbox "Formatting root partition" "mkfs.ext4 -O fast_commit -L ArchRoot $rootTargetDisk" "$HEIGHT" "$WIDTH"
 	elif [ "$filesystem" = xfs ] ; then
 		dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 		--title "Patitioning Disk" \
