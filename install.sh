@@ -818,7 +818,7 @@ Defaults editor=/usr/bin/rnano
 #Allow the user to reboot and poweroff without a password and allow profile-sync-daemon to use overlayfs
 $user ALL=(ALL) NOPASSWD:/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/psd-overlay-helper
 #Uncomment to allow some commands to be executed without entering the user password
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/trizen,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/reflector,/usr/bin/dmesg,/usr/bin/fstrim"
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/trizen,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/dmesg,/usr/bin/fstrim"
 #Log sudo usage
 #Defaults log_host, log_year, logfile="/var/log/sudo.log"
 #Defaults log_input, log_output
@@ -904,7 +904,7 @@ chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 
 ###USER, PASSWORDS and PAM###
 #Add user here to get /etc/skel configs
-arch-chroot /mnt useradd -m -G input,scanner,network,kvm,floppy,disk,storage,uucp,wheel,optical,video -s /bin/bash "$user"
+arch-chroot /mnt useradd -m -G network,kvm,floppy,disk,storage,uucp,wheel,optical -s /bin/bash "$user"
 #Create a temp file to store the password in
 TMPFILE=$(mktemp)
 #Create normal user account password
