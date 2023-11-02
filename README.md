@@ -15,6 +15,8 @@ The user will now be prompted to supply basic information such as hostname, user
 - Install guest additions for VirtualBox, QEMU/KVM or VMware if detected
 - XFCE configured and themed with whiskermenu
 - Support for [EXT4](https://wiki.archlinux.org/index.php/Ext4), [XFS](https://wiki.archlinux.org/index.php/XFS), [F2FS](https://wiki.archlinux.org/title/F2FS) or [BTRFS](https://wiki.archlinux.org/index.php/Btrfs) filesystems
+    * EXT4 will use the [fast_commit](https://wiki.archlinux.org/title/Ext4#Enabling_fast_commit_in_existing_filesystems) option
+    * F2FS will use [ZSTD level 6 compression](https://wiki.archlinux.org/title/F2FS#Compression) and compress checksums
     * BTRFS will use [zstd (level 3) and force compression](https://wiki.archlinux.org/index.php/Btrfs#Compression)
     * BTRFS scrub timer (monthly) will be enabled for the root directory
     * BTRFS snapshots with [Snapper](https://wiki.archlinux.org/title/Snapper) and [snap-pac](https://github.com/wesbarnett/snap-pac)
