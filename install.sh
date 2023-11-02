@@ -420,7 +420,7 @@ fi
 
 ###DISK PARTITIONING###
 #Begin disk partitioning
-#https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system
+#https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition
 if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#Wipe drive - "${storagePartitions[1]}" is boot partition
 	#We use fdisk to write a new partition table, then wipe it all with wipefs. This should unpartition the drive.
@@ -1043,6 +1043,8 @@ if [ "$filesystem" = btrfs ] ; then
 	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
 	#Skip FSCK for btrfs since it is not needed. Also remove the fsck mkinitcpio hook
 	grubCmdlineLinuxOptions="fsck.mode=skip"
+	#Mask the fsck service as well just in cace
+	arch-chroot /mnt systemctl mask systemd-fsck-root.service
 	grep HOOKS= /mnt/etc/mkinitcpio.conf | tail -n1 | sed -e "s/ fsck//g" -i /mnt/etc/mkinitcpio.conf
 	arch-chroot /mnt mkinitcpio -P > /dev/null 2>&1
 	clear
