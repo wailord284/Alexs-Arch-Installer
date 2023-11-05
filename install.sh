@@ -675,7 +675,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk jdk-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet fsearch xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet fsearch xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1043,10 +1043,10 @@ if [ "$filesystem" = btrfs ] ; then
 	mv -f "$configFiles"/configs/polkit-1/50-btrfsassistant.rules /mnt/etc/polkit-1/rules.d/
 	#Skip FSCK for btrfs since it is not needed. Also remove the fsck mkinitcpio hook
 	grubCmdlineLinuxOptions="fsck.mode=skip"
-	#Mask the fsck service as well just in cace
-	arch-chroot /mnt systemctl mask systemd-fsck-root.service
 	grep HOOKS= /mnt/etc/mkinitcpio.conf | tail -n1 | sed -e "s/ fsck//g" -i /mnt/etc/mkinitcpio.conf
 	arch-chroot /mnt mkinitcpio -P > /dev/null 2>&1
+	#Mask the fsck service as well just in cace
+	arch-chroot /mnt systemctl mask systemd-fsck-root.service > /dev/null 2>&1
 	clear
 fi
 
