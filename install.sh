@@ -818,7 +818,7 @@ Defaults editor=/usr/bin/rnano
 #Allow the user to reboot and poweroff without a password and allow profile-sync-daemon to use overlayfs
 $user ALL=(ALL) NOPASSWD:/usr/bin/poweroff,/usr/bin/reboot,/usr/bin/psd-overlay-helper
 #Uncomment to allow some commands to be executed without entering the user password
-#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/trizen,/usr/bin/cpupower,/usr/bin/iotop,/usr/bin/dmesg,/usr/bin/fstrim"
+#$user ALL=(ALL) NOPASSWD:/usr/bin/pacman,/usr/bin/trizen,/usr/bin/cpupower,/usr/bin/dmesg,/usr/bin/fstrim"
 #Log sudo usage
 #Defaults log_host, log_year, logfile="/var/log/sudo.log"
 #Defaults log_input, log_output
@@ -866,15 +866,11 @@ sed "s,set titlecolor bold\,lightwhite,set titlecolor bold\,red\,lightblack,g" -
 mv "$configFiles"/configs/trizen.conf /mnt/etc/skel/.config/trizen/
 #Move ssh config to enforce strong clientside ciphers
 mv "$configFiles"/configs/ssh-config /mnt/etc/skel/.ssh/config
-#Move xsuspender config. We dont enable or install this
-mv "$configFiles"/configs/xsuspender.conf /mnt/etc/skel/.config/
 #Move profile-sync-daemon config
 mv "$configFiles"/configs/psd.conf /mnt/etc/skel/.config/psd/
 mv "$configFiles"/configs/systemd/psd-frequency.conf /mnt/etc/skel/.config/systemd/user/psd-resync.timer.d/frequency.conf
 #Move kitty config
 mv "$configFiles"/configs/kitty.conf /mnt/etc/skel/.config/kitty/
-#Move wezterm config. We dont install wezterm by default
-mv "$configFiles"/configs/wezterm.lua /mnt/etc/skel/.config/wezterm/
 #Move gtk-2.0 disable recents
 mv "$configFiles"/configs/gtk-2.0/gtkrc /mnt/etc/skel/.config/gtk-2.0/
 #Move gtk-3.0 disable recents
