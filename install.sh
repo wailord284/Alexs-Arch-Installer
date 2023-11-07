@@ -851,15 +851,18 @@ dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring system" \
 --prgbox "Downloading config files" "wget https://github.com/wailord284/Alexs-Arch-Installer/archive/master.zip && unzip master.zip && rm -r master.zip" "$HEIGHT" "$WIDTH"
 #Create /etc/skel dirs for configs to be applied to the new user
-mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,wezterm,psd,htop,dconf,trizen,nano}
+mkdir -p /mnt/etc/skel/.config/{gtk-3.0,gtk-2.0,readline,kitty,screen,psd,htop,dconf,trizen,nano}
 mkdir -p /mnt/etc/skel/.config/systemd/user/psd-resync.timer.d/
 mkdir -p /mnt/etc/skel/.local/share/
 mkdir -p /mnt/etc/skel/.local/state/
-mkdir -p /mnt/etc/skel/.mozilla/
-mkdir -p /mnt/etc/skel/.ssh/
+mkdir -p /mnt/etc/skel/{.mozilla,.ssh}
+#Create root user config directories
+mkdir -p /mnt/root/.config/{nano,readline}
+#Make gnupg config folder. Required with custom XDG
+mkdir -p /mnt/etc/skel/.local/share/gnupg/
+chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 #Move nanorc to user and root. Change root users to have a red title bar
 mv "$configFiles"/configs/nanorc /mnt/etc/skel/.config/nano/
-mkdir -p /mnt/root/.config/nano
 cp /mnt/etc/skel/.config/nano/nanorc /mnt/root/.config/nano/
 sed "s,set titlecolor bold\,lightwhite,set titlecolor bold\,red\,lightblack,g" -i /mnt/root/.config/nano/nanorc
 #Move trizen
@@ -887,15 +890,11 @@ mv "$configFiles"/configs/htoprc /mnt/etc/skel/.config/htop/
 mv "$configFiles"/configs/bash/inputrc /mnt/etc/skel/.config/readline/
 mv "$configFiles"/configs/bash/screenrc /mnt/etc/skel/.config/screen/
 mv "$configFiles"/configs/bash/.bashrc /mnt/etc/skel/
-mkdir -p /mnt/root/.config/readline
 cp /mnt/etc/skel/.config/readline/inputrc /mnt/root/.config/readline/
 cp /mnt/etc/skel/.bashrc /mnt/root/.bashrc
 #Move Firefox config and set permissions for extra privacy
 mv "$configFiles"/configs/firefox/ /mnt/etc/skel/.mozilla/
 chmod -R 700 /mnt/etc/skel/.mozilla/firefox/
-#Make gnupg config folder. Required with custom XDG
-mkdir -p /mnt/etc/skel/.local/share/gnupg/
-chmod -R 700 /mnt/etc/skel/.local/share/gnupg
 
 
 ###USER, PASSWORDS and PAM###
@@ -912,7 +911,7 @@ arch-chroot /mnt chpasswd < "$TMPFILE"
 #Unset and delete the passwords stored in pass1 pass2 pass and encpass encpass1 encpass2
 unset pass1 pass2 pass encpass encpass1 encpass2
 rm -rf "$TMPFILE"
-#Setup stronger password security by increasing delay between password attempts to 4 seconds
+#Setup stronger password security by increasing delay between password attempts to 5 seconds
 echo "auth optional pam_faildelay.so delay=5000000" >> /mnt/etc/pam.d/system-login
 #Require users to be in the wheel group to run su
 echo "auth required pam_wheel.so use_uid" >> /mnt/etc/pam.d/su
