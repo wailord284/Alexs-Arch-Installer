@@ -516,8 +516,7 @@ if [ "$boot" = bios ] || [ "$boot" = efi ]; then
 	#Mount and partition the boot partition
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Patitioning Disk" \
-	--prgbox "Formatting boot partition" "mkfs.vfat -n ArchBoot -F32 ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
-	#Mount drives
+	--prgbox "Formatting boot partition" "mkfs.fat -F32 -n ArchBoot ${storagePartitions[1]}" "$HEIGHT" "$WIDTH"
 	mkdir /mnt/boot
 	mount -o noatime "${storagePartitions[1]}" /mnt/boot
 fi
@@ -541,7 +540,7 @@ clear
 #Install the base Archlinux system and packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing packages" \
---prgbox "Installing base and base-devel package groups" "pacstrap -K /mnt base --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base package group" "pacstrap -K /mnt base --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -556,7 +555,7 @@ sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 #Install additional base Archlinux packages and kernel
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base and base-devel package groups" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base-devel package group and kernel" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on detected cpu
 cpuVendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
 if [ "$cpuVendor" = Intel ]; then
