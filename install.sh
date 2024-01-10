@@ -655,16 +655,14 @@ Server = https://repo.archlinuxcn.org/\$arch
 Server = https://cdn.repo.archlinuxcn.org/\$arch
 
 EOF
-CF66D153D884358F
-
+#Add the Ubuntu keyserver to gpg. Also allow for SHA1 signatures
+echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
+echo "allow-weak-key-signatures" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 #Reinstall keyring in case of gpg errors and add the archlinuxcn and chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
---prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman-key --recv-key CF66D153D884358F --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key CF66D153D884358F && arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman-key --recv-key CE536327AED18EABC3B99A17F4AA4E0ED2568E87 && arch-chroot /mnt pacman-key --lsign-key CE536327AED18EABC3B99A17F4AA4E0ED2568E87 && arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
-#Add the Ubuntu and MIT keyserver to gpg. This works a lot better and faster than the default ones
-echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
-echo "keyserver hkp://pgp.mit.edu:11371" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 #Import the chaotic-aur key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
@@ -676,7 +674,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet fsearch xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker dbus-broker-units tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet fsearch xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -712,11 +710,6 @@ if [ "$ramTotal" -gt "2020000" ]; then
 	--title "Enabling Performance Services" \
 	--prgbox "Enabling preload and profile-sync-daemon" "arch-chroot /mnt systemctl enable preload.service && arch-chroot /mnt systemctl --global enable psd.service" "$HEIGHT" "$WIDTH"
 fi
-clear
-#Dbus-broker setup. Disable dbus and then enable dbus-broker for all users
-dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
---title "Enabling Services" \
---prgbox "Enabling dbus-broker" "arch-chroot /mnt systemctl disable dbus.service && arch-chroot /mnt systemctl enable dbus-broker.service && arch-chroot /mnt systemctl --global enable dbus-broker.service" "$HEIGHT" "$WIDTH"
 clear
 
 
