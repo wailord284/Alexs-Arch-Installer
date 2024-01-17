@@ -555,7 +555,7 @@ sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 #Install additional base Archlinux packages and kernel
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base-devel package group and kernel" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base-devel package group and kernel" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs dbus-broker dbus-broker-units --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on detected cpu
 cpuVendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
 if [ "$cpuVendor" = Intel ]; then
@@ -661,12 +661,12 @@ echo "allow-weak-key-signatures" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 #Reinstall keyring in case of gpg errors and add the archlinuxcn and chaotic keyrings
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
---prgbox "Installing Archlinuxcn keyring" "arch-chroot /mnt pacman-key --recv-key CE536327AED18EABC3B99A17F4AA4E0ED2568E87 && arch-chroot /mnt pacman-key --lsign-key CE536327AED18EABC3B99A17F4AA4E0ED2568E87 && arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Archlinuxcn keyring. This may take a moment and may appear frozen. Please wait..." "arch-chroot /mnt pacman-key --recv-key CE536327AED18EABC3B99A17F4AA4E0ED2568E87 && arch-chroot /mnt pacman-key --lsign-key CE536327AED18EABC3B99A17F4AA4E0ED2568E87 && arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S archlinux-keyring archlinuxcn-keyring --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Import the chaotic-aur key
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing keys" \
---prgbox "Installing Chaotic-aur keyring" "arch-chroot /mnt pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Chaotic-aur keyring. This may take a moment and may appear frozen. Please wait..." "arch-chroot /mnt pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com && arch-chroot /mnt pacman-key --lsign-key 3056513887B78AEB && arch-chroot /mnt pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -674,7 +674,7 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify dbus-broker dbus-broker-units tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet fsearch xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools neofetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet fsearch xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1017,7 +1017,7 @@ fi
 if [ "$filesystem" = btrfs ] ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Installing Additional Software and Regenerating initramfs for BTRFS" \
-	--prgbox "Adding configs and software for BTRFS. This may take a while..." "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Adding configs and software for BTRFS. This may take a moment and may appear frozen. Please wait..." "arch-chroot /mnt pacman -S snapper snap-pac btrfs-assistant --noconfirm" "$HEIGHT" "$WIDTH"
 	#Make locate not index .snapshots directory
 	sed "s,PRUNENAMES = \".git .hg .svn\",PRUNENAMES = \".git .hg .svn .snapshots\",g" -i /mnt/etc/updatedb.conf
 	#Add the btrfs binary to mkinitcpio for recovery situations
