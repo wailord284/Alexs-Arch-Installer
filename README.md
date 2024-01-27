@@ -25,7 +25,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - Optional setting to enable [disk encryption](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition) for the root partition
 - Optional setting to [disable mitigations](https://wiki.archlinux.org/title/Improving_performance#Turn_off_CPU_exploit_mitigations) and enable [silent boot](https://wiki.archlinux.org/title/Silent_boot)
 - Change mkinitcpio base and udev hooks to [systemd](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Using_systemd_instead_of_busybox_on_early_init) to decrease boot time
-- GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/) and [pgp.mit.edu](https://pgp.mit.edu/)
+- GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)
 - Nano [syntax highlighting](https://github.com/scopatz/nanorc), line numbers and position log enabled
 - Preconfigured GPU accelerated terminal [Kitty](https://sw.kovidgoyal.net/kitty/)
 - Automatic detection for Intel and AMD CPUs to [install correct microcode](https://wiki.archlinux.org/index.php/Microcode#Installation)
@@ -44,7 +44,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
 - [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) and [sof-firmware](https://github.com/thesofproject/sof-bin/) installed if required for device
 - [Systemd-timesyncd](https://wiki.archlinux.org/title/Systemd-timesyncd) for system time
-- [IRQBalance](https://irqbalance.github.io/irqbalance/) - An attempt to better balance system latency and throughput on multi-core systems
+- [IRQBalance](https://irqbalance.github.io/irqbalance/) to better balance system latency and throughput on multi-core systems
 - [Reflector](https://wiki.archlinux.org/title/Reflector#systemd_timer) timer enabled to sort mirrors weekly
 - [Enforce Stronger SSH encryption](https://www.sshaudit.com/hardening_guides.html) - Configure .ssh/config to use strong ciphers by default
 - [5 second delay between password attempts](https://wiki.archlinux.org/title/Security#Enforce_a_delay_after_a_failed_login_attempt)
