@@ -33,8 +33,8 @@
     <property name="inactive_opacity" type="int" value="100"/>
     <property name="maximized_offset" type="int" value="0"/>
     <property name="mousewheel_rollup" type="bool" value="true"/>
-    <property name="move_opacity" type="int" value="100"/>
-    <property name="placement_mode" type="string" value="center"/>
+    <property name="move_opacity" type="int" value="91"/>
+    <property name="placement_mode" type="string" value="mouse"/>
     <property name="placement_ratio" type="int" value="20"/>
     <property name="popup_opacity" type="int" value="100"/>
     <property name="prevent_focus_stealing" type="bool" value="false"/>
@@ -56,8 +56,8 @@
     <property name="show_popup_shadow" type="bool" value="false"/>
     <property name="snap_resist" type="bool" value="false"/>
     <property name="snap_to_border" type="bool" value="true"/>
-    <property name="snap_to_windows" type="bool" value="false"/>
-    <property name="snap_width" type="int" value="10"/>
+    <property name="snap_to_windows" type="bool" value="true"/>
+    <property name="snap_width" type="int" value="16"/>
     <property name="vblank_mode" type="string" value="auto"/>
     <property name="theme" type="string" value="Nordic-darker-standard-buttons"/>
     <property name="tile_on_move" type="bool" value="true"/>
@@ -71,13 +71,13 @@
     <property name="title_vertical_offset_inactive" type="int" value="0"/>
     <property name="toggle_workspaces" type="bool" value="false"/>
     <property name="unredirect_overlays" type="bool" value="true"/>
-    <property name="urgent_blink" type="bool" value="false"/>
+    <property name="urgent_blink" type="bool" value="true"/>
     <property name="use_compositing" type="bool" value="true"/>
     <property name="workspace_count" type="int" value="2"/>
     <property name="wrap_cycle" type="bool" value="true"/>
     <property name="wrap_layout" type="bool" value="true"/>
     <property name="wrap_resistance" type="int" value="10"/>
-    <property name="wrap_windows" type="bool" value="true"/>
+    <property name="wrap_windows" type="bool" value="false"/>
     <property name="wrap_workspaces" type="bool" value="false"/>
     <property name="zoom_desktop" type="bool" value="true"/>
     <property name="zoom_pointer" type="bool" value="true"/>
