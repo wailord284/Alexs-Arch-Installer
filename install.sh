@@ -555,7 +555,7 @@ sed "s,\#\Color,Color,g" -i /mnt/etc/pacman.conf
 #Install additional base Archlinux packages and kernel
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional base software" \
---prgbox "Installing base-devel package group and kernel" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs dbus-broker dbus-broker-units --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing base-devel package group and kernel" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S base-devel linux linux-headers linux-firmware mkinitcpio grub efibootmgr dosfstools mtools btrfs-progs dbus-broker dbus-broker-units tzdata --noconfirm" "$HEIGHT" "$WIDTH"
 #Install amd or intel ucode based on detected cpu
 cpuVendor=$(grep -m 1 "vendor" /proc/cpuinfo | grep -o "Intel")
 if [ "$cpuVendor" = Intel ]; then
@@ -1008,6 +1008,8 @@ if [ "$chassisType" = laptop ] || [ "$chassisType" = tablet ] || [ "$acpiBattery
 	mv "$configFiles"/configs/networkmanager/wake-on-lan.conf /mnt/etc/NetworkManager/conf.d/
 	#Enable wifi powersaving
 	mv "$configFiles"/configs/udev/81-wifi-powersave.rules /mnt/etc/udev/rules.d/
+	#Set WiFi region to US. Needed for some laptops like the Framework 16 to get faster speeds
+	sed "s,#WIRELESS_REGDOM=\"US\",WIRELESS_REGDOM=\"US\",g" -i /mnt/etc/conf.d/wireless-regdom
 	clear
 fi
 
