@@ -935,6 +935,10 @@ mv "$configFiles"/configs/networkmanager/dns-servers.conf /mnt/etc/NetworkManage
 mv "$configFiles"/configs/networkmanager/no-systemd-resolve.conf /mnt/etc/NetworkManager/conf.d/
 #Enable IPv6 privacy
 mv "$configFiles"/configs/networkmanager/ip6-privacy.conf /mnt/etc/NetworkManager/conf.d/
+#DNS Cache
+mv "$configFiles"/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
+mv "$configFiles"/configs/networkmanager/cache.conf /mnt/etc/NetworkManager/dnsmasq.d/
+mv "$configFiles"/configs/networkmanager/ipv6-listen.conf /mnt/etc/NetworkManager/dnsmasq.d/
 
 
 ###UDEV RULES###
@@ -1289,9 +1293,10 @@ selection=${selection:- 6 q}
 		8) #Encrypt DNS - dns-over-https
 		echo "$green""Setting up dns-over-https""$reset"
 		arch-chroot /mnt pacman -S dns-over-https --noconfirm
-		#Remove stock network manager configs and use 127.0.0.1 as the DNS server
+		#Remove custom NetworkManager configs
+		rm -r /mnt/etc/NetworkManager/conf.d/dns.conf
 		rm -r /mnt/etc/NetworkManager/conf.d/dns-servers.conf
-		#Move new network manager dns configs
+		#Move new NetworkManager dns configs required for dns-over-https
 		mv "$configFiles"/configs/dns-https/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 		mv "$configFiles"/configs/dns-https/dns.conf /mnt/etc/NetworkManager/conf.d/
 		#Enable service

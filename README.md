@@ -108,6 +108,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * [IPv6 privacy extensions](https://wiki.archlinux.org/title/IPv6#NetworkManager)
     * [Faster default DNS servers](https://wiki.archlinux.org/index.php/NetworkManager#Setting_custom_global_DNS_servers) - [Cloudflare 1.1.1.1](https://1.1.1.1/)
     * [Disable systemd-resolve](https://wiki.archlinux.org/title/NetworkManager#Unit_dbus-org.freedesktop.resolve1.service_not_found) to remove "unit dbus-org.freedesktop.resolve1.service not found" in journal log
+    * [DNS Caching](https://wiki.archlinux.org/title/NetworkManager#DNS_caching_and_conditional_forwarding)
 - [Aurmageddon](https://wailord284.club/) repository maintained by me. Contains ~1000 packages
     * [View the public repository here](https://wailord284.club/repo/aurmageddon/x86_64/)
 
