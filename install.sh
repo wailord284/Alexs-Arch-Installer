@@ -939,6 +939,8 @@ mv "$configFiles"/configs/networkmanager/ip6-privacy.conf /mnt/etc/NetworkManage
 mv "$configFiles"/configs/networkmanager/dns.conf /mnt/etc/NetworkManager/conf.d/
 mv "$configFiles"/configs/networkmanager/cache.conf /mnt/etc/NetworkManager/dnsmasq.d/
 mv "$configFiles"/configs/networkmanager/ipv6-listen.conf /mnt/etc/NetworkManager/dnsmasq.d/
+#DNSSEC
+mv "$configFiles"/configs/networkmanager/dnssec.conf /mnt/etc/NetworkManager/dnsmasq.d/
 
 
 ###UDEV RULES###
