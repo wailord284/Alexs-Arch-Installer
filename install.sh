@@ -1218,7 +1218,7 @@ echo "$green""8$reset - Encrypt and cache DNS requests with dns-over-https"
 echo "$reset""Default options are:$green 6 7$red q""$reset"
 echo "Enter$green 1-8$reset (seperated by spaces for multiple options) or$red q$reset to$red quit$reset"
 read -r -p "Options: " selection
-selection=${selection:- 6 7 q}
+selection=${selection:- 6 q}
 	for entry in $selection ; do
 
 	case "${entry[@]}" in
