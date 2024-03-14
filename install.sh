@@ -720,7 +720,7 @@ clear
 if lshw -class display | grep "Advanced Micro Devices" || dmesg | grep amdgpu > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 	--title "Detecting hardware" \
-	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S opencl-rusticl-mesa vulkan-radeon radeontop --noconfirm" "$HEIGHT" "$WIDTH"
+	--prgbox "Found AMD Graphics card" "arch-chroot /mnt pacman -S opencl-rusticl-mesa vulkan-mesa-layers vulkan-radeon nvtop --noconfirm" "$HEIGHT" "$WIDTH"
 fi
 if lshw -class display | grep "Intel Corporation" || dmesg | grep "i915" > /dev/null 2>&1 ; then
 	dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
@@ -1151,7 +1151,7 @@ mv "$configFiles"/configs/grub/custom.cfg /mnt/boot/grub/
 ###GRUB AND PERFORMANCE BOOT OPTIONS###
 #Check the output of cat /sys/power/mem_sleep for the systems sleep mode
 #If the system is using s2idle but also has deep sleep mode availible, switch it to deep
-#This is especially needed on the 11th gen Framework laptop, although others may benefit
+#This is especially needed on the 11th gen Framework 13 laptop, although others may benefit
 #This setting does make the laptop take longer to wake from sleep, but reduces power consumption a decent bit
 sleepMode=$(cat /sys/power/mem_sleep)
 if [ "$sleepMode" = "[s2idle] deep" ]; then
@@ -1169,8 +1169,8 @@ fi
 
 
 ###GRUB CONFIG###
-#Generate grubcfg with root UUID if encrypt=y
 if [ "$encrypt" = y ]; then
+	#Get the UUID for unlocking the encrypted root
 	rootTargetDiskUUID=$(blkid -s UUID -o value ${storagePartitions[2]})
 	#Check if the device is an SSD. If it is, enable discard - https://wiki.archlinux.org/title/Dm-crypt/Specialties#Discard/TRIM_support_for_solid_state_drives_(SSD)
 	if [ "$deviceUsesSSD" = yes ]; then
@@ -1179,7 +1179,6 @@ if [ "$encrypt" = y ]; then
 		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 	fi
 else
-	#Generate grubcfg if no encryption
 	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 fi
 #Append additional grub boot options if selected
