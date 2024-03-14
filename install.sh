@@ -1290,9 +1290,7 @@ selection=${selection:- 6 q}
 		echo "$green""Setting up dns-over-https""$reset"
 		arch-chroot /mnt pacman -S dns-over-https --noconfirm
 		#Remove stock network manager configs and use 127.0.0.1 as the DNS server
-		rm -r /mnt/etc/NetworkManager/dnsmasq.d/*
 		rm -r /mnt/etc/NetworkManager/conf.d/dns-servers.conf
-		rm -r /mnt/etc/NetworkManager/conf.d/dns.conf
 		#Move new network manager dns configs
 		mv "$configFiles"/configs/dns-https/dns-servers.conf /mnt/etc/NetworkManager/conf.d/
 		mv "$configFiles"/configs/dns-https/dns.conf /mnt/etc/NetworkManager/conf.d/
