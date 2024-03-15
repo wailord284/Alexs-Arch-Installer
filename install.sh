@@ -824,16 +824,9 @@ EOF
 #Change default job (-j) count to use all cores
 sed "s,\#\MAKEFLAGS=\"-j2\",MAKEFLAGS=\"-j\$(nproc)\",g" -i /mnt/etc/makepkg.conf
 #Build all packages with native optimizations
-sed "s,-mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
-#Enable link time optimizations (LTO)
-sed "s,\!lto,lto,g" -i /mnt/etc/makepkg.conf
+sed "s,-march=x86-64 -mtune=generic,-mtune=native,g" -i /mnt/etc/makepkg.conf
 #Build all rust packages with native optimizations
-sed "s,\#\RUSTFLAGS=\"-C opt-level=2\",RUSTFLAGS=\"-C opt-level=2 -C target-cpu=native\",g" -i /mnt/etc/makepkg.conf
-#Enable multithreaded and higher level compression support. This only does anything if you change the PKGEXT value
-sed "s,COMPRESSGZ=(gzip -c -f -n),COMPRESSGZ=(pigz -c -f -n),g" -i /mnt/etc/makepkg.conf
-sed "s,COMPRESSBZ2=(bzip2 -c -f),COMPRESSBZ2=(pbzip2 -c -f),g" -i /mnt/etc/makepkg.conf
-sed "s,COMPRESSXZ=(xz -c -z -),COMPRESSXZ=(xz -e -9 -c -z --threads=0 -),g" -i /mnt/etc/makepkg.conf
-sed "s,COMPRESSZST=(zstd -c -z -q -),COMPRESSZST=(zstd -c --ultra -22 --threads=0 -),g" -i /mnt/etc/makepkg.conf
+sed "s,\#\RUSTFLAGS=\"-Cforce-frame-pointers=yes\",RUSTFLAGS=\"-Cforce-frame-pointers=yes -C target-cpu=native\",g" -i /mnt/etc/makepkg.conf
 #Change default package extension to just tar (uncompressed)
 sed "s,PKGEXT='.pkg.tar.zst',PKGEXT='.pkg.tar',g" -i /mnt/etc/makepkg.conf
 

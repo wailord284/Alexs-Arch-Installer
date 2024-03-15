@@ -86,9 +86,6 @@ The user will now be prompted to supply basic information such as hostname, user
     * Change -mtune=generic to [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries)
     * Change RUSTFLAGS to build [native](https://wiki.archlinux.org/index.php/Makepkg#Building_optimized_binaries) binaries
     * Use [.tar](https://wiki.archlinux.org/index.php/Makepkg#Use_other_compression_algorithms) as default package extension (no compression) when building AUR packages
-    * [Multithreaded](https://wiki.archlinux.org/index.php/Makepkg#Parallel_compilation) capable compression programs for supported files
-    * [Max compression](https://wiki.archlinux.org/title/Makepkg#Utilizing_multiple_cores_on_compression) when compressing .xz and .zst (If package extension changed to .pkg.tar.xz or .zst)
-    * LTO optimizations enabled
 - Systemd changes:
     * [Journal log always visible](https://wiki.archlinux.org/index.php/Systemd/Journal#Forward_journald_to_/dev/tty12) on tty12 (control + alt + F12)
     * [Keep only 1024MB](https://wiki.archlinux.org/index.php/Systemd/Journal#Journal_size_limit) of Journald logs and compress them
