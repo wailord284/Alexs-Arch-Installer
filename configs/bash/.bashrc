@@ -45,6 +45,7 @@ alias gpg2='gpg2 --homedir $XDG_DATA_HOME/gnupg'
 alias yarn='yarn --use-yarnrc $XDG_CONFIG_HOME/yarn/config'
 alias x2goclient='x2goclient --home=$XDG_CONFIG_HOME'
 alias nano='nano --rcfile ~/.config/nano/nanorc'
+alias adb='HOME=$XDG_DATA_HOME/android adb'
 
 #Personal pacman/paru commands
 alias ys='trizen -Syu'
