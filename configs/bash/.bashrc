@@ -34,7 +34,7 @@ alias vdir='vdir --color=auto'
 alias grep='grep --color=auto'
 alias man='tldr'
 . /usr/share/LS_COLORS/dircolors.sh
-/usr/local/bin/pokemon-colorscripts  -r
+/usr/bin/pokemon-colorscripts -r
 
 #XDG stuff
 alias wget='wget --hsts-file=$XDG_CACHE_HOME/wget-hsts'
