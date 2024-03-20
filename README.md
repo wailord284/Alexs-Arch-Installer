@@ -23,6 +23,8 @@ The user will now be prompted to supply basic information such as hostname, user
     * [Disable FSCK](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Filesystem_mounts) mkinitcpio hook since it's not needed for BTRFS
     * All filesystems will use an *atime (usually noatime) mount option
 - Optional setting to enable [disk encryption](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition) for the root partition
+    * Supports [trim/discard](https://wiki.archlinux.org/title/Dm-crypt/Specialties#Discard/TRIM_support_for_solid_state_drives_(SSD)) if the device is an SSD
+    * Increase performance on SSDs by disabling [workqueue](https://wiki.archlinux.org/title/Dm-crypt/Specialties#Disable_workqueue_for_increased_solid_state_drive_(SSD)_performance)
 - Optional setting to [disable CPU mitigations](https://wiki.archlinux.org/title/Improving_performance#Turn_off_CPU_exploit_mitigations) and [watchdog](https://wiki.archlinux.org/title/Improving_performance#Watchdogs)
 - Change mkinitcpio base and udev hooks to [systemd](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Using_systemd_instead_of_busybox_on_early_init) to decrease boot time
 - GPG keyserver for Pacman changed to [keyserver.ubuntu.com](https://keyserver.ubuntu.com/)
