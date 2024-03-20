@@ -1146,8 +1146,7 @@ mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
 mv "$configFiles"/configs/grub/tools/* /mnt/boot/EFI/tools/
 mv "$configFiles"/configs/grub/games/*.efi /mnt/boot/EFI/games/
-mv "$configFiles"/configs/grub/custom.cfg /mnt/boot/grub/
-
+cat "$configFiles"/configs/grub/custom.cfg >> /mnt/etc/grub.d/40_custom
 
 ###GRUB AND PERFORMANCE BOOT OPTIONS###
 #Check the output of cat /sys/power/mem_sleep for the systems sleep mode
