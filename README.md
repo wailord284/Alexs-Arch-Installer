@@ -20,7 +20,7 @@ The user will now be prompted to supply basic information such as hostname, user
     * BTRFS will use [zstd (level 3) and force compression](https://wiki.archlinux.org/index.php/Btrfs#Compression)
     * BTRFS scrub timer (monthly) will be enabled for the root directory
     * BTRFS snapshots with [Snapper](https://wiki.archlinux.org/title/Snapper) and [snap-pac](https://github.com/wesbarnett/snap-pac)
-    * [Disable FSCK](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Filesystem_mounts) mkinitcpio hook since it's not needed for BTRFS
+    * [Disable FSCK](https://wiki.archlinux.org/title/Improving_performance/Boot_process#Filesystem_mounts) mkinitcpio hook when using BTRFS
     * All filesystems will use an *atime (usually noatime) mount option
 - Optional setting to enable [disk encryption](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition) for the root partition
     * Supports [trim/discard](https://wiki.archlinux.org/title/Dm-crypt/Specialties#Discard/TRIM_support_for_solid_state_drives_(SSD)) if the device is an SSD
@@ -44,7 +44,7 @@ The user will now be prompted to supply basic information such as hostname, user
 - [Modified IO Schedulers](https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler) for hard drives, SATA SSDs and NVME drives
 - [Realtime priority](https://wiki.archlinux.org/index.php/Gaming#Enabling_realtime_priority_and_negative_nice_level) in Pulseaudio
 - [Spindown hard drives after 20 minutes](https://wiki.archlinux.org/index.php/Hdparm#Power_management_configuration) using hdparm in udev
-- [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) and [sof-firmware](https://github.com/thesofproject/sof-bin/) installed if required for device
+- [b43-firmware](https://wireless.wiki.kernel.org/en/users/drivers/b43/firmware) and [sof-firmware](https://github.com/thesofproject/sof-bin/) installed if required
 - [Systemd-timesyncd](https://wiki.archlinux.org/title/Systemd-timesyncd) for system time
 - [IRQBalance](https://irqbalance.github.io/irqbalance/) to better balance system latency and throughput on multi-core systems
 - [Reflector](https://wiki.archlinux.org/title/Reflector#systemd_timer) timer enabled to sort mirrors weekly
