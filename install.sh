@@ -1172,13 +1172,7 @@ if [ "$encrypt" = y ]; then
 		sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=UUID=$rootTargetDiskUUID:cryptroot root=$rootTargetDisk audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
 	fi
 else
-	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3\",g" -i /mnt/etc/default/grub
-fi
-#Append additional grub boot options if selected
-if [ -z "$grubCmdlineLinuxOptions" ]; then
-	true #Do nothing if unset
-else
-	sed "s,\GRUB_CMDLINE_LINUX=\"\",\GRUB_CMDLINE_LINUX=\"$grubCmdlineLinuxOptions\",g" -i /mnt/etc/default/grub
+	sed "s,\GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\",\GRUB_CMDLINE_LINUX_DEFAULT=\"audit=0 loglevel=3 $grubCmdlineLinuxOptions\",g" -i /mnt/etc/default/grub
 fi
 #Change theme
 echo 'GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"' >> /mnt/etc/default/grub
@@ -1193,6 +1187,7 @@ mkdir -p /mnt/boot/EFI/tools
 mkdir -p /mnt/boot/EFI/games
 mv "$configFiles"/configs/grub/tools/* /mnt/boot/EFI/tools/
 mv "$configFiles"/configs/grub/games/*.efi /mnt/boot/EFI/games/
+#Add custom menus
 cat "$configFiles"/configs/grub/custom.cfg >> /mnt/etc/grub.d/40_custom
 #Generate grubcfg
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
