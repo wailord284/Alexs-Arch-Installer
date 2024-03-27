@@ -674,12 +674,12 @@ clear
 #Install desktop and software
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing desktop software" \
---prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4-panel xfwm4 xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin dialog network-manager-applet nm-connection-editor networkmanager xfce4 grub-customizer gparted gnome-disk-utility thunderbird file-roller lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk zafiro-icon-theme deluge-gtk bleachbit galculator geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools fastfetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom arc-gtk-theme xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine gvfs-smb mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk mold gst-libav gst-plugins-good --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing desktop environment" "arch-chroot /mnt pacman -Syy && arch-chroot /mnt pacman -S --needed wget nano xfce4 xfce4-panel xfwm4 xfce4-whiskermenu-plugin xfce4-taskmanager xfce4-cpufreq-plugin xfce4-pulseaudio-plugin xfce4-notifyd xfce4-screenshooter xfce4-sensors-plugin xfce4-terminal xfce4-screensaver thunar-archive-plugin network-manager-applet nm-connection-editor networkmanager grub-customizer gparted gnome-disk-utility thunderbird xarchiver lzip lzop cpio zip unzip htop libreoffice-fresh hunspell-en_US jre-openjdk zafiro-icon-theme deluge-gtk bleachbit mate-calc geeqie mpv mousepad papirus-icon-theme ttf-ubuntu-font-family ttf-ibm-plex bash-completion pavucontrol yt-dlp ffmpeg atomicparsley openssh gvfs-mtp cpupower ttf-dejavu ttf-liberation noto-fonts pulseaudio-alsa dmidecode macchanger smartmontools fastfetch xorg-xev dnsmasq nano-syntax-highlighting s-tui imagemagick libxpresent freetype2 rsync acpi keepassxc xclip noto-fonts-emoji unrar earlyoom xorg-xrandr iotop libva-mesa-driver mesa-vdpau libva-vdpau-driver libvdpau-va-gl vdpauinfo libva-utils gpart pinta irqbalance xf86-video-fbdev xf86-video-amdgpu xf86-video-ati xf86-video-nouveau vulkan-icd-loader firefox firefox-ublock-origin firefox-decentraleyes hdparm usbutils logrotate systembus-notify tldr kitty vnstat kernel-modules-hook mlocate gtk-engine-murrine mesa-utils xorg-xkill f2fs-tools xorg-xhost exfatprogs gsmartcontrol remmina libvncserver freerdp profile-sync-daemon reflector ntfs-3g lsscsi xorg-server greetd greetd-tuigreet xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk mold gst-libav gst-plugins-good --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 #Additional aurmageddon packages
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Installing additional desktop software" \
---prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S trizen ttf-symbola surfn-icons-git pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont lscolors-git zramswap preload pacman-updatedb-hook needrestart dracula-gtk-theme catppuccin-gtk-theme-mocha redshift-minimal nulloy --noconfirm" "$HEIGHT" "$WIDTH"
+--prgbox "Installing Aurmageddon packages" "arch-chroot /mnt pacman -S trizen ttf-symbola pokemon-colorscripts-git arch-silence-grub-theme-git bibata-cursor-translucent usbimager matcha-gtk-theme nordic-theme nordic-darker-standard-buttons-theme pacman-cleanup-hook ttf-unifont lscolors-git zramswap preload pacman-updatedb-hook needrestart dracula-gtk-theme catppuccin-gtk-theme-mocha redshift-minimal nulloy --noconfirm" "$HEIGHT" "$WIDTH"
 clear
 
 
@@ -1138,15 +1138,8 @@ if [ "$boot" = bios ]; then
 fi
 clear
 
+#yes hippo | grub-mkpasswd-pbkdf2 | grep -oP '.{0}grub.*'
 
-###GRUB MENUS###
-#Add custom menus to grub
-#Move grub boot items
-mkdir -p /mnt/boot/EFI/tools
-mkdir -p /mnt/boot/EFI/games
-mv "$configFiles"/configs/grub/tools/* /mnt/boot/EFI/tools/
-mv "$configFiles"/configs/grub/games/*.efi /mnt/boot/EFI/games/
-cat "$configFiles"/configs/grub/custom.cfg >> /mnt/etc/grub.d/40_custom
 
 ###GRUB AND PERFORMANCE BOOT OPTIONS###
 #Check the output of cat /sys/power/mem_sleep for the systems sleep mode
@@ -1195,6 +1188,12 @@ if [ "$enableGrubPerformanceOptions" = "y" ]; then
 else
 	sed 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=3/g' -i /mnt/etc/default/grub
 fi
+#Add custom menus to grub
+mkdir -p /mnt/boot/EFI/tools
+mkdir -p /mnt/boot/EFI/games
+mv "$configFiles"/configs/grub/tools/* /mnt/boot/EFI/tools/
+mv "$configFiles"/configs/grub/games/*.efi /mnt/boot/EFI/games/
+cat "$configFiles"/configs/grub/custom.cfg >> /mnt/etc/grub.d/40_custom
 #Generate grubcfg
 dialog --scrollbar --timeout 1 --backtitle "$dialogBacktitle" \
 --title "Configuring grub" \
